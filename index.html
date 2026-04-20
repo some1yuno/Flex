@@ -44,7 +44,27 @@
     gap: 1.5rem;
     background: var(--accent);
     position: relative;
+    overflow: hidden;
   }
+
+  /* Single large dumbbell centered behind logo */
+  header::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 420px;
+    height: 120px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 120'%3E%3Cg fill='none' stroke='rgba(255,255,255,0.1)' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3C!-- bar --%3E%3Cline x1='110' y1='60' x2='310' y2='60'/%3E%3C!-- left inner plate --%3E%3Crect x='72' y='35' width='20' height='50' rx='4' fill='rgba(255,255,255,0.08)' stroke='rgba(255,255,255,0.12)'/%3E%3C!-- left outer plate --%3E%3Crect x='40' y='22' width='26' height='76' rx='5' fill='rgba(255,255,255,0.06)' stroke='rgba(255,255,255,0.11)'/%3E%3C!-- left cap --%3E%3Crect x='22' y='30' width='14' height='60' rx='4' fill='rgba(255,255,255,0.1)' stroke='rgba(255,255,255,0.13)'/%3E%3C!-- right inner plate --%3E%3Crect x='328' y='35' width='20' height='50' rx='4' fill='rgba(255,255,255,0.08)' stroke='rgba(255,255,255,0.12)'/%3E%3C!-- right outer plate --%3E%3Crect x='354' y='22' width='26' height='76' rx='5' fill='rgba(255,255,255,0.06)' stroke='rgba(255,255,255,0.11)'/%3E%3C!-- right cap --%3E%3Crect x='384' y='30' width='14' height='60' rx='4' fill='rgba(255,255,255,0.1)' stroke='rgba(255,255,255,0.13)'/%3E%3C!-- collar clips --%3E%3Cline x1='110' y1='48' x2='110' y2='72'/%3E%3Cline x1='310' y1='48' x2='310' y2='72'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  header > * { position: relative; z-index: 1; }
 
   .logo {
     font-family: 'Black Han Sans', sans-serif;
@@ -235,6 +255,24 @@
   .tag-cardio   { background: #e6f4ea; color: #1e6b3a; border: 1px solid #b8dfc3; }
   .tag-mobility { background: #e3eeff; color: #1a4db3; border: 1px solid #b3cbf5; }
   .tag-hiit     { background: #fdecea; color: #b33a2a; border: 1px solid #f5b3ac; }
+
+  .drag-handle {
+    position: absolute;
+    top: 50%;
+    left: 0.4rem;
+    transform: translateY(-50%);
+    color: var(--border-strong);
+    font-size: 1rem;
+    cursor: grab;
+    padding: 2px;
+    line-height: 1;
+    user-select: none;
+    z-index: 2;
+  }
+  .drag-handle:active { cursor: grabbing; }
+  .workout-card { padding-left: 1.6rem !important; }
+  .workout-card.drag-over { border: 2px dashed var(--accent); background: var(--accent-light); }
+  .workout-card.dragging { opacity: 0.35; }
 
   .wc-check {
     position: absolute;
@@ -1457,8 +1495,9 @@
     <div class="stat-val" id="statStreak">0🔥</div>
     <div class="stat-label">Day Streak</div>
   </div>
-  <div class="stat" style="display:flex;align-items:center;justify-content:center">
+  <div class="stat" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;flex-wrap:wrap">
     <button onclick="openWeekHistory()" style="font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.8rem;padding:0.5rem 1.1rem;background:var(--accent);color:#fff;border:none;border-radius:20px;cursor:pointer;transition:all 0.15s;letter-spacing:0.5px" onmouseover="this.style.background='var(--accent-mid)'" onmouseout="this.style.background='var(--accent)'">📅 Week History</button>
+    <button onclick="openHistorySearch()" style="font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.8rem;padding:0.5rem 1.1rem;background:var(--surface);color:var(--accent);border:1.5px solid var(--border-strong);border-radius:20px;cursor:pointer;transition:all 0.15s;letter-spacing:0.5px" onmouseover="this.style.background='var(--accent-light)'" onmouseout="this.style.background='var(--surface)'">🔍 Exercise History</button>
   </div>
 </div>
 
@@ -1522,6 +1561,26 @@
       </div>
 
     </div>
+  </div>
+</div>
+
+<!-- EXERCISE HISTORY SEARCH MODAL -->
+<div class="modal-bg" id="historySearchBg" style="z-index:350">
+  <div class="modal" style="padding:0;overflow:hidden;width:min(560px,96vw)">
+    <div style="display:flex;justify-content:center;padding:0.6rem 0 0;background:var(--surface)">
+      <div style="width:36px;height:4px;background:var(--border-strong);border-radius:2px"></div>
+    </div>
+    <div style="padding:1rem 1.5rem 0.75rem;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:2px;color:var(--accent)">🔍 Exercise History</h2>
+      <button class="modal-close" style="position:static" onclick="closeHistorySearch()">✕</button>
+    </div>
+    <div style="padding:1rem 1.5rem;border-bottom:1px solid var(--border)">
+      <input id="historySearchInput" type="text" placeholder="Search exercises…"
+        style="width:100%;background:var(--bg);border:1.5px solid var(--border);color:var(--text);padding:0.7rem 1rem;font-family:'DM Sans',sans-serif;font-size:0.95rem;border-radius:10px;outline:none"
+        oninput="renderHistorySearch(this.value)"
+        onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" />
+    </div>
+    <div id="historySearchResults" style="max-height:60vh;overflow-y:auto;padding:0.75rem 1.5rem"></div>
   </div>
 </div>
 
@@ -1684,6 +1743,14 @@
       <div id="lastSessionWrap" style="margin-top:1.25rem;display:none">
         <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.5rem">Last Session</div>
         <div id="lastSessionContent" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0.75rem"></div>
+      </div>
+
+      <!-- SESSION NOTES -->
+      <div style="margin-top:1rem">
+        <label style="font-family:'DM Mono',monospace;font-size:0.6rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);display:block;margin-bottom:0.35rem">Session Notes <span style="color:var(--border-strong)">— optional</span></label>
+        <textarea id="sessionNotes" placeholder="e.g. felt strong today, shoulder was tight, went heavier on last set…" rows="2"
+          style="width:100%;background:var(--bg);border:1.5px solid var(--border);color:var(--text);padding:0.6rem 0.8rem;font-family:'DM Sans',sans-serif;font-size:0.85rem;border-radius:8px;outline:none;resize:none;transition:border 0.15s;font-family:'DM Sans',sans-serif"
+          onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
       </div>
 
       <button onclick="saveLog()" class="btn-primary" style="margin-top:1.25rem">SAVE SESSION</button>
@@ -1989,9 +2056,12 @@ function render() {
     const dateStr = dateObj.toLocaleDateString('en-US', {month:'short', day:'numeric'});
 
     col.innerHTML = `
-      <div class="day-header">
-        <div class="day-name">${FULL_DAYS[di]}</div>
-        <div class="day-date">${dateStr}</div>
+      <div class="day-header" style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div class="day-name">${FULL_DAYS[di]}</div>
+          <div class="day-date">${dateStr}</div>
+        </div>
+        <button onclick="toggleRestDay(${di})" style="font-family:'DM Mono',monospace;font-size:0.52rem;padding:2px 7px;border-radius:10px;border:1px solid var(--border-strong);background:${day.isRest ? 'var(--accent)' : 'var(--bg)'};color:${day.isRest ? '#fff' : 'var(--muted)'};cursor:pointer;transition:all 0.15s;white-space:nowrap">${day.isRest ? '💤 Rest' : '+ Rest'}</button>
       </div>
       <div class="workout-list" id="list-${di}"></div>
     `;
@@ -2019,6 +2089,7 @@ function render() {
 
       card.innerHTML = `
         <div class="wc-check">${w.done ? '✓ Done' : 'Complete'}</div>
+        <div class="drag-handle" title="Drag to reorder">⠿</div>
         <div class="wc-name">${w.name}</div>
         ${w.notes ? `<div class="wc-target">🎯 ${w.notes}</div>` : ''}
         <div style="display:flex;align-items:center;gap:4px;margin-top:5px;flex-wrap:wrap">
@@ -2035,6 +2106,30 @@ function render() {
           </div>
         </div>
       `;
+      card.setAttribute('draggable', 'true');
+      card.dataset.di = di;
+      card.dataset.wi = wi;
+      card.querySelector('.drag-handle').addEventListener('mousedown', () => { card.draggable = true; });
+      card.addEventListener('dragstart', (e) => {
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', JSON.stringify({ di, wi }));
+        setTimeout(() => card.classList.add('dragging'), 0);
+      });
+      card.addEventListener('dragend', () => card.classList.remove('dragging'));
+      card.addEventListener('dragover', (e) => { e.preventDefault(); card.classList.add('drag-over'); });
+      card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
+      card.addEventListener('drop', (e) => {
+        e.preventDefault();
+        card.classList.remove('drag-over');
+        try {
+          const { di: fromDi, wi: fromWi } = JSON.parse(e.dataTransfer.getData('text/plain'));
+          if (fromDi === di && fromWi !== wi) {
+            const moved = schedule[di].workouts.splice(fromWi, 1)[0];
+            schedule[di].workouts.splice(wi, 0, moved);
+            save();
+          }
+        } catch(err) {}
+      });
       card.querySelector('.wc-check').addEventListener('click', (e) => {
         e.stopPropagation();
         toggleDone(di, wi);
@@ -2101,13 +2196,8 @@ function render() {
   document.getElementById('statDone').textContent = doneCnt;
   document.getElementById('statMins').textContent = totalMins;
 
-  // streak: count consecutive days from today backwards with at least 1 done workout
-  let streak = 0;
-  for (let i = todayCol; i >= 0; i--) {
-    if (schedule[i].workouts.some(w => w.done)) streak++;
-    else break;
-  }
-  document.getElementById('statStreak').textContent = streak + (streak > 0 ? '🔥' : '');
+  // Cross-week streak: count consecutive calendar days with at least 1 logged set
+  document.getElementById('statStreak').textContent = calcStreak() + (calcStreak() > 0 ? '🔥' : '');
 
   const pct = totalWorkouts > 0 ? Math.round((doneCnt / totalWorkouts) * 100) : 0;
   document.getElementById('progressBar').style.width = pct + '%';
@@ -2262,6 +2352,99 @@ function mobileNavDay(dir) {
 function toggleDone(di, wi) {
   schedule[di].workouts[wi].done = !schedule[di].workouts[wi].done;
   save();
+}
+
+// ── Rest day toggle ───────────────────────────────────────────────
+function toggleRestDay(di) {
+  schedule[di].isRest = !schedule[di].isRest;
+  save();
+}
+
+// ── Exercise History Search ───────────────────────────────────────
+function openHistorySearch() {
+  document.getElementById('historySearchInput').value = '';
+  renderHistorySearch('');
+  document.getElementById('historySearchBg').classList.add('open');
+  setTimeout(() => document.getElementById('historySearchInput').focus(), 200);
+}
+
+function closeHistorySearch() {
+  document.getElementById('historySearchBg').classList.remove('open');
+}
+
+function renderHistorySearch(query) {
+  const all = JSON.parse(localStorage.getItem('grind_history') || '{}');
+  const names = Object.keys(all).filter(n => n.toLowerCase().includes(query.toLowerCase())).sort();
+  const el = document.getElementById('historySearchResults');
+
+  if (!names.length) {
+    el.innerHTML = `<div style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);text-align:center;padding:2rem;text-transform:uppercase;letter-spacing:1px">${query ? 'No exercises found' : 'No history logged yet'}</div>`;
+    return;
+  }
+
+  el.innerHTML = names.map(name => {
+    const logs = all[name];
+    const sessions = logs.length;
+    const pr = Math.max(...logs.flatMap(l => l.sets.map(s => s.weight || 0)));
+    const last = logs[logs.length - 1];
+    const lastDate = new Date(last.date + 'T12:00:00').toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+    const muscle = MUSCLE_MAP[name] || '';
+    const orm = calc1RM(pr, Math.max(...last.sets.map(s => s.reps || 0)));
+    return `
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:0.75rem 1rem;margin-bottom:0.5rem;cursor:pointer;transition:all 0.15s"
+           onclick="closeHistorySearch(); setTimeout(()=>showProgressModal('${name.replace(/'/g,"\\'")}'),100)"
+           onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.3rem">
+          <div style="font-weight:600;font-size:0.9rem;color:var(--text)">${name}</div>
+          ${muscle ? `<span class="wc-tag" style="background:var(--accent-light);border:1px solid var(--border-strong);color:var(--accent)">${muscle}</span>` : ''}
+        </div>
+        <div style="display:flex;gap:1rem;flex-wrap:wrap">
+          <span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted)">📊 ${sessions} session${sessions>1?'s':''}</span>
+          <span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--accent);font-weight:600">🏆 PR: ${pr > 0 ? pr+'lbs' : '—'}</span>
+          ${orm > 0 ? `<span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--accent-mid)">💪 Est. 1RM: ${orm}lbs</span>` : ''}
+          <span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted)">Last: ${lastDate}</span>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+document.getElementById('historySearchBg').addEventListener('click', function(e) {
+  if (e.target === this) closeHistorySearch();
+});
+
+// ── 1RM Calculator (Epley formula) ───────────────────────────────
+function calc1RM(weight, reps) {
+  if (!weight || !reps || reps <= 0) return 0;
+  if (reps === 1) return weight;
+  return Math.round(weight * (1 + reps / 30));
+}
+
+// ── Cross-week streak ─────────────────────────────────────────────
+function calcStreak() {
+  const all = JSON.parse(localStorage.getItem('grind_history') || '{}');
+  // Collect all unique dates that have any logged sets
+  const trainedDates = new Set();
+  Object.values(all).forEach(logs => {
+    logs.forEach(l => { if (l.sets && l.sets.length) trainedDates.add(l.date); });
+  });
+
+  let streak = 0;
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const d = new Date(today);
+
+  // Allow today or yesterday as the starting point (don't break streak if you haven't logged yet today)
+  const todayStr = d.toISOString().split('T')[0];
+  const yesterStr = new Date(d.getTime() - 86400000).toISOString().split('T')[0];
+  if (!trainedDates.has(todayStr) && !trainedDates.has(yesterStr)) return 0;
+  if (!trainedDates.has(todayStr)) d.setDate(d.getDate() - 1);
+
+  while (true) {
+    const s = d.toISOString().split('T')[0];
+    if (trainedDates.has(s)) { streak++; d.setDate(d.getDate() - 1); }
+    else break;
+  }
+  return streak;
 }
 
 function selectType(val) {
@@ -2974,6 +3157,11 @@ function openLogModal(di, wi) {
   document.getElementById('logModalBg').classList.add('open');
 
   // Start/continue session timer, reset rest timer display
+  // Pre-fill session notes from today's existing entry if any
+  const todayStr = new Date().toISOString().split('T')[0];
+  const todayEntry = getHistory(w.name).find(h => h.date === todayStr);
+  document.getElementById('sessionNotes').value = todayEntry?.note || '';
+
   startSession();
   resetRestTimer();
 
@@ -3085,20 +3273,22 @@ function saveLog() {
 
   if (!sets.length) { alert('Add at least one set with weight or reps!'); return; }
 
+  const sessionNote = document.getElementById('sessionNotes').value.trim();
+
   // Check if we're editing a historical log
   if (window._editingHistoryDate && window._editingHistoryName) {
     const exerciseName = window._editingHistoryName;
     const targetDate   = window._editingHistoryDate;
     const history = getHistory(exerciseName);
     const idx = history.findIndex(h => h.date === targetDate);
-    if (idx >= 0) history[idx].sets = sets;
-    else history.push({ date: targetDate, sets });
+    const entry = { date: targetDate, sets, note: sessionNote };
+    if (idx >= 0) history[idx] = entry;
+    else history.push(entry);
     saveHistory(exerciseName, history);
     window._editingHistoryDate = null;
     window._editingHistoryName = null;
     closeLogModal();
     showToast('✅ Log updated!');
-    // Re-open history so user sees updated data
     setTimeout(() => openWeekHistory(), 300);
     return;
   }
@@ -3108,8 +3298,9 @@ function saveLog() {
   const history = getHistory(w.name);
   const today = new Date().toISOString().split('T')[0];
   const existing = history.findIndex(h => h.date === today);
-  if (existing >= 0) history[existing].sets = sets;
-  else history.push({ date: today, sets });
+  const entry = { date: today, sets, note: sessionNote };
+  if (existing >= 0) history[existing] = entry;
+  else history.push(entry);
   saveHistory(w.name, history);
   schedule[logTarget.di].workouts[logTarget.wi].done = true;
   save();
@@ -3120,6 +3311,7 @@ function closeLogModal() {
   document.getElementById('logModalBg').classList.remove('open');
   document.getElementById('aiRecommendWrap').style.display = 'block';
   document.getElementById('lastSessionWrap').style.display = 'none';
+  document.getElementById('sessionNotes').value = '';
   window._editingHistoryDate = null;
   window._editingHistoryName = null;
   logTarget = null;
@@ -3152,6 +3344,7 @@ function showProgressModal(name) {
     history.length ? `${history.length} session${history.length > 1 ? 's' : ''} logged` : 'No sessions yet';
 
   const content = document.getElementById('progressContent');
+  const muscle = MUSCLE_MAP[name] || '';
 
   if (!history.length) {
     content.innerHTML = `<div style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);text-align:center;padding:3rem;text-transform:uppercase;letter-spacing:1px">No sessions logged yet.<br>Log your first set above!</div>`;
@@ -3159,43 +3352,99 @@ function showProgressModal(name) {
     return;
   }
 
-  // Build chart data — max weight per session
+  // ── Compute stats ─────────────────────────────────────────────
   const chartData = history.map(h => ({
     date: h.date,
     maxW: Math.max(...h.sets.map(s => s.weight || 0)),
-    totalVol: h.sets.reduce((acc, s) => acc + ((s.weight||0) * (s.reps||0)), 0)
+    maxR: Math.max(...h.sets.map(s => s.reps || 0)),
+    vol:  h.sets.reduce((a, s) => a + (s.weight||0)*(s.reps||0), 0),
+    sets: h.sets.length,
+    note: h.note || ''
   }));
 
-  const allMaxW = chartData.map(d => d.maxW);
-  const overallPR = Math.max(...allMaxW);
-  const chartMax = overallPR || 1;
+  const overallPR   = Math.max(...chartData.map(d => d.maxW));
+  const last        = chartData[chartData.length - 1];
+  const prev        = chartData.length > 1 ? chartData[chartData.length - 2] : null;
+  const weightGain  = prev ? last.maxW - prev.maxW : 0;
+  const volGain     = prev ? last.vol - prev.vol : 0;
+  const best1RM     = calc1RM(overallPR, history.find(h => Math.max(...h.sets.map(s=>s.weight||0)) === overallPR)?.sets.find(s=>s.weight===overallPR)?.reps || 1);
 
-  // Bar chart HTML
-  const barsHTML = chartData.map((d, i) => {
-    const isPR = d.maxW === overallPR && overallPR > 0;
-    const pct = Math.max(4, Math.round((d.maxW / chartMax) * 100));
-    const dateLabel = new Date(d.date + 'T12:00:00').toLocaleDateString('en-US', {month:'short', day:'numeric'});
-    return `
-      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0">
-        <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:${isPR ? 'var(--accent)' : 'var(--muted)'};white-space:nowrap">${d.maxW > 0 ? d.maxW+'lb' : '—'}</div>
-        <div style="width:100%;background:var(--border);border-radius:2px;height:80px;display:flex;align-items:flex-end">
-          <div style="width:100%;height:${pct}%;background:${isPR ? 'var(--accent)' : 'var(--border-strong)'};border-radius:2px 2px 0 0;transition:height 0.3s ease"></div>
-        </div>
-        <div style="font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--muted);white-space:nowrap;overflow:hidden;max-width:100%;text-overflow:ellipsis">${dateLabel}</div>
-        ${isPR ? '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:0.65rem;background:var(--accent);color:#fff;padding:1px 4px;border-radius:2px;letter-spacing:1px">PR</div>' : ''}
-      </div>`;
+  // ── SVG Line Chart ────────────────────────────────────────────
+  const W = 480, H = 120, PAD = 30;
+  const vals = chartData.map(d => d.maxW).filter(v => v > 0);
+  const minV = vals.length ? Math.min(...vals) : 0;
+  const maxV = vals.length ? Math.max(...vals) : 1;
+  const range = maxV - minV || 1;
+
+  const points = chartData.map((d, i) => {
+    const x = PAD + (i / Math.max(chartData.length - 1, 1)) * (W - PAD * 2);
+    const y = H - PAD - ((d.maxW - minV) / range) * (H - PAD * 2);
+    return { x, y, d };
+  });
+
+  const pathD = points.map((p, i) => `${i===0?'M':'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+  const areaD = `${pathD} L${points[points.length-1].x.toFixed(1)},${H-PAD} L${points[0].x.toFixed(1)},${H-PAD} Z`;
+
+  const dotsHTML = points.map(p => {
+    const isPR = p.d.maxW === overallPR && overallPR > 0;
+    return `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${isPR?5:3}" fill="${isPR?'var(--accent)':'var(--accent-mid)'}" stroke="white" stroke-width="1.5">
+      <title>${p.d.maxW}lbs — ${new Date(p.d.date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})}</title>
+    </circle>`;
   }).join('');
 
-  // Session history cards
+  const labelsHTML = points.filter((_,i) => i === 0 || i === points.length-1 || points.length <= 6 || i % Math.ceil(points.length/5) === 0)
+    .map(p => `<text x="${p.x.toFixed(1)}" y="${H-4}" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="var(--muted)">${new Date(p.d.date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})}</text>`).join('');
+
+  const yLabels = [minV, Math.round((minV+maxV)/2), maxV].map((v, i) => {
+    const y = H - PAD - ((v - minV) / range) * (H - PAD * 2);
+    return `<text x="${PAD-4}" y="${y.toFixed(1)}" text-anchor="end" dominant-baseline="middle" font-family="DM Mono,monospace" font-size="9" fill="var(--muted)">${v}</text>`;
+  }).join('');
+
+  const chartSVG = `
+    <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:130px;overflow:visible">
+      <defs>
+        <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.2"/>
+          <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <path d="${areaD}" fill="url(#areaGrad)"/>
+      <path d="${pathD}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      ${dotsHTML}
+      ${labelsHTML}
+      ${yLabels}
+    </svg>`;
+
+  // ── Progressive overload section ─────────────────────────────
+  const poHTML = prev ? `
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem">
+      <div style="flex:1;min-width:130px;background:${weightGain>0?'var(--accent)':weightGain<0?'#fdecea':'var(--bg)'};border:1px solid ${weightGain>0?'var(--accent)':weightGain<0?'#f5b3ac':'var(--border)'};border-radius:8px;padding:0.7rem 1rem">
+        <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:${weightGain>0?'rgba(255,255,255,0.7)':weightGain<0?'#c0392b':'var(--muted)'};text-transform:uppercase;letter-spacing:1px;margin-bottom:2px">vs Last Session</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:${weightGain>0?'#fff':weightGain<0?'#c0392b':'var(--text)'};line-height:1">${weightGain>0?'+':''}${weightGain} lbs</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:${weightGain>0?'rgba(255,255,255,0.7)':'var(--muted)'}">Max weight</div>
+      </div>
+      <div style="flex:1;min-width:130px;background:${volGain>0?'var(--accent-light)':'var(--bg)'};border:1px solid ${volGain>0?'var(--accent)':'var(--border)'};border-radius:8px;padding:0.7rem 1rem">
+        <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px">Volume Change</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--accent);line-height:1">${volGain>0?'+':''}${volGain.toLocaleString()}</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted)">lbs total volume</div>
+      </div>
+    </div>` : '';
+
+  // ── Session history ───────────────────────────────────────────
   const sessionsHTML = [...history].reverse().map((h, i) => {
     const dateStr = new Date(h.date + 'T12:00:00').toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric', year:'numeric'});
     const maxW = Math.max(...h.sets.map(s => s.weight || 0));
-    const vol = h.sets.reduce((acc, s) => acc + ((s.weight||0)*(s.reps||0)), 0);
-    const isPRSession = maxW === overallPR && overallPR > 0 && i === [...history].reverse().findIndex(h2 => Math.max(...h2.sets.map(s=>s.weight||0)) === overallPR);
+    const vol  = h.sets.reduce((a, s) => a + (s.weight||0)*(s.reps||0), 0);
+    const orm  = calc1RM(maxW, h.sets.find(s=>s.weight===maxW)?.reps || 1);
+    const isPR = maxW === overallPR && overallPR > 0 && i === [...history].reverse().findIndex(h2 => Math.max(...h2.sets.map(s=>s.weight||0)) === overallPR);
     return `
       <div class="progress-session">
-        <div class="progress-session-date">${dateStr}${isPRSession ? ' <span style="font-family:\'Bebas Neue\',sans-serif;font-size:0.65rem;background:var(--accent);color:#fff;padding:1px 5px;border-radius:2px;letter-spacing:1px;margin-left:6px">PR</span>' : ''}</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.3rem;margin-bottom:0.4rem">
+          <div class="progress-session-date">${dateStr}${isPR ? ' <span style="font-family:\'Bebas Neue\',sans-serif;font-size:0.65rem;background:var(--accent);color:#fff;padding:1px 5px;border-radius:2px;letter-spacing:1px;margin-left:6px">PR</span>' : ''}</div>
+          ${orm > 0 ? `<span style="font-family:'DM Mono',monospace;font-size:0.6rem;background:var(--accent-light);border:1px solid var(--border-strong);color:var(--accent);padding:2px 8px;border-radius:6px">💪 Est. 1RM: ${orm}lbs</span>` : ''}
+        </div>
         <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted);margin-bottom:0.5rem">${h.sets.length} sets · Vol: ${vol.toLocaleString()} lbs</div>
+        ${h.note ? `<div style="font-family:'DM Sans',sans-serif;font-size:0.75rem;color:var(--text);background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:0.35rem 0.6rem;margin-bottom:0.5rem;font-style:italic">📝 ${h.note}</div>` : ''}
         <div class="progress-session-sets">
           ${h.sets.map((s, si) => `
             <span class="progress-set-chip${(s.weight||0) === maxW && maxW > 0 ? ' best' : ''}">
@@ -3206,28 +3455,32 @@ function showProgressModal(name) {
   }).join('');
 
   content.innerHTML = `
-    <div style="margin-bottom:1rem">
-      <div style="display:flex;gap:1rem;margin-bottom:1rem;flex-wrap:wrap">
-        <div style="background:var(--bg);border:1px solid var(--border);border-radius:3px;padding:0.75rem 1.25rem;flex:1;min-width:100px">
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--accent)">${overallPR > 0 ? overallPR+'lb' : '—'}</div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Best Weight (PR)</div>
-        </div>
-        <div style="background:var(--bg);border:1px solid var(--border);border-radius:3px;padding:0.75rem 1.25rem;flex:1;min-width:100px">
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--accent)">${history.length}</div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Sessions Logged</div>
-        </div>
-        <div style="background:var(--bg);border:1px solid var(--border);border-radius:3px;padding:0.75rem 1.25rem;flex:1;min-width:100px">
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--accent)">${history[history.length-1].sets.length}</div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Sets Last Session</div>
-        </div>
+    <!-- Key stats -->
+    <div style="display:flex;gap:0.6rem;flex-wrap:wrap;margin-bottom:1rem">
+      <div style="background:var(--accent);color:#fff;border-radius:8px;padding:0.7rem 1rem;flex:1;min-width:100px;text-align:center">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;line-height:1">${overallPR > 0 ? overallPR+'lb' : '—'}</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:1px;margin-top:2px">Best Weight (PR)</div>
+      </div>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0.7rem 1rem;flex:1;min-width:100px;text-align:center">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--accent);line-height:1">${best1RM > 0 ? best1RM+'lb' : '—'}</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px">Est. 1RM</div>
+      </div>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0.7rem 1rem;flex:1;min-width:100px;text-align:center">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--accent);line-height:1">${history.length}</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px">Sessions</div>
       </div>
     </div>
+
+    <!-- Progressive overload -->
+    ${poHTML}
+
+    <!-- Line chart -->
     <div class="progress-chart-wrap">
-      <div class="chart-title">Max Weight Per Session</div>
-      <div class="chart-bars" style="gap:6px;align-items:flex-end;display:flex">
-        ${barsHTML}
-      </div>
+      <div class="chart-title">Max Weight Over Time</div>
+      ${chartSVG}
     </div>
+
+    <!-- Session history -->
     <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin:1rem 0 0.5rem;border-top:1px solid var(--border);padding-top:1rem">Session History</div>
     ${sessionsHTML}
   `;
@@ -3447,9 +3700,18 @@ function pingRestDone() {
 // ──────────────────────────────────────────────────────────────────
 
 // ─── PASSWORD LOCK ────────────────────────────────────────────────
-function checkPassword() {
+// Password is stored as a SHA-256 hash — not visible in plain text
+const PASSWORD_HASH = '4e2c432e45e59b09e6af6e14b5b87f88e7e3dcf4ee47df9a07462d7e89b81d4a'; // 'lockin'
+
+async function checkPassword() {
   const input = document.getElementById('lockInput').value;
-  if (input === 'lockin') {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(input);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+  if (hashHex === PASSWORD_HASH) {
     document.getElementById('lockScreen').style.display = 'none';
     sessionStorage.setItem('flex_unlocked', '1');
   } else {
