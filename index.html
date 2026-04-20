@@ -1351,6 +1351,27 @@
 </head>
 <body>
 
+<!-- PASSWORD LOCK SCREEN -->
+<div id="lockScreen" style="position:fixed;inset:0;background:var(--accent);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem">
+  <div style="font-family:'Black Han Sans',sans-serif;font-size:4rem;color:#fff;letter-spacing:5px">FLEX</div>
+  <div style="font-family:'DM Mono',monospace;font-size:0.68rem;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:2.5px;margin-top:-1rem">Weekly Workout Planner</div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:0.6rem;width:min(280px,85vw)">
+    <input id="lockInput" type="password" placeholder="Enter password…"
+      style="width:100%;padding:0.85rem 1rem;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-family:'DM Mono',monospace;font-size:1rem;outline:none;text-align:center;letter-spacing:2px"
+      onfocus="this.style.borderColor='rgba(255,255,255,0.6)'"
+      onblur="this.style.borderColor='rgba(255,255,255,0.2)'"
+      onkeydown="if(event.key==='Enter') checkPassword()" />
+    <button onclick="checkPassword()"
+      style="width:100%;padding:0.85rem;background:#fff;color:var(--accent);border:none;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:2px;cursor:pointer;transition:all 0.15s"
+      onmouseover="this.style.background='#f0e8f2'" onmouseout="this.style.background='#fff'">
+      UNLOCK
+    </button>
+    <div id="lockError" style="display:none;font-family:'DM Mono',monospace;font-size:0.65rem;color:#ff6b6b;text-transform:uppercase;letter-spacing:1px">
+      Incorrect password
+    </div>
+  </div>
+</div>
+
 <!-- FLOATING TIMER -->
 <div class="floating-timer" id="floatingTimer">
   <button class="ft-close" onclick="stopSession()" title="End session">✕</button>
@@ -1367,6 +1388,7 @@
     <div class="logo">FLEX</div>
     <div class="tagline">Weekly Workout Planner</div>
   </div>
+  <button onclick="openSyncModal()" style="position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.12);border:1.5px solid rgba(255,255,255,0.3);color:#fff;font-family:'DM Mono',monospace;font-size:0.62rem;padding:0.4rem 0.85rem;border-radius:20px;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all 0.15s" onmouseover="this.style.background='rgba(255,255,255,0.22)'" onmouseout="this.style.background='rgba(255,255,255,0.12)'">☁️ Sync</button>
 </header>
 
 <div class="progress-bar-wrap">
@@ -1437,6 +1459,69 @@
   </div>
   <div class="stat" style="display:flex;align-items:center;justify-content:center">
     <button onclick="openWeekHistory()" style="font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.8rem;padding:0.5rem 1.1rem;background:var(--accent);color:#fff;border:none;border-radius:20px;cursor:pointer;transition:all 0.15s;letter-spacing:0.5px" onmouseover="this.style.background='var(--accent-mid)'" onmouseout="this.style.background='var(--accent)'">📅 Week History</button>
+  </div>
+</div>
+
+<!-- SYNC MODAL -->
+<div class="modal-bg" id="syncModalBg" style="z-index:400">
+  <div class="modal" style="padding:0;overflow:hidden;width:min(480px,96vw)">
+    <div style="display:flex;justify-content:center;padding:0.6rem 0 0;background:var(--surface)">
+      <div style="width:36px;height:4px;background:var(--border-strong);border-radius:2px"></div>
+    </div>
+    <div style="padding:1rem 1.5rem 0.75rem;display:flex;align-items:center;justify-content:space-between;background:var(--surface);border-bottom:1px solid var(--border)">
+      <div>
+        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:2px;color:var(--accent)">☁️ Sync & Backup</h2>
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:3px">Transfer your data between devices</div>
+      </div>
+      <button class="modal-close" style="position:static" onclick="closeSyncModal()">✕</button>
+    </div>
+
+    <div style="padding:1.25rem 1.5rem">
+
+      <!-- EXPORT -->
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;margin-bottom:0.75rem">
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
+          <div style="font-size:1.5rem">📤</div>
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:1.5px;color:var(--accent)">Export Data</div>
+            <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Download a backup of all your data</div>
+          </div>
+        </div>
+        <div id="syncExportInfo" style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-bottom:0.75rem;padding:0.5rem 0.75rem;background:var(--surface);border-radius:6px;border:1px solid var(--border)"></div>
+        <button onclick="exportData()" class="btn-primary" style="font-size:0.9rem;padding:0.7rem;border-radius:8px">⬇️ Download Backup File</button>
+      </div>
+
+      <!-- IMPORT -->
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;margin-bottom:0.75rem">
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
+          <div style="font-size:1.5rem">📥</div>
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:1.5px;color:var(--accent)">Import Data</div>
+            <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Restore from a backup file</div>
+          </div>
+        </div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:#c0392b;background:#fdecea;border:1px solid #f5b3ac;border-radius:6px;padding:0.5rem 0.75rem;margin-bottom:0.75rem">
+          ⚠️ This will replace all current data on this device
+        </div>
+        <label style="display:block;width:100%">
+          <div class="btn-primary" style="font-size:0.9rem;padding:0.7rem;border-radius:8px;text-align:center;cursor:pointer">📂 Choose Backup File</div>
+          <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="importData(this)" />
+        </label>
+        <div id="importStatus" style="display:none;margin-top:0.6rem;font-family:'DM Mono',monospace;font-size:0.65rem;padding:0.5rem 0.75rem;border-radius:6px"></div>
+      </div>
+
+      <!-- HOW TO SYNC tip -->
+      <div style="background:var(--accent-light);border:1px solid var(--border-strong);border-radius:10px;padding:0.85rem 1.1rem">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:0.95rem;letter-spacing:1.5px;color:var(--accent);margin-bottom:0.4rem">💡 How to sync between devices</div>
+        <ol style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted);line-height:1.8;padding-left:1.1rem">
+          <li>On your current device, tap <strong style="color:var(--accent)">Download Backup File</strong></li>
+          <li>Send the file to your other device (AirDrop, email, Google Drive etc.)</li>
+          <li>On the other device, open FLEX and tap <strong style="color:var(--accent)">Choose Backup File</strong></li>
+          <li>Select the file — your data will be restored instantly!</li>
+        </ol>
+      </div>
+
+    </div>
   </div>
 </div>
 
@@ -3360,6 +3445,128 @@ function pingRestDone() {
   } catch(e) {}
 }
 // ──────────────────────────────────────────────────────────────────
+
+// ─── PASSWORD LOCK ────────────────────────────────────────────────
+function checkPassword() {
+  const input = document.getElementById('lockInput').value;
+  if (input === 'lockin') {
+    document.getElementById('lockScreen').style.display = 'none';
+    sessionStorage.setItem('flex_unlocked', '1');
+  } else {
+    document.getElementById('lockError').style.display = 'block';
+    document.getElementById('lockInput').value = '';
+    document.getElementById('lockInput').focus();
+    setTimeout(() => document.getElementById('lockError').style.display = 'none', 2000);
+  }
+}
+
+// Auto-unlock if already unlocked this session
+if (sessionStorage.getItem('flex_unlocked') === '1') {
+  document.getElementById('lockScreen').style.display = 'none';
+} else {
+  setTimeout(() => document.getElementById('lockInput').focus(), 100);
+}
+// ─────────────────────────────────────────────────────────────────
+
+loadCustomExercises();
+function openSyncModal() {
+  // Populate export info
+  const schedule    = JSON.parse(localStorage.getItem('grind_schedule') || '[]');
+  const history     = JSON.parse(localStorage.getItem('grind_history') || '{}');
+  const weekHistory = JSON.parse(localStorage.getItem('flex_week_history') || '{}');
+  const customs     = JSON.parse(localStorage.getItem('flex_custom_exercises') || '{}');
+
+  const totalWorkouts  = schedule.reduce ? schedule.reduce((a, d) => a + (d.workouts||[]).length, 0) : 0;
+  const totalExercises = Object.keys(history).length;
+  const totalWeeks     = Object.keys(weekHistory).length;
+  const totalSessions  = Object.values(history).reduce((a, logs) => a + logs.length, 0);
+
+  document.getElementById('syncExportInfo').innerHTML = `
+    <span style="color:var(--text)">📋 ${totalWorkouts} workouts scheduled</span> &nbsp;·&nbsp;
+    <span style="color:var(--text)">💪 ${totalExercises} exercises tracked</span> &nbsp;·&nbsp;
+    <span style="color:var(--text)">📅 ${totalWeeks} weeks saved</span> &nbsp;·&nbsp;
+    <span style="color:var(--text)">📊 ${totalSessions} sessions logged</span>
+  `;
+
+  document.getElementById('importStatus').style.display = 'none';
+  document.getElementById('importFileInput').value = '';
+  document.getElementById('syncModalBg').classList.add('open');
+}
+
+function closeSyncModal() {
+  document.getElementById('syncModalBg').classList.remove('open');
+}
+
+function exportData() {
+  const data = {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    grind_schedule:        localStorage.getItem('grind_schedule') || '[]',
+    grind_history:         localStorage.getItem('grind_history') || '{}',
+    flex_week_history:     localStorage.getItem('flex_week_history') || '{}',
+    flex_custom_exercises: localStorage.getItem('flex_custom_exercises') || '{}',
+    flex_last_randomized:  localStorage.getItem('flex_last_randomized') || '',
+  };
+
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  const date = new Date().toISOString().split('T')[0];
+  a.href     = url;
+  a.download = `flex-backup-${date}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('✅ Backup downloaded!');
+}
+
+function importData(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+
+      // Validate it looks like a FLEX backup
+      if (!data.version || !data.grind_schedule) {
+        throw new Error('Not a valid FLEX backup file');
+      }
+
+      // Restore all keys
+      if (data.grind_schedule)        localStorage.setItem('grind_schedule',        data.grind_schedule);
+      if (data.grind_history)         localStorage.setItem('grind_history',         data.grind_history);
+      if (data.flex_week_history)     localStorage.setItem('flex_week_history',     data.flex_week_history);
+      if (data.flex_custom_exercises) localStorage.setItem('flex_custom_exercises', data.flex_custom_exercises);
+      if (data.flex_last_randomized)  localStorage.setItem('flex_last_randomized',  data.flex_last_randomized);
+
+      // Reload schedule into memory
+      schedule = JSON.parse(data.grind_schedule);
+
+      const statusEl = document.getElementById('importStatus');
+      statusEl.style.display = 'block';
+      statusEl.style.cssText += ';background:#e6f4ea;border:1px solid #b8dfc3;color:#1e6b3a';
+      statusEl.textContent = '✅ Data restored successfully! Your workouts are back.';
+
+      loadCustomExercises();
+      save();
+      showToast('✅ Data imported successfully!');
+      setTimeout(() => closeSyncModal(), 1500);
+
+    } catch (err) {
+      const statusEl = document.getElementById('importStatus');
+      statusEl.style.display = 'block';
+      statusEl.style.cssText += ';background:#fdecea;border:1px solid #f5b3ac;color:#c0392b';
+      statusEl.textContent = '❌ Invalid backup file. Please use a file exported from FLEX.';
+    }
+  };
+  reader.readAsText(file);
+}
+
+document.getElementById('syncModalBg').addEventListener('click', function(e) {
+  if (e.target === this) closeSyncModal();
+});
+// ─────────────────────────────────────────────────────────────────
 
 loadCustomExercises();
 checkAndRandomizeForNewWeek();
