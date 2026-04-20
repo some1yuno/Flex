@@ -3700,18 +3700,12 @@ function pingRestDone() {
 // ──────────────────────────────────────────────────────────────────
 
 // ─── PASSWORD LOCK ────────────────────────────────────────────────
-// Password is stored as a SHA-256 hash — not visible in plain text
-const PASSWORD_HASH = '1f231e4f4cd02725df61e9c9676bbd243c9e1af75edc115b4547e0d30629f9f9'; // 'lockin'
+// Password obfuscated with base64 — not plain text in source
+const _p = atob('bG9ja2lu'); // 'lockin'
 
-async function checkPassword() {
+function checkPassword() {
   const input = document.getElementById('lockInput').value;
-  const encoder = new TextEncoder();
-  const data = encoder.encode(input);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
-  if (hashHex === PASSWORD_HASH) {
+  if (input === _p) {
     document.getElementById('lockScreen').style.display = 'none';
     sessionStorage.setItem('flex_unlocked', '1');
   } else {
