@@ -1912,11 +1912,17 @@
     <!-- Body -->
     <div style="padding:1.25rem 1.5rem;overflow-y:auto;max-height:70vh">
 
-      <!-- Exercise name -->
+      <!-- Exercise name with autocomplete -->
       <label style="font-family:'DM Mono',monospace;font-size:0.62rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);display:block;margin-bottom:0.35rem">Exercise Name</label>
-      <input id="inpName" type="text" placeholder="e.g. Matrix Supine Press…"
-        style="width:100%;background:var(--bg);border:1.5px solid var(--border);color:var(--text);padding:0.75rem 1rem;font-family:'DM Sans',sans-serif;font-size:1rem;border-radius:10px;margin-bottom:1.1rem;outline:none;-webkit-appearance:none;appearance:none"
-        onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" />
+      <div style="position:relative;margin-bottom:1.1rem">
+        <input id="inpName" type="text" placeholder="Search exercises…" autocomplete="off"
+          style="width:100%;background:var(--bg);border:1.5px solid var(--border);color:var(--text);padding:0.75rem 1rem;font-family:'DM Sans',sans-serif;font-size:1rem;border-radius:10px;outline:none;-webkit-appearance:none;appearance:none"
+          oninput="showExerciseSuggestions(this.value)"
+          onfocus="this.style.borderColor='var(--accent)';showExerciseSuggestions(this.value)"
+          onblur="this.style.borderColor='var(--border)';setTimeout(hideExerciseSuggestions,150)"
+          onkeydown="handleSuggestionKey(event)" />
+        <div id="exerciseSuggestions" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--surface);border:1.5px solid var(--accent);border-radius:10px;z-index:9999;max-height:220px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,0.4)"></div>
+      </div>
 
       <!-- Type: pill selector -->
       <label style="font-family:'DM Mono',monospace;font-size:0.62rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);display:block;margin-bottom:0.4rem">Type</label>
@@ -2886,8 +2892,96 @@ function calcStreak() {
   return streak;
 }
 
+// ── Exercise Name Autocomplete ────────────────────────────────────
+let _suggestionIndex = -1;
+
+function showExerciseSuggestions(query) {
+  const dropdown = document.getElementById('exerciseSuggestions');
+  const q = (query || '').trim().toLowerCase();
+
+  if (!q) { hideExerciseSuggestions(); return; }
+
+  // Get all exercise names from MUSCLE_MAP, sorted by relevance
+  const all = Object.keys(MUSCLE_MAP);
+  const startsWith = all.filter(n => n.toLowerCase().startsWith(q));
+  const contains   = all.filter(n => !n.toLowerCase().startsWith(q) && n.toLowerCase().includes(q));
+  const results    = [...startsWith, ...contains].slice(0, 12);
+
+  if (!results.length) { hideExerciseSuggestions(); return; }
+
+  _suggestionIndex = -1;
+  dropdown.innerHTML = results.map((name, i) => {
+    const muscle = MUSCLE_MAP[name] || '';
+    const c = MUSCLE_COLORS[muscle] || { color: 'var(--muted)', border: 'var(--border)' };
+    // Bold the matching part
+    const idx = name.toLowerCase().indexOf(q);
+    const highlighted = idx >= 0
+      ? name.slice(0, idx) + `<strong style="color:var(--accent-vivid)">${name.slice(idx, idx + q.length)}</strong>` + name.slice(idx + q.length)
+      : name;
+    return `
+      <div class="ex-suggestion" data-name="${name}" data-index="${i}"
+        style="display:flex;align-items:center;justify-content:space-between;padding:0.65rem 1rem;cursor:pointer;border-bottom:1px solid var(--border);transition:background 0.1s"
+        onmousedown="pickSuggestion('${name.replace(/'/g,"\\'")}')">
+        <span style="font-size:0.9rem;color:var(--text)">${highlighted}</span>
+        ${muscle ? `<span style="font-family:'DM Mono',monospace;font-size:0.55rem;padding:2px 7px;border-radius:4px;border:1px solid ${c.border};color:${c.color};white-space:nowrap;margin-left:0.5rem;flex-shrink:0">${muscle}</span>` : ''}
+      </div>`;
+  }).join('');
+
+  // Remove border from last item
+  const items = dropdown.querySelectorAll('.ex-suggestion');
+  if (items.length) items[items.length - 1].style.borderBottom = 'none';
+
+  dropdown.style.display = 'block';
+}
+
+function hideExerciseSuggestions() {
+  const dropdown = document.getElementById('exerciseSuggestions');
+  if (dropdown) { dropdown.style.display = 'none'; _suggestionIndex = -1; }
+}
+
+function pickSuggestion(name) {
+  const inp = document.getElementById('inpName');
+  inp.value = name;
+  hideExerciseSuggestions();
+  inp.style.borderColor = 'var(--accent)';
+  // Auto-select type based on muscle
+  const muscle = MUSCLE_MAP[name] || '';
+  const isCardio = ['Cardio', 'Core'].includes(muscle);
+  selectType(isCardio ? 'cardio' : 'strength');
+  // Move focus to notes
+  document.getElementById('inpNotes').focus();
+}
+
+function handleSuggestionKey(e) {
+  const dropdown = document.getElementById('exerciseSuggestions');
+  if (dropdown.style.display === 'none') return;
+  const items = dropdown.querySelectorAll('.ex-suggestion');
+  if (!items.length) return;
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    _suggestionIndex = Math.min(_suggestionIndex + 1, items.length - 1);
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    _suggestionIndex = Math.max(_suggestionIndex - 1, -1);
+  } else if (e.key === 'Enter' && _suggestionIndex >= 0) {
+    e.preventDefault();
+    pickSuggestion(items[_suggestionIndex].dataset.name);
+    return;
+  } else if (e.key === 'Escape') {
+    hideExerciseSuggestions();
+    return;
+  } else { return; }
+
+  // Highlight active item
+  items.forEach((item, i) => {
+    item.style.background = i === _suggestionIndex ? 'var(--accent-light)' : '';
+  });
+  if (_suggestionIndex >= 0) items[_suggestionIndex].scrollIntoView({ block: 'nearest' });
+}
+// ─────────────────────────────────────────────────────────────────
+
 function selectType(val) {
-  document.getElementById('inpType').value = val;
   document.querySelectorAll('.type-pill').forEach(p => {
     p.classList.toggle('active', p.dataset.val === val);
   });
@@ -2921,6 +3015,7 @@ function openEdit(di, wi) {
 
 function closeModal() {
   document.getElementById('modalBg').classList.remove('open');
+  hideExerciseSuggestions();
   editTarget = null;
   currentAddDay = null;
 }
