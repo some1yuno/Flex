@@ -1627,6 +1627,49 @@
     /* Floating timer sits above nav */
     .floating-timer { bottom: 72px; }
   }
+  /* ── Swipe to delete (mobile only) ──────────────────────────── */
+  @media (max-width: 600px) {
+    .swipe-wrapper {
+      position: relative;
+      overflow: hidden;
+      border-radius: 10px;
+      margin-bottom: 0.5rem;
+    }
+    .swipe-delete-bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to left, #ff4444, #cc2222);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 1.25rem;
+      border-radius: 10px;
+      pointer-events: none;
+    }
+    .swipe-delete-icon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .swipe-delete-icon .del-emoji { font-size: 1.4rem; }
+    .swipe-delete-icon .del-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.55rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(255,255,255,0.9);
+    }
+    .swipe-card {
+      position: relative;
+      transition: transform 0.25s ease;
+      will-change: transform;
+      touch-action: pan-y;
+    }
+  }
+
   @media (max-width: 900px) and (min-width: 601px) {
     .grid { grid-template-columns: repeat(4, 1fr); }
     .day-col:nth-child(n+5) { border-top: 1px solid var(--border); }
@@ -2468,12 +2511,21 @@ function renderMobileDay(di, mon, todayCol) {
 
   // Render workout cards
   const listEl = document.createElement('div');
-  listEl.style.cssText = 'display:flex;flex-direction:column;gap:0.5rem';
+  listEl.style.cssText = 'display:flex;flex-direction:column';
   listEl.id = `list-${di}`;
 
   day.workouts.forEach((w, wi) => {
+    // ── Swipe-to-delete wrapper ──────────────────────────────────
+    const wrapper = document.createElement('div');
+    wrapper.className = 'swipe-wrapper';
+
+    const deleteBg = document.createElement('div');
+    deleteBg.className = 'swipe-delete-bg';
+    deleteBg.innerHTML = `<div class="swipe-delete-icon"><span class="del-emoji">🗑️</span><span class="del-label">Remove</span></div>`;
+    wrapper.appendChild(deleteBg);
+
     const card = document.createElement('div');
-    card.className = 'workout-card' + (w.done ? ' done' : '');
+    card.className = 'workout-card swipe-card' + (w.done ? ' done' : '');
 
     const history = getHistory(w.name);
     const lastEntry = history.length ? history[history.length - 1] : null;
@@ -2557,7 +2609,12 @@ function renderMobileDay(di, mon, todayCol) {
     card.addEventListener('click', e => {
       if (!e.target.closest('.log-btn') && !e.target.closest('.wc-check') && !e.target.closest('.swap-wrap')) openEdit(di, wi);
     });
-    listEl.appendChild(card);
+
+    // ── Attach swipe-to-delete touch logic ──────────────────────
+    attachSwipeToDelete(card, wrapper, deleteBg, di, wi);
+
+    wrapper.appendChild(card);
+    listEl.appendChild(wrapper);
   });
 
   // Add button
@@ -2570,8 +2627,159 @@ function renderMobileDay(di, mon, todayCol) {
   panel.appendChild(listEl);
 }
 
+// ── Swipe to delete ───────────────────────────────────────────────
+function attachSwipeToDelete(card, wrapper, deleteBg, di, wi) {
+  const THRESHOLD   = 80;  // px to reveal delete zone
+  const TRIGGER     = 160; // px to auto-trigger confirmation
+  let startX = 0, startY = 0, currentX = 0, dragging = false, locked = false;
+
+  card.addEventListener('touchstart', e => {
+    if (e.touches.length !== 1) return;
+    // Don't intercept drag handle touches (for reorder)
+    if (e.target.closest('.drag-handle')) return;
+    startX  = e.touches[0].clientX;
+    startY  = e.touches[0].clientY;
+    currentX = 0;
+    dragging = false;
+    locked   = false;
+    card.style.transition = 'none';
+  }, { passive: true });
+
+  card.addEventListener('touchmove', e => {
+    if (locked) return;
+    const dx = e.touches[0].clientX - startX;
+    const dy = e.touches[0].clientY - startY;
+
+    // Only activate for leftward swipes (dx < 0) with more horizontal than vertical
+    if (!dragging) {
+      if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+      if (Math.abs(dy) > Math.abs(dx)) { locked = true; return; } // vertical scroll
+      if (dx > 0) { locked = true; return; } // rightward swipe — ignore
+      dragging = true;
+    }
+
+    e.preventDefault(); // prevent scroll while swiping
+    currentX = Math.min(0, dx); // only allow leftward movement
+    const travel = Math.abs(currentX);
+
+    card.style.transform = `translateX(${currentX}px)`;
+
+    // Fade in delete icon proportionally
+    const icon = deleteBg.querySelector('.swipe-delete-icon');
+    icon.style.opacity = Math.min(1, travel / THRESHOLD);
+  }, { passive: false });
+
+  card.addEventListener('touchend', e => {
+    if (!dragging) return;
+    const travel = Math.abs(currentX);
+    card.style.transition = 'transform 0.25s ease';
+
+    if (travel >= TRIGGER) {
+      // Swiped far enough — snap fully left then show confirm
+      card.style.transform = `translateX(-100%)`;
+      setTimeout(() => showSwipeDeleteConfirm(card, wrapper, di, wi), 200);
+    } else if (travel >= THRESHOLD) {
+      // Partially swiped — hold at delete zone and wait for tap on it
+      card.style.transform = `translateX(-${THRESHOLD}px)`;
+      deleteBg.style.pointerEvents = 'auto';
+      deleteBg.style.cursor = 'pointer';
+      deleteBg.onclick = () => {
+        card.style.transition = 'transform 0.2s ease';
+        card.style.transform = `translateX(-100%)`;
+        setTimeout(() => showSwipeDeleteConfirm(card, wrapper, di, wi), 200);
+      };
+      // Tap anywhere on card snaps back
+      const snapBack = () => {
+        card.style.transition = 'transform 0.25s ease';
+        card.style.transform = 'translateX(0)';
+        deleteBg.style.pointerEvents = 'none';
+        deleteBg.onclick = null;
+        deleteBg.querySelector('.swipe-delete-icon').style.opacity = 0;
+        card.removeEventListener('touchstart', snapBack);
+      };
+      setTimeout(() => card.addEventListener('touchstart', snapBack, { once: true }), 50);
+    } else {
+      // Snapped back
+      card.style.transform = 'translateX(0)';
+      deleteBg.querySelector('.swipe-delete-icon').style.opacity = 0;
+    }
+    dragging = false;
+  }, { passive: true });
+}
+
+function showSwipeDeleteConfirm(card, wrapper, di, wi) {
+  const exerciseName = schedule[di].workouts[wi].name;
+
+  // Remove any existing picker
+  const existing = document.getElementById('swipeDeleteSheet');
+  if (existing) existing.remove();
+
+  const sheet = document.createElement('div');
+  sheet.id = 'swipeDeleteSheet';
+  sheet.style.cssText = `
+    position:fixed;bottom:0;left:0;right:0;z-index:9999;
+    background:var(--surface);border-top:3px solid #ff4444;
+    padding:1.25rem 1.5rem 2rem;
+    animation:slideUp 0.2s ease;
+  `;
+  sheet.innerHTML = `
+    <div style="display:flex;justify-content:center;margin-bottom:1rem">
+      <div style="width:36px;height:4px;background:var(--border-strong);border-radius:2px"></div>
+    </div>
+    <div style="text-align:center;margin-bottom:1.25rem">
+      <div style="font-size:2rem;margin-bottom:0.4rem">🗑️</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;color:#ff6b6b;margin-bottom:0.25rem">Remove Workout?</div>
+      <div style="font-family:'DM Sans',sans-serif;font-size:0.9rem;color:var(--text);font-weight:600">${exerciseName}</div>
+      <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted);margin-top:0.25rem">This will remove it from ${FULL_DAYS[di]}'s schedule</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:0.5rem">
+      <button id="swipeDeleteConfirmBtn"
+        style="width:100%;padding:0.9rem;background:#ff4444;border:none;color:#fff;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:2px;border-radius:10px;cursor:pointer">
+        YES, REMOVE IT
+      </button>
+      <button id="swipeDeleteCancelBtn"
+        style="width:100%;padding:0.9rem;background:none;border:1.5px solid var(--border-strong);color:var(--muted);font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;border-radius:10px;cursor:pointer">
+        Keep It
+      </button>
+    </div>
+  `;
+
+  document.body.appendChild(sheet);
+
+  // Confirm — delete the workout
+  sheet.querySelector('#swipeDeleteConfirmBtn').addEventListener('click', () => {
+    schedule[di].workouts.splice(wi, 1);
+    save();
+    sheet.remove();
+    showToast(`🗑️ ${exerciseName} removed`);
+  });
+
+  // Cancel — snap card back
+  sheet.querySelector('#swipeDeleteCancelBtn').addEventListener('click', () => {
+    card.style.transition = 'transform 0.3s ease';
+    card.style.transform = 'translateX(0)';
+    const icon = wrapper.querySelector('.swipe-delete-icon');
+    if (icon) icon.style.opacity = 0;
+    sheet.remove();
+  });
+
+  // Tap outside = cancel
+  setTimeout(() => {
+    document.addEventListener('touchstart', function outsideTap(e) {
+      if (!sheet.contains(e.target)) {
+        card.style.transition = 'transform 0.3s ease';
+        card.style.transform = 'translateX(0)';
+        const icon = wrapper.querySelector('.swipe-delete-icon');
+        if (icon) icon.style.opacity = 0;
+        sheet.remove();
+        document.removeEventListener('touchstart', outsideTap);
+      }
+    });
+  }, 100);
+}
+// ─────────────────────────────────────────────────────────────────
+
 function mobileNavDay(dir) {
-  const mon = getMonday();
   const today = new Date().getDay();
   const todayCol = today === 0 ? 6 : today - 1;
   mobileActiveDay = Math.max(0, Math.min(6, (mobileActiveDay || 0) + dir));
