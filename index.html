@@ -459,6 +459,22 @@
   .type-pill:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
   .type-pill.active { background: var(--accent); color: #0d0a12; border-color: var(--accent); font-weight: 700; box-shadow: 0 0 12px var(--glow); }
 
+  .lib-filter-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    padding: 3px 9px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border-strong);
+    background: var(--bg);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .lib-filter-btn.active { background: var(--accent); color: #0d0a12; border-color: var(--accent); font-weight: 700; }
+
   @media (max-width: 600px) {
     .type-pill { font-size: 0.68rem; padding: 0.65rem 0.3rem; }
   }
@@ -1588,6 +1604,7 @@
   <div class="stat" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;flex-wrap:wrap">
     <button onclick="openWeekHistory()" style="font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.8rem;padding:0.5rem 1.1rem;background:var(--accent);color:#fff;border:none;border-radius:20px;cursor:pointer;transition:all 0.15s;letter-spacing:0.5px" onmouseover="this.style.background='var(--accent-mid)'" onmouseout="this.style.background='var(--accent)'">📅 Week History</button>
     <button onclick="openHistorySearch()" style="font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.8rem;padding:0.5rem 1.1rem;background:var(--surface);color:var(--accent);border:1.5px solid var(--border-strong);border-radius:20px;cursor:pointer;transition:all 0.15s;letter-spacing:0.5px" onmouseover="this.style.background='var(--accent-light)'" onmouseout="this.style.background='var(--surface)'">🔍 Exercise History</button>
+    <button onclick="openExerciseLibrary()" style="font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.8rem;padding:0.5rem 1.1rem;background:var(--surface);color:var(--accent);border:1.5px solid var(--border-strong);border-radius:20px;cursor:pointer;transition:all 0.15s;letter-spacing:0.5px" onmouseover="this.style.background='var(--accent-light)'" onmouseout="this.style.background='var(--surface)'">📚 Exercise Library</button>
   </div>
 </div>
 
@@ -1669,6 +1686,31 @@
     <div style="padding:0 1.5rem 1.5rem">
       <button onclick="closeSessionSummary()" class="btn-primary">DONE</button>
     </div>
+  </div>
+</div>
+
+<!-- EXERCISE LIBRARY MODAL -->
+<div class="modal-bg" id="exerciseLibraryBg" style="z-index:360">
+  <div class="modal" style="padding:0;overflow:hidden;width:min(640px,96vw)">
+    <div style="display:flex;justify-content:center;padding:0.6rem 0 0;background:var(--surface)">
+      <div style="width:36px;height:4px;background:var(--border-strong);border-radius:2px"></div>
+    </div>
+    <div style="padding:1rem 1.5rem 0.75rem;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:2px;color:var(--accent)">📚 Exercise Library</h2>
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px">All Planet Fitness exercises · tap to add to schedule</div>
+      </div>
+      <button class="modal-close" style="position:static" onclick="closeExerciseLibrary()">✕</button>
+    </div>
+    <!-- Search + filter -->
+    <div style="padding:0.75rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:5">
+      <input id="libSearchInput" type="text" placeholder="Search exercises…"
+        style="width:100%;background:var(--bg);border:1.5px solid var(--border);color:var(--text);padding:0.65rem 1rem;font-family:'DM Sans',sans-serif;font-size:0.9rem;border-radius:8px;outline:none;margin-bottom:0.6rem"
+        oninput="renderLibrary()"
+        onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" />
+      <div id="libMuscleFilters" style="display:flex;gap:0.35rem;flex-wrap:wrap"></div>
+    </div>
+    <div id="exerciseLibraryContent" style="max-height:55vh;overflow-y:auto;padding:0.75rem 1.5rem"></div>
   </div>
 </div>
 
@@ -2587,6 +2629,172 @@ function toggleRestDay(di) {
   save();
 }
 
+// ── Exercise Library ──────────────────────────────────────────────
+let _libMuscleFilter = null;
+
+function openExerciseLibrary() {
+  _libMuscleFilter = null;
+  document.getElementById('libSearchInput').value = '';
+  renderLibraryFilters();
+  renderLibrary();
+  document.getElementById('exerciseLibraryBg').classList.add('open');
+  setTimeout(() => document.getElementById('libSearchInput').focus(), 200);
+}
+
+function closeExerciseLibrary() {
+  document.getElementById('exerciseLibraryBg').classList.remove('open');
+}
+
+function renderLibraryFilters() {
+  const muscles = [...new Set(Object.values(MUSCLE_MAP))].sort();
+  const wrap = document.getElementById('libMuscleFilters');
+  wrap.innerHTML = `
+    <button class="lib-filter-btn ${_libMuscleFilter === null ? 'active' : ''}" onclick="_libMuscleFilter=null;renderLibraryFilters();renderLibrary()">All</button>
+    ${muscles.map(m => {
+      const c = MUSCLE_COLORS[m] || { color: 'var(--muted)', border: 'var(--border)' };
+      const isActive = _libMuscleFilter === m;
+      return `<button class="lib-filter-btn" onclick="_libMuscleFilter='${m.replace(/'/g,"\\'")}';renderLibraryFilters();renderLibrary()"
+        style="${isActive ? `background:${c.color};color:#0d0a12;border-color:${c.color}` : `color:${c.color};border-color:${c.border}`}">${m}</button>`;
+    }).join('')}`;
+}
+
+function renderLibrary() {
+  const query  = document.getElementById('libSearchInput').value.toLowerCase().trim();
+  const content = document.getElementById('exerciseLibraryContent');
+
+  // Group exercises by muscle
+  const grouped = {};
+  Object.entries(MUSCLE_MAP).forEach(([name, muscle]) => {
+    if (_libMuscleFilter && muscle !== _libMuscleFilter) return;
+    if (query && !name.toLowerCase().includes(query)) return;
+    if (!grouped[muscle]) grouped[muscle] = [];
+    grouped[muscle].push(name);
+  });
+
+  if (Object.keys(grouped).length === 0) {
+    content.innerHTML = `<div style="text-align:center;padding:2rem;font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px">No exercises found</div>`;
+    return;
+  }
+
+  content.innerHTML = Object.entries(grouped)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([muscle, exercises]) => {
+      const c = MUSCLE_COLORS[muscle] || { bg:'var(--accent-light)', border:'var(--border-strong)', color:'var(--accent)' };
+      return `
+        <div style="margin-bottom:1.1rem">
+          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.4rem">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:1.5px;color:${c.color}">${muscle}</div>
+            <div style="flex:1;height:1px;background:${c.border};opacity:0.4"></div>
+            <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--muted)">${exercises.length}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:0.3rem">
+            ${exercises.sort().map(name => {
+              const hasHistory = !!JSON.parse(localStorage.getItem('grind_history')||'{}')[name];
+              return `
+                <div style="display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--border);border-left:3px solid ${c.color};border-radius:6px;padding:0.55rem 0.75rem;gap:0.5rem">
+                  <div style="flex:1;min-width:0">
+                    <div style="font-size:0.82rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${name}</div>
+                    ${hasHistory ? `<div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--muted);margin-top:1px">📊 logged before</div>` : ''}
+                  </div>
+                  <button onclick="libAddToDay('${name.replace(/'/g,"\\'")}')"
+                    style="font-family:'DM Mono',monospace;font-size:0.58rem;padding:4px 10px;background:var(--accent-light);border:1.5px solid var(--border-strong);color:var(--accent);border-radius:6px;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all 0.15s"
+                    onmouseover="this.style.background='var(--accent)';this.style.color='#0d0a12'"
+                    onmouseout="this.style.background='var(--accent-light)';this.style.color='var(--accent)'">+ Add</button>
+                </div>`;
+            }).join('')}
+          </div>
+        </div>`;
+    }).join('');
+}
+
+function libAddToDay(exerciseName) {
+  // Show a day picker popup anchored to the button
+  const existing = document.getElementById('libDayPicker');
+  if (existing) existing.remove();
+
+  const picker = document.createElement('div');
+  picker.id = 'libDayPicker';
+  picker.style.cssText = `
+    position:fixed;bottom:0;left:0;right:0;z-index:9999;
+    background:var(--surface);border-top:3px solid var(--accent);
+    padding:1.25rem 1.5rem 2rem;
+    animation:slideUp 0.2s ease;
+  `;
+
+  const mon = getMonday();
+  picker.innerHTML = `
+    <div style="display:flex;justify-content:center;margin-bottom:0.85rem">
+      <div style="width:36px;height:4px;background:var(--border-strong);border-radius:2px"></div>
+    </div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:2px;color:var(--accent);margin-bottom:0.25rem">Add to Schedule</div>
+    <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-bottom:0.85rem;text-transform:uppercase;letter-spacing:1px">
+      ${exerciseName} — choose a day
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:0.4rem;margin-bottom:1rem">
+      ${FULL_DAYS.map((day, di) => {
+        const dateObj = new Date(mon);
+        dateObj.setDate(mon.getDate() + di);
+        const dateStr = dateObj.toLocaleDateString('en-US', {month:'short', day:'numeric'});
+        const today = new Date().getDay();
+        const todayCol = today === 0 ? 6 : today - 1;
+        const isToday = di === todayCol;
+        const hasWorkouts = schedule[di].workouts.length > 0;
+        return `
+          <button onclick="libConfirmAddToDay('${exerciseName.replace(/'/g,"\\'")}', ${di})"
+            style="padding:0.6rem 0.25rem;border-radius:8px;border:1.5px solid ${isToday ? 'var(--accent)' : 'var(--border-strong)'};
+            background:${isToday ? 'var(--accent-light)' : 'var(--bg)'};
+            color:${isToday ? 'var(--accent)' : 'var(--muted)'};
+            font-family:'Bebas Neue',sans-serif;font-size:0.9rem;letter-spacing:1px;
+            cursor:pointer;text-align:center;transition:all 0.15s;position:relative"
+            onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)';this.style.background='var(--accent-light)'"
+            onmouseout="this.style.borderColor='${isToday ? 'var(--accent)' : 'var(--border-strong)'}';this.style.color='${isToday ? 'var(--accent)' : 'var(--muted)'}';this.style.background='${isToday ? 'var(--accent-light)' : 'var(--bg)'}'">
+            ${day.slice(0,3)}
+            <div style="font-family:'DM Mono',monospace;font-size:0.45rem;margin-top:2px;opacity:0.7">${dateStr}</div>
+            ${hasWorkouts ? `<div style="width:4px;height:4px;border-radius:50%;background:var(--accent);margin:2px auto 0"></div>` : '<div style="height:6px"></div>'}
+          </button>`;
+      }).join('')}
+    </div>
+    <button onclick="document.getElementById('libDayPicker').remove()"
+      style="width:100%;padding:0.6rem;background:none;border:1px solid var(--border);color:var(--muted);font-family:'DM Mono',monospace;font-size:0.65rem;border-radius:8px;cursor:pointer;text-transform:uppercase;letter-spacing:1px">
+      Cancel
+    </button>
+  `;
+
+  document.body.appendChild(picker);
+
+  // Close on outside click
+  setTimeout(() => {
+    document.addEventListener('click', function closePicker(e) {
+      if (!picker.contains(e.target)) {
+        picker.remove();
+        document.removeEventListener('click', closePicker);
+      }
+    });
+  }, 100);
+}
+
+function libConfirmAddToDay(exerciseName, di) {
+  const picker = document.getElementById('libDayPicker');
+  if (picker) picker.remove();
+
+  closeExerciseLibrary();
+  currentAddDay = di;
+  editTarget = null;
+  document.getElementById('modalTitle').textContent = `Add — ${FULL_DAYS[di]}`;
+  document.getElementById('inpName').value = exerciseName;
+  selectType('strength');
+  document.getElementById('inpMins').value = '';
+  document.getElementById('inpNotes').value = '';
+  document.getElementById('deleteBtn').style.display = 'none';
+  document.getElementById('modalBg').classList.add('open');
+  setTimeout(() => document.getElementById('inpNotes').focus(), 300);
+}
+
+document.getElementById('exerciseLibraryBg').addEventListener('click', function(e) {
+  if (e.target === this) closeExerciseLibrary();
+});
+// ─────────────────────────────────────────────────────────────────
+
 // ── Exercise History Search ───────────────────────────────────────
 function openHistorySearch() {
   document.getElementById('historySearchInput').value = '';
@@ -3116,11 +3324,11 @@ document.addEventListener('click', (e) => {
 const PROGRAMS = {
   ppl: {
     name: 'Push / Pull / Legs',
-    desc: '6-day PPL split · Planet Fitness edition · Smith machine + DBs + cables',
+    desc: '6-day PPL split · Planet Fitness edition · Matrix machines + DBs + cables',
     days: [
       { label: 'Push A', isRest: false, workouts: [
         { name: 'Matrix Supine Press', type: 'strength', mins: 0, notes: '4×6–8', done: false },
-        { name: 'Smith Machine OHP', type: 'strength', mins: 0, notes: '3×8–10', done: false },
+        { name: 'DB Shoulder Press', type: 'strength', mins: 0, notes: '3×8–10', done: false },
         { name: 'Incline DB Press', type: 'strength', mins: 0, notes: '3×10–12', done: false },
         { name: 'Cable Chest Fly', type: 'strength', mins: 0, notes: '3×12–15', done: false },
         { name: 'DB Lateral Raises', type: 'strength', mins: 0, notes: '4×15', done: false },
@@ -3135,7 +3343,7 @@ const PROGRAMS = {
         { name: 'Hammer Curls', type: 'strength', mins: 0, notes: '3×12', done: false },
       ]},
       { label: 'Legs A', isRest: false, workouts: [
-        { name: 'Smith Machine Squat', type: 'strength', mins: 0, notes: '4×8–10', done: false },
+        { name: 'Matrix Hack Squat', type: 'strength', mins: 0, notes: '4×8–10', done: false },
         { name: 'Leg Press Machine', type: 'strength', mins: 0, notes: '3×12', done: false },
         { name: 'Leg Extension Machine', type: 'strength', mins: 0, notes: '3×12–15', done: false },
         { name: 'Lying Leg Curl Machine', type: 'strength', mins: 0, notes: '3×12', done: false },
@@ -3143,8 +3351,8 @@ const PROGRAMS = {
         { name: 'Seated Calf Raise', type: 'strength', mins: 0, notes: '4×15', done: false },
       ]},
       { label: 'Push B', isRest: false, workouts: [
-        { name: 'Smith Machine Incline Press', type: 'strength', mins: 0, notes: '4×8–10', done: false },
-        { name: 'DB Shoulder Press', type: 'strength', mins: 0, notes: '3×10–12', done: false },
+        { name: 'Matrix Incline Press', type: 'strength', mins: 0, notes: '4×8–10', done: false },
+        { name: 'Machine Shoulder Press', type: 'strength', mins: 0, notes: '3×10–12', done: false },
         { name: 'Pec Deck Machine', type: 'strength', mins: 0, notes: '3×12–15', done: false },
         { name: 'DB Lateral Raises', type: 'strength', mins: 0, notes: '4×15', done: false },
         { name: 'DB Overhead Tricep Ext', type: 'strength', mins: 0, notes: '3×12', done: false },
@@ -3159,11 +3367,11 @@ const PROGRAMS = {
         { name: 'Hammer Curls', type: 'strength', mins: 0, notes: '3×12', done: false },
       ]},
       { label: 'Legs B', isRest: false, workouts: [
-        { name: 'Smith Machine Sumo Squat', type: 'strength', mins: 0, notes: '4×8–10', done: false },
+        { name: 'DB Goblet Squat', type: 'strength', mins: 0, notes: '4×10–12', done: false },
         { name: 'DB Walking Lunges', type: 'strength', mins: 0, notes: '3×12 each', done: false },
         { name: 'Leg Press Machine', type: 'strength', mins: 0, notes: '3×12', done: false },
         { name: 'Seated Leg Curl Machine', type: 'strength', mins: 0, notes: '3×12', done: false },
-        { name: 'Smith Machine Hip Thrust', type: 'strength', mins: 0, notes: '3×12', done: false },
+        { name: 'Matrix Glute Drive Machine', type: 'strength', mins: 0, notes: '3×12', done: false },
         { name: 'Standing Calf Raise', type: 'strength', mins: 0, notes: '4×15', done: false },
       ]},
       { label: 'Rest', isRest: true, workouts: [] },
@@ -3176,7 +3384,7 @@ const PROGRAMS = {
     days: [
       { label: 'Push', isRest: false, workouts: [
         { name: 'Matrix Supine Press', type: 'strength', mins: 0, notes: '4×6–8', done: false },
-        { name: 'Smith Machine OHP', type: 'strength', mins: 0, notes: '3×8–10', done: false },
+        { name: 'DB Shoulder Press', type: 'strength', mins: 0, notes: '3×8–10', done: false },
         { name: 'Incline DB Press', type: 'strength', mins: 0, notes: '3×10–12', done: false },
         { name: 'DB Lateral Raises', type: 'strength', mins: 0, notes: '4×15', done: false },
         { name: 'Cable Tricep Pushdown', type: 'strength', mins: 0, notes: '3×12–15', done: false },
@@ -3191,7 +3399,7 @@ const PROGRAMS = {
         { name: 'Hammer Curls', type: 'strength', mins: 0, notes: '3×12', done: false },
       ]},
       { label: 'Legs', isRest: false, workouts: [
-        { name: 'Smith Machine Squat', type: 'strength', mins: 0, notes: '4×8–10', done: false },
+        { name: 'Matrix Hack Squat', type: 'strength', mins: 0, notes: '4×8–10', done: false },
         { name: 'Leg Press Machine', type: 'strength', mins: 0, notes: '3×12', done: false },
         { name: 'DB Romanian Deadlift', type: 'strength', mins: 0, notes: '3×10', done: false },
         { name: 'Leg Curl Machine', type: 'strength', mins: 0, notes: '3×12', done: false },
@@ -3199,7 +3407,7 @@ const PROGRAMS = {
         { name: 'Seated Calf Raise', type: 'strength', mins: 0, notes: '4×15', done: false },
       ]},
       { label: 'Upper', isRest: false, workouts: [
-        { name: 'Smith Machine Incline Press', type: 'strength', mins: 0, notes: '4×8–10', done: false },
+        { name: 'Matrix Incline Press', type: 'strength', mins: 0, notes: '4×8–10', done: false },
         { name: 'Seated Cable Row', type: 'strength', mins: 0, notes: '4×8–10', done: false },
         { name: 'DB Shoulder Press', type: 'strength', mins: 0, notes: '3×10', done: false },
         { name: 'Lat Pulldown', type: 'strength', mins: 0, notes: '3×10–12', done: false },
@@ -3207,8 +3415,8 @@ const PROGRAMS = {
         { name: 'Cable Face Pulls', type: 'strength', mins: 0, notes: '3×15', done: false },
       ]},
       { label: 'Lower', isRest: false, workouts: [
-        { name: 'Smith Machine Sumo Squat', type: 'strength', mins: 0, notes: '4×8–10', done: false },
-        { name: 'Smith Machine Hip Thrust', type: 'strength', mins: 0, notes: '3×12', done: false },
+        { name: 'DB Goblet Squat', type: 'strength', mins: 0, notes: '4×10–12', done: false },
+        { name: 'Matrix Glute Drive Machine', type: 'strength', mins: 0, notes: '3×12', done: false },
         { name: 'DB Walking Lunges', type: 'strength', mins: 0, notes: '3×12 each', done: false },
         { name: 'Leg Extension Machine', type: 'strength', mins: 0, notes: '3×15', done: false },
         { name: 'Seated Leg Curl Machine', type: 'strength', mins: 0, notes: '3×12', done: false },
@@ -3226,13 +3434,13 @@ const PROGRAMS = {
       { label: 'Upper A', isRest: false, workouts: [
         { name: 'Matrix Supine Press', type: 'strength', mins: 0, notes: '4×6–8', done: false },
         { name: 'Lat Pulldown', type: 'strength', mins: 0, notes: '4×6–8', done: false },
-        { name: 'Smith Machine OHP', type: 'strength', mins: 0, notes: '3×8', done: false },
+        { name: 'DB Shoulder Press', type: 'strength', mins: 0, notes: '3×8', done: false },
         { name: 'Seated Cable Row', type: 'strength', mins: 0, notes: '3×8–10', done: false },
         { name: 'Cable Tricep Pushdown', type: 'strength', mins: 0, notes: '3×10–12', done: false },
         { name: 'DB Curls', type: 'strength', mins: 0, notes: '3×10', done: false },
       ]},
       { label: 'Lower A', isRest: false, workouts: [
-        { name: 'Smith Machine Squat', type: 'strength', mins: 0, notes: '4×8', done: false },
+        { name: 'Matrix Hack Squat', type: 'strength', mins: 0, notes: '4×8', done: false },
         { name: 'DB Romanian Deadlift', type: 'strength', mins: 0, notes: '3×10', done: false },
         { name: 'Leg Press Machine', type: 'strength', mins: 0, notes: '3×12', done: false },
         { name: 'Leg Curl Machine', type: 'strength', mins: 0, notes: '3×10–12', done: false },
@@ -3240,19 +3448,19 @@ const PROGRAMS = {
       ]},
       { label: 'Rest', isRest: true, workouts: [] },
       { label: 'Upper B', isRest: false, workouts: [
-        { name: 'Smith Machine Incline Press', type: 'strength', mins: 0, notes: '4×8–10', done: false },
+        { name: 'Matrix Incline Press', type: 'strength', mins: 0, notes: '4×8–10', done: false },
         { name: 'Assisted Pull-Up Machine', type: 'strength', mins: 0, notes: '4×8', done: false },
-        { name: 'DB Shoulder Press', type: 'strength', mins: 0, notes: '3×10', done: false },
+        { name: 'Machine Shoulder Press', type: 'strength', mins: 0, notes: '3×10', done: false },
         { name: 'DB Single-Arm Row', type: 'strength', mins: 0, notes: '3×10–12 each', done: false },
         { name: 'DB Lateral Raises', type: 'strength', mins: 0, notes: '3×15', done: false },
         { name: 'Hammer Curls', type: 'strength', mins: 0, notes: '3×12', done: false },
       ]},
       { label: 'Lower B', isRest: false, workouts: [
-        { name: 'Smith Machine Hip Thrust', type: 'strength', mins: 0, notes: '4×10–12', done: false },
+        { name: 'Matrix Glute Drive Machine', type: 'strength', mins: 0, notes: '4×10–12', done: false },
         { name: 'DB Walking Lunges', type: 'strength', mins: 0, notes: '3×12 each', done: false },
         { name: 'Leg Extension Machine', type: 'strength', mins: 0, notes: '3×15', done: false },
         { name: 'Seated Leg Curl Machine', type: 'strength', mins: 0, notes: '3×12', done: false },
-        { name: 'Smith Machine Calf Raise', type: 'strength', mins: 0, notes: '4×15', done: false },
+        { name: 'Matrix Standing Calf Raise', type: 'strength', mins: 0, notes: '4×15', done: false },
       ]},
       { label: 'Rest', isRest: true, workouts: [] },
       { label: 'Rest', isRest: true, workouts: [] },
@@ -3261,11 +3469,11 @@ const PROGRAMS = {
 
   push: {
     name: 'Push Day',
-    desc: 'Planet Fitness push day · Chest, shoulders & triceps · Smith + DBs + cables',
+    desc: 'Planet Fitness push day · Chest, shoulders & triceps · Matrix + DBs + cables',
     days: [
       { label: 'Push', isRest: false, workouts: [
         { name: 'Matrix Supine Press', type: 'strength', mins: 0, notes: '4×6–8', done: false },
-        { name: 'Smith Machine OHP', type: 'strength', mins: 0, notes: '3×8–10', done: false },
+        { name: 'DB Shoulder Press', type: 'strength', mins: 0, notes: '3×8–10', done: false },
         { name: 'Incline DB Press', type: 'strength', mins: 0, notes: '3×10–12', done: false },
         { name: 'Pec Deck Machine', type: 'strength', mins: 0, notes: '3×12–15', done: false },
         { name: 'DB Lateral Raises', type: 'strength', mins: 0, notes: '4×15', done: false },
@@ -3305,15 +3513,15 @@ const PROGRAMS = {
 
   legs: {
     name: 'Leg Day',
-    desc: 'Planet Fitness leg day · Quads, hamstrings, glutes & calves · Smith + machines + DBs',
+    desc: 'Planet Fitness leg day · Quads, hamstrings, glutes & calves · Matrix machines + DBs',
     days: [
       { label: 'Legs', isRest: false, workouts: [
-        { name: 'Smith Machine Squat', type: 'strength', mins: 0, notes: '4×8–10', done: false },
+        { name: 'Matrix Hack Squat', type: 'strength', mins: 0, notes: '4×8–10', done: false },
         { name: 'DB Romanian Deadlift', type: 'strength', mins: 0, notes: '3×10', done: false },
         { name: 'Leg Press Machine', type: 'strength', mins: 0, notes: '3×12', done: false },
         { name: 'DB Walking Lunges', type: 'strength', mins: 0, notes: '3×12 each', done: false },
         { name: 'Leg Curl Machine', type: 'strength', mins: 0, notes: '3×12', done: false },
-        { name: 'Smith Machine Hip Thrust', type: 'strength', mins: 0, notes: '3×12', done: false },
+        { name: 'Matrix Glute Drive Machine', type: 'strength', mins: 0, notes: '3×12', done: false },
         { name: 'Seated Calf Raise', type: 'strength', mins: 0, notes: '4×15', done: false },
       ]},
       { label: 'Rest', isRest: true, workouts: [] },
