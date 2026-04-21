@@ -2223,19 +2223,25 @@ function render() {
           }
           dd.dataset.di = di;
           dd.dataset.wi = wi;
-          // Clear input
           document.getElementById('customSwapInput').value = '';
-          // Position below the button
           const rect = e.currentTarget.getBoundingClientRect();
           dd.style.display = 'block';
-          dd.style.top = (rect.bottom + window.scrollY + 6) + 'px';
-          dd.style.left = rect.left + 'px';
-          // Prevent going off screen
+          // Prevent going off right edge
           requestAnimationFrame(() => {
             const ddW = dd.offsetWidth;
-            if (rect.left + ddW > window.innerWidth - 8) {
-              dd.style.left = (window.innerWidth - ddW - 8) + 'px';
+            const ddH = dd.offsetHeight;
+            // Flip up if not enough space below
+            const spaceBelow = window.innerHeight - rect.bottom;
+            if (spaceBelow < ddH + 16) {
+              dd.style.top = (rect.top + window.scrollY - ddH - 6) + 'px';
+            } else {
+              dd.style.top = (rect.bottom + window.scrollY + 6) + 'px';
             }
+            // Prevent going off right edge
+            const left = rect.left + ddW > window.innerWidth - 8
+              ? window.innerWidth - ddW - 8
+              : rect.left;
+            dd.style.left = Math.max(8, left) + 'px';
           });
         }
       });
@@ -2381,13 +2387,38 @@ function renderMobileDay(di, mon, todayCol) {
         dd.dataset.di = di; dd.dataset.wi = wi;
         document.getElementById('customSwapInput').value = '';
         const rect = e.currentTarget.getBoundingClientRect();
-        dd.style.display = 'block';
-        dd.style.top = (rect.bottom + window.scrollY + 6) + 'px';
-        dd.style.left = Math.max(8, rect.left) + 'px';
-        requestAnimationFrame(() => {
-          if (dd.getBoundingClientRect().right > window.innerWidth - 8)
-            dd.style.left = (window.innerWidth - dd.offsetWidth - 8) + 'px';
-        });
+        // On mobile make dropdown full width with margins
+        const isMobile = window.innerWidth <= 600;
+        if (isMobile) {
+          dd.style.display = 'block';
+          dd.style.left = '8px';
+          dd.style.width = (window.innerWidth - 16) + 'px';
+          dd.style.maxWidth = (window.innerWidth - 16) + 'px';
+          requestAnimationFrame(() => {
+            const ddH = dd.offsetHeight;
+            const spaceBelow = window.innerHeight - rect.bottom;
+            if (spaceBelow < ddH + 16) {
+              dd.style.top = (rect.top + window.scrollY - ddH - 6) + 'px';
+            } else {
+              dd.style.top = (rect.bottom + window.scrollY + 6) + 'px';
+            }
+          });
+        } else {
+          dd.style.width = '';
+          dd.style.maxWidth = '280px';
+          dd.style.display = 'block';
+          requestAnimationFrame(() => {
+            const ddW = dd.offsetWidth;
+            const ddH = dd.offsetHeight;
+            const spaceBelow = window.innerHeight - rect.bottom;
+            dd.style.top = spaceBelow < ddH + 16
+              ? (rect.top + window.scrollY - ddH - 6) + 'px'
+              : (rect.bottom + window.scrollY + 6) + 'px';
+            const left = rect.left + ddW > window.innerWidth - 8
+              ? window.innerWidth - ddW - 8 : rect.left;
+            dd.style.left = Math.max(8, left) + 'px';
+          });
+        }
       }
     });
     card.addEventListener('click', e => {
