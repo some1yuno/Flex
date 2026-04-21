@@ -1395,6 +1395,7 @@
     .set-row, .set-row-mobile {
       grid-template-columns: 1.5rem 1fr 1fr 2.5rem !important;
     }
+    .set-input { font-size: 1rem !important; padding: 0.6rem 0.5rem !important; }
 
     /* Floating timer */
     .floating-timer {
@@ -1465,7 +1466,9 @@
     <div class="logo">FLEX</div>
     <div class="tagline">Weekly Workout Planner</div>
   </div>
-  <button onclick="openSyncModal()" style="position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.12);border:1.5px solid rgba(255,255,255,0.3);color:#fff;font-family:'DM Mono',monospace;font-size:0.62rem;padding:0.4rem 0.85rem;border-radius:20px;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all 0.15s" onmouseover="this.style.background='rgba(255,255,255,0.22)'" onmouseout="this.style.background='rgba(255,255,255,0.12)'">☁️ Sync</button>
+  <!-- Session button -->
+  <button id="sessionBtn" onclick="toggleSession()" style="position:absolute;left:1.25rem;top:50%;transform:translateY(-50%);background:rgba(196,184,232,0.15);border:1.5px solid rgba(196,184,232,0.4);color:var(--accent);font-family:'DM Mono',monospace;font-size:0.62rem;padding:0.4rem 0.85rem;border-radius:20px;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s" onmouseover="this.style.background='rgba(196,184,232,0.25)'" onmouseout="if(!sessionInterval)this.style.background='rgba(196,184,232,0.15)'">▶ Start Session</button>
+  <button onclick="openSyncModal()" style="position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.6);font-family:'DM Mono',monospace;font-size:0.62rem;padding:0.4rem 0.85rem;border-radius:20px;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all 0.15s" onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'">☁️ Sync</button>
 </header>
 
 <div class="progress-bar-wrap">
@@ -1599,6 +1602,24 @@
         </ol>
       </div>
 
+    </div>
+  </div>
+</div>
+
+<!-- SESSION SUMMARY MODAL -->
+<div class="modal-bg" id="sessionSummaryBg" style="z-index:500">
+  <div class="modal" style="padding:0;overflow:hidden;width:min(420px,96vw)">
+    <div style="display:flex;justify-content:center;padding:0.6rem 0 0;background:var(--surface)">
+      <div style="width:36px;height:4px;background:var(--border-strong);border-radius:2px"></div>
+    </div>
+    <div style="padding:1.25rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);text-align:center">
+      <div style="font-size:2.5rem;margin-bottom:0.5rem">💪</div>
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:3px;color:var(--accent)">Session Complete</h2>
+      <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Great work — here's your summary</div>
+    </div>
+    <div id="sessionSummaryContent" style="padding:1.25rem 1.5rem"></div>
+    <div style="padding:0 1.5rem 1.5rem">
+      <button onclick="closeSessionSummary()" class="btn-primary">DONE</button>
     </div>
   </div>
 </div>
@@ -1768,11 +1789,10 @@
       </div>
 
       <!-- SET ROWS -->
-      <div style="display:grid;grid-template-columns:2rem 1fr 1fr 1fr 1.5rem;gap:0.4rem;align-items:center;margin-bottom:0.5rem">
+      <div style="display:grid;grid-template-columns:2rem 1fr 1fr 1.5rem;gap:0.4rem;align-items:center;margin-bottom:0.5rem">
         <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted);text-transform:uppercase">Set</div>
         <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted);text-transform:uppercase">Weight (lbs)</div>
         <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted);text-transform:uppercase">Reps</div>
-        <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted);text-transform:uppercase">Notes</div>
         <div></div>
       </div>
       <div id="setRows"></div>
@@ -2056,7 +2076,6 @@ function editHistoryLog(exerciseName, date) {
       if (entry.sets[i]) {
         row.querySelector('.inp-weight').value = entry.sets[i].weight || '';
         row.querySelector('.inp-reps').value   = entry.sets[i].reps   || '';
-        row.querySelector('.inp-note').value   = entry.sets[i].note   || '';
       }
     });
   } else {
@@ -2145,10 +2164,10 @@ function render() {
           </div>
         </div>
       `;
-      card.setAttribute('draggable', 'true');
       card.dataset.di = di;
       card.dataset.wi = wi;
-      card.querySelector('.drag-handle').addEventListener('mousedown', () => { card.draggable = true; });
+      // Desktop drag
+      card.setAttribute('draggable', 'true');
       card.addEventListener('dragstart', (e) => {
         e.dataTransfer.effectAllowed = 'move';
         e.dataTransfer.setData('text/plain', JSON.stringify({ di, wi }));
@@ -2169,6 +2188,10 @@ function render() {
           }
         } catch(err) {}
       });
+      // Touch drag — attach to the handle only
+      card.querySelector('.drag-handle').addEventListener('touchstart', (e) => {
+        initTouchDrag(e, card, di, wi);
+      }, { passive: false });
       card.querySelector('.wc-check').addEventListener('click', (e) => {
         e.stopPropagation();
         toggleDone(di, wi);
@@ -2321,9 +2344,9 @@ function renderMobileDay(di, mon, todayCol) {
 
     card.innerHTML = `
       <div class="wc-check">${w.done ? '✓ Done' : 'Complete'}</div>
+      <div class="drag-handle" title="Hold to reorder">⠿</div>
       <div class="wc-name">${w.name}</div>
       ${w.notes ? `<div class="wc-target">🎯 ${w.notes}</div>` : ''}
-      </div>
       ${lastEntry ? `<div class="wc-meta" style="margin-top:4px">Last: ${lastEntry.sets.length} sets · ${new Date(lastEntry.date).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</div>` : ''}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px">
         <button class="log-btn" data-di="${di}" data-wi="${wi}" style="width:100%;justify-content:center;padding:8px">📋 Log Sets</button>
@@ -2331,6 +2354,12 @@ function renderMobileDay(di, mon, todayCol) {
           <button class="swap-btn swap-trigger" data-di="${di}" data-wi="${wi}" style="width:100%;justify-content:center;padding:8px">⇄ Swap</button>
         </div>
       </div>`;
+
+    card.dataset.di = di;
+    card.dataset.wi = wi;
+    card.querySelector('.drag-handle').addEventListener('touchstart', (e) => {
+      initTouchDrag(e, card, di, wi);
+    }, { passive: false });
 
     card.querySelector('.wc-check').addEventListener('click', e => { e.stopPropagation(); toggleDone(di, wi); });
     card.querySelector('.log-btn').addEventListener('click', e => { e.stopPropagation(); openLogModal(di, wi); });
@@ -2394,6 +2423,86 @@ function toggleDone(di, wi) {
 }
 
 // ── Rest day toggle ───────────────────────────────────────────────
+// ── Touch drag-to-reorder ─────────────────────────────────────────
+let _touchDrag = null;
+
+function initTouchDrag(e, card, di, wi) {
+  e.preventDefault();
+  const touch = e.touches[0];
+
+  // Create a floating clone that follows the finger
+  const clone = card.cloneNode(true);
+  const rect  = card.getBoundingClientRect();
+  clone.style.cssText = `
+    position:fixed; z-index:9999; pointer-events:none;
+    width:${rect.width}px; left:${rect.left}px; top:${rect.top}px;
+    opacity:0.85; box-shadow:0 8px 30px rgba(0,0,0,0.5);
+    border:2px solid var(--accent); border-radius:8px;
+    transform:scale(1.03); transition:none;
+  `;
+  document.body.appendChild(clone);
+  card.classList.add('dragging');
+
+  _touchDrag = {
+    clone, card, di, wi,
+    offsetY: touch.clientY - rect.top,
+    offsetX: touch.clientX - rect.left,
+  };
+
+  document.addEventListener('touchmove', onTouchDragMove, { passive: false });
+  document.addEventListener('touchend',  onTouchDragEnd,  { passive: false });
+}
+
+function onTouchDragMove(e) {
+  if (!_touchDrag) return;
+  e.preventDefault();
+  const touch = e.touches[0];
+  const { clone, offsetX, offsetY } = _touchDrag;
+  clone.style.left = (touch.clientX - offsetX) + 'px';
+  clone.style.top  = (touch.clientY - offsetY) + 'px';
+
+  // Highlight the card underneath
+  clone.style.display = 'none';
+  const el = document.elementFromPoint(touch.clientX, touch.clientY);
+  clone.style.display = '';
+  const target = el?.closest('.workout-card');
+  document.querySelectorAll('.workout-card.drag-over').forEach(c => c.classList.remove('drag-over'));
+  if (target && target !== _touchDrag.card) target.classList.add('drag-over');
+}
+
+function onTouchDragEnd(e) {
+  if (!_touchDrag) return;
+  const touch = e.changedTouches[0];
+  const { clone, card, di, wi } = _touchDrag;
+
+  // Find drop target
+  clone.style.display = 'none';
+  const el = document.elementFromPoint(touch.clientX, touch.clientY);
+  clone.style.display = '';
+  const target = el?.closest('.workout-card');
+
+  if (target && target !== card) {
+    const fromWi = wi;
+    const toWi   = parseInt(target.dataset.wi);
+    const fromDi = di;
+    const toDi   = parseInt(target.dataset.di);
+    if (fromDi === toDi && !isNaN(toWi) && fromWi !== toWi) {
+      const moved = schedule[fromDi].workouts.splice(fromWi, 1)[0];
+      schedule[fromDi].workouts.splice(toWi, 0, moved);
+      save();
+    }
+  }
+
+  // Cleanup
+  document.querySelectorAll('.workout-card.drag-over').forEach(c => c.classList.remove('drag-over'));
+  card.classList.remove('dragging');
+  clone.remove();
+  _touchDrag = null;
+  document.removeEventListener('touchmove', onTouchDragMove);
+  document.removeEventListener('touchend',  onTouchDragEnd);
+}
+// ──────────────────────────────────────────────────────────────────
+
 function toggleRestDay(di) {
   schedule[di].isRest = !schedule[di].isRest;
   save();
@@ -3165,7 +3274,6 @@ function openLogModal(di, wi) {
       if (rows[i]) {
         rows[i].querySelector('.inp-weight').placeholder = s.weight || '';
         rows[i].querySelector('.inp-reps').placeholder = s.reps || '';
-        rows[i].querySelector('.inp-note').placeholder = s.note || '';
       }
     });
   }
@@ -3201,7 +3309,14 @@ function openLogModal(di, wi) {
   const todayEntry = getHistory(w.name).find(h => h.date === todayStr);
   document.getElementById('sessionNotes').value = todayEntry?.note || '';
 
-  startSession();
+  // Show session time in modal if session is running
+  const ltEl = document.getElementById('ltSessionTime');
+  if (ltEl && sessionInterval) {
+    const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
+    ltEl.textContent = fmtTime(elapsed);
+  } else if (ltEl) {
+    ltEl.textContent = sessionInterval ? '—' : 'No session';
+  }
   resetRestTimer();
 
   // Fetch AI recommendation
@@ -3275,12 +3390,11 @@ function addSetRow() {
   const idx = rows.children.length + 1;
   const row = document.createElement('div');
   row.className = 'set-row';
-  row.style.cssText = 'display:grid;grid-template-columns:2rem 1fr 1fr 1fr 1.5rem;gap:0.4rem;align-items:center;margin-bottom:0.35rem';
+  row.style.cssText = 'display:grid;grid-template-columns:2rem 1fr 1fr 1.5rem;gap:0.4rem;align-items:center;margin-bottom:0.35rem';
   row.innerHTML = `
     <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--accent)">${idx}</div>
-    <input class="set-input inp-weight" type="number" placeholder="lbs" min="0" step="2.5" />
-    <input class="set-input inp-reps"   type="number" placeholder="reps" min="0" step="1" />
-    <input class="set-input inp-note"   type="text"   placeholder="note" style="font-size:0.7rem" />
+    <input class="set-input inp-weight" type="number" inputmode="decimal" placeholder="lbs" min="0" step="2.5" />
+    <input class="set-input inp-reps"   type="number" inputmode="numeric" placeholder="reps" min="0" step="1" />
     <button class="set-remove" onclick="removeSetRow(this)" title="Remove">✕</button>
   `;
   rows.appendChild(row);
@@ -3306,8 +3420,7 @@ function saveLog() {
   rows.forEach(row => {
     const weight = parseFloat(row.querySelector('.inp-weight').value) || 0;
     const reps   = parseInt(row.querySelector('.inp-reps').value)    || 0;
-    const note   = row.querySelector('.inp-note').value.trim();
-    if (weight > 0 || reps > 0) sets.push({ weight, reps, note });
+    if (weight > 0 || reps > 0) sets.push({ weight, reps });
   });
 
   if (!sets.length) { alert('Add at least one set with weight or reps!'); return; }
@@ -3611,35 +3724,115 @@ function fmtTime(secs) {
   return `${m}:${s.toString().padStart(2,'0')}`;
 }
 
-function startSession() {
-  if (sessionInterval) return; // already running
-  sessionStartTime = sessionStartTime || Date.now();
-  sessionInterval = setInterval(() => {
+function updateSessionBtn() {
+  const btn = document.getElementById('sessionBtn');
+  if (!btn) return;
+  if (sessionInterval) {
+    btn.textContent = '⏹ End Session';
+    btn.style.background = 'rgba(255,107,107,0.15)';
+    btn.style.borderColor = 'rgba(255,107,107,0.5)';
+    btn.style.color = '#ff6b6b';
+    btn.onmouseover = () => { btn.style.background = 'rgba(255,107,107,0.25)'; };
+    btn.onmouseout  = () => { btn.style.background = 'rgba(255,107,107,0.15)'; };
+  } else {
+    btn.textContent = '▶ Start Session';
+    btn.style.background = 'rgba(196,184,232,0.15)';
+    btn.style.borderColor = 'rgba(196,184,232,0.4)';
+    btn.style.color = 'var(--accent)';
+    btn.onmouseover = () => { btn.style.background = 'rgba(196,184,232,0.25)'; };
+    btn.onmouseout  = () => { btn.style.background = 'rgba(196,184,232,0.15)'; };
+  }
+}
+
+function toggleSession() {
+  if (sessionInterval) {
+    // End session — show summary
     const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
-    const t = fmtTime(elapsed);
-    const ltEl = document.getElementById('ltSessionTime');
-    const ftEl = document.getElementById('ftSessionTime');
-    if (ltEl) ltEl.textContent = t;
-    if (ftEl) ftEl.textContent = t;
-  }, 1000);
-  document.getElementById('floatingTimer').classList.add('active');
+    clearInterval(sessionInterval);
+    clearInterval(restInterval);
+    sessionInterval = null;
+    restInterval    = null;
+    restRunning     = false;
+    restRemaining   = restDuration;
+    document.getElementById('floatingTimer').classList.remove('active');
+    updateRestDisplay();
+    updateSessionBtn();
+    showSessionSummary(elapsed);
+    sessionStartTime = null;
+  } else {
+    // Start session
+    sessionStartTime = Date.now();
+    sessionInterval = setInterval(() => {
+      const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
+      const t = fmtTime(elapsed);
+      const ltEl = document.getElementById('ltSessionTime');
+      const ftEl = document.getElementById('ftSessionTime');
+      if (ltEl) ltEl.textContent = t;
+      if (ftEl) ftEl.textContent = t;
+    }, 1000);
+    document.getElementById('floatingTimer').classList.add('active');
+    updateSessionBtn();
+    showToast('Session started — let\'s go! 💪');
+  }
+}
+
+function startSession() {
+  // Called from openLogModal — only start if not already running
+  if (sessionInterval) return;
+  // Don't auto-start — just update display
 }
 
 function stopSession() {
-  clearInterval(sessionInterval);
-  clearInterval(restInterval);
-  sessionInterval = null;
-  restInterval    = null;
-  sessionStartTime = null;
-  restRunning = false;
-  restRemaining = restDuration;
-  document.getElementById('floatingTimer').classList.remove('active');
-  const ltEl = document.getElementById('ltSessionTime');
-  const ftEl = document.getElementById('ftSessionTime');
-  if (ltEl) ltEl.textContent = '0:00';
-  if (ftEl) ftEl.textContent = '0:00';
-  updateRestDisplay();
+  // Called from floating timer ✕ — same as end session
+  if (sessionInterval) toggleSession();
 }
+
+function showSessionSummary(elapsedSecs) {
+  // Count sets logged this session (all exercises logged today)
+  const today = new Date().toISOString().split('T')[0];
+  const all = JSON.parse(localStorage.getItem('grind_history') || '{}');
+  let totalSets = 0, totalVol = 0, exercisesDone = [];
+  Object.entries(all).forEach(([name, logs]) => {
+    const todayLog = logs.find(l => l.date === today);
+    if (todayLog) {
+      totalSets += todayLog.sets.length;
+      totalVol  += todayLog.sets.reduce((a, s) => a + (s.weight||0)*(s.reps||0), 0);
+      exercisesDone.push({ name, sets: todayLog.sets.length });
+    }
+  });
+
+  const content = document.getElementById('sessionSummaryContent');
+  content.innerHTML = `
+    <div style="display:flex;gap:0.6rem;margin-bottom:1rem;flex-wrap:wrap">
+      <div style="flex:1;min-width:80px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0.75rem;text-align:center">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);line-height:1">${fmtTime(elapsedSecs)}</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px">Duration</div>
+      </div>
+      <div style="flex:1;min-width:80px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0.75rem;text-align:center">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);line-height:1">${totalSets}</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px">Sets Logged</div>
+      </div>
+      <div style="flex:1;min-width:80px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0.75rem;text-align:center">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);line-height:1">${totalVol > 0 ? (totalVol/1000).toFixed(1)+'k' : '—'}</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px">Volume (lbs)</div>
+      </div>
+    </div>
+    ${exercisesDone.length ? `
+      <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.4rem">Exercises logged</div>
+      <div style="display:flex;flex-wrap:wrap;gap:0.35rem">
+        ${exercisesDone.map(e => `<span style="font-family:'DM Mono',monospace;font-size:0.65rem;background:var(--accent-light);border:1px solid var(--border-strong);color:var(--accent);padding:3px 10px;border-radius:6px">${e.name} · ${e.sets} sets</span>`).join('')}
+      </div>` : '<div style="font-family:\'DM Mono\',monospace;font-size:0.68rem;color:var(--muted);text-align:center;padding:0.5rem">No sets logged this session</div>'}
+  `;
+  document.getElementById('sessionSummaryBg').classList.add('open');
+}
+
+function closeSessionSummary() {
+  document.getElementById('sessionSummaryBg').classList.remove('open');
+}
+
+document.getElementById('sessionSummaryBg').addEventListener('click', function(e) {
+  if (e.target === this) closeSessionSummary();
+});
 
 function setRestDuration(secs) {
   restDuration  = secs;
