@@ -922,21 +922,22 @@
     justify-content: center;
     gap: 3px;
     font-family: 'DM Mono', monospace;
-    font-size: 0.57rem;
-    color: #fff;
+    font-size: 0.6rem;
+    color: #0d0a12;
     background: var(--accent);
     border: none;
     border-radius: 6px;
-    padding: 4px 7px;
+    padding: 6px 10px;
     cursor: pointer;
     margin-top: 0;
     transition: all 0.15s;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    font-weight: 500;
+    font-weight: 700;
+    box-shadow: 0 0 10px rgba(196,184,232,0.2);
   }
-  .log-btn:hover { background: var(--accent-mid); }
-  .workout-card.done .log-btn { opacity: 0.4; }
+  .log-btn:hover { background: var(--accent-vivid); box-shadow: 0 0 16px rgba(196,184,232,0.35); }
+  .workout-card.done .log-btn { opacity: 0.35; }
 
   .progress-session {
     background: var(--bg);
@@ -1232,34 +1233,59 @@
   /* ── MOBILE (≤ 600px) ─────────────────────────────────────────── */
   @media (max-width: 600px) {
 
-    /* Header */
-    header { padding: 1rem 1rem 0.85rem; }
-    .logo { font-size: 2.8rem; letter-spacing: 3px; }
-    .tagline { font-size: 0.6rem; letter-spacing: 1.5px; }
+    /* ── Header ── */
+    header { padding: 0.85rem 0.75rem; }
+    .logo { font-size: 2.4rem; letter-spacing: 3px; }
+    .tagline { font-size: 0.55rem; letter-spacing: 1.5px; }
 
-    /* Stats bar: 2×2 grid */
+    /* Make header buttons bigger tap targets */
+    header button[id="sessionBtn"],
+    header button:not(#sessionBtn) {
+      font-size: 0.58rem !important;
+      padding: 0.45rem 0.7rem !important;
+      border-radius: 16px !important;
+    }
+
+    /* ── Stats bar: 2×2 grid ── */
     .stats-bar { display: grid; grid-template-columns: 1fr 1fr; }
-    .stat { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 0.7rem 1rem; }
-    .stat:nth-child(2), .stat:nth-child(4), .stat:last-child { border-right: none; }
-    .stat:last-child { grid-column: span 2; border-bottom: none; display: flex; align-items: center; justify-content: center; padding: 0.6rem; }
-    .stat-val { font-size: 1.6rem; }
+    .stat {
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 1rem;
+    }
+    .stat:nth-child(2), .stat:nth-child(4) { border-right: none; }
+    .stat:last-child {
+      grid-column: span 2;
+      border-bottom: none;
+      border-right: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      padding: 0.65rem 1rem;
+    }
+    .stat-val { font-size: 1.8rem; }
+    .stat-label { font-size: 0.56rem; }
 
-    /* Programs bar: horizontal scroll */
+    /* ── Programs bar: horizontal scroll ── */
     .programs-bar {
       overflow-x: auto;
       flex-wrap: nowrap;
-      padding: 0.5rem 1rem;
+      padding: 0.5rem 0.75rem;
       gap: 0.4rem;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
+      /* Fade on right to hint scrollability */
+      -webkit-mask-image: linear-gradient(to right, black 80%, transparent 100%);
+      mask-image: linear-gradient(to right, black 80%, transparent 100%);
     }
     .programs-bar::-webkit-scrollbar { display: none; }
     .programs-label { display: none; }
     .prog-divider { display: none; }
     .clear-btn { margin-left: 0; flex-shrink: 0; }
-    .prog-btn { flex-shrink: 0; font-size: 0.72rem; padding: 0.3rem 0.75rem; }
+    .prog-btn { flex-shrink: 0; font-size: 0.7rem; padding: 0.35rem 0.8rem; }
 
-    /* Day tabs */
+    /* ── Day tabs ── */
     .day-tabs {
       display: flex;
       overflow-x: auto;
@@ -1272,8 +1298,8 @@
 
     .day-tab {
       flex: 1;
-      min-width: 44px;
-      padding: 0.6rem 0.3rem;
+      min-width: 48px;
+      padding: 0.65rem 0.25rem;
       text-align: center;
       cursor: pointer;
       border-bottom: 3px solid transparent;
@@ -1283,7 +1309,7 @@
 
     .day-tab-name {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 0.9rem;
+      font-size: 1rem;
       letter-spacing: 1px;
       color: var(--muted);
       line-height: 1;
@@ -1291,28 +1317,22 @@
 
     .day-tab-date {
       font-family: 'DM Mono', monospace;
-      font-size: 0.5rem;
+      font-size: 0.52rem;
       color: var(--muted);
+      opacity: 0.7;
       margin-top: 2px;
     }
 
-    .day-tab.active {
-      border-bottom-color: var(--accent);
-      background: var(--accent-light);
-    }
+    .day-tab.active { border-bottom-color: var(--accent); background: var(--accent-light); }
     .day-tab.active .day-tab-name { color: var(--accent); }
-
     .day-tab.is-today .day-tab-name { color: var(--accent); font-weight: bold; }
     .day-tab.has-workouts .day-tab-date::after { content: ' •'; color: var(--accent); }
 
-    /* Desktop grid hidden on mobile */
+    /* ── Desktop grid hidden on mobile ── */
     .grid { display: none !important; }
 
-    /* Mobile day panel */
-    .mobile-day-panel {
-      padding: 0.75rem;
-      min-height: 50vh;
-    }
+    /* ── Mobile day panel ── */
+    .mobile-day-panel { padding: 0.75rem; min-height: 50vh; }
 
     .mobile-day-header {
       display: flex;
@@ -1323,7 +1343,7 @@
 
     .mobile-day-title {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.8rem;
+      font-size: 2rem;
       letter-spacing: 2px;
       color: var(--accent);
       line-height: 1;
@@ -1331,49 +1351,70 @@
 
     .mobile-day-date {
       font-family: 'DM Mono', monospace;
-      font-size: 0.62rem;
+      font-size: 0.6rem;
       color: var(--muted);
     }
 
-    .mobile-nav-btns {
-      display: flex;
-      gap: 0.4rem;
-    }
+    .mobile-nav-btns { display: flex; gap: 0.4rem; }
 
     .mobile-nav-btn {
-      width: 34px;
-      height: 34px;
+      width: 38px;
+      height: 38px;
       border-radius: 8px;
       border: 1.5px solid var(--border-strong);
       background: var(--surface);
       color: var(--accent);
-      font-size: 1rem;
+      font-size: 1.1rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: all 0.15s;
     }
-    .mobile-nav-btn:active { background: var(--accent); color: #fff; }
+    .mobile-nav-btn:active { background: var(--accent); color: #0d0a12; }
 
-    /* Bigger touch targets on cards */
-    .workout-card { padding: 0.85rem 0.9rem; border-radius: 10px; }
-    .wc-name { font-size: 0.9rem; padding-right: 6rem; }
-    .wc-check { font-size: 0.6rem; padding: 4px 10px; }
-    .log-btn, .swap-btn { font-size: 0.65rem; padding: 7px 10px; }
-
-    .add-btn { padding: 0.75rem; font-size: 0.7rem; border-radius: 10px; margin-top: 0.4rem; }
-
-    /* Modals: full-screen slide up */
-    .modal-bg {
-      align-items: flex-end;
-      backdrop-filter: blur(3px);
+    /* ── Workout cards — bigger touch targets ── */
+    .workout-card {
+      padding: 0.9rem 0.9rem 0.9rem 1.8rem !important;
+      border-radius: 10px;
     }
+    .wc-name { font-size: 0.92rem; padding-right: 5.5rem; }
+    .wc-check { font-size: 0.58rem; padding: 5px 10px; border-radius: 6px; }
+
+    /* LOG SETS: extra prominent on mobile */
+    .log-btn {
+      font-size: 0.68rem !important;
+      padding: 9px 12px !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.5px;
+    }
+    .swap-btn { font-size: 0.65rem; padding: 8px 10px; }
+
+    /* Done card — keep name legible */
+    .workout-card.done .wc-name {
+      text-decoration: line-through;
+      color: var(--muted);
+      opacity: 0.6;
+    }
+
+    /* ── Add workout button — more prominent ── */
+    .add-btn {
+      padding: 0.9rem;
+      font-size: 0.72rem;
+      border-radius: 10px;
+      margin-top: 0.5rem;
+      border-color: var(--border-strong);
+      color: var(--accent);
+      letter-spacing: 1.5px;
+    }
+
+    /* ── Modals: full-screen slide up ── */
+    .modal-bg { align-items: flex-end; backdrop-filter: blur(6px); }
 
     .modal {
       width: 100% !important;
       max-width: 100% !important;
-      border-radius: 16px 16px 0 0 !important;
+      border-radius: 20px 20px 0 0 !important;
       border-top: 3px solid var(--accent) !important;
       max-height: 92vh;
       animation: slideUp 0.25s ease !important;
@@ -1384,37 +1425,44 @@
       to   { transform: translateY(0); opacity: 1; }
     }
 
-    /* Log modal mobile */
+    /* ── Log modal mobile ── */
     .log-timer-bar { flex-wrap: wrap; gap: 0.5rem; }
     .lt-divider { display: none; }
-    .lt-session-block { flex-direction: row; align-items: center; gap: 0.5rem; width: 100%; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+    .lt-session-block {
+      flex-direction: row;
+      align-items: center;
+      gap: 0.5rem;
+      width: 100%;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.4rem;
+    }
     .lt-rest-block { width: 100%; }
     .lt-ctrl-btns { margin-left: 0; }
 
-    /* Set rows on mobile */
-    .set-row, .set-row-mobile {
-      grid-template-columns: 1.5rem 1fr 1fr 2.5rem !important;
-    }
-    .set-input { font-size: 1rem !important; padding: 0.6rem 0.5rem !important; }
+    /* ── Set rows on mobile ── */
+    .set-row { grid-template-columns: 1.5rem 1fr 1fr 2.5rem !important; }
+    .set-input { font-size: 1.1rem !important; padding: 0.7rem 0.6rem !important; text-align: center; }
 
-    /* Floating timer */
+    /* ── Floating timer ── */
     .floating-timer {
       bottom: 0.75rem;
       right: 0.75rem;
-      padding: 0.6rem 0.9rem;
-      border-radius: 10px;
+      padding: 0.65rem 1rem;
+      border-radius: 12px;
       min-width: 130px;
     }
-    .ft-session-time { font-size: 1.3rem; }
+    .ft-session-time { font-size: 1.4rem; }
 
-    /* Programs modal */
-    .prog-modal { border-radius: 16px 16px 0 0 !important; }
-    .prog-days-grid { grid-template-columns: repeat(7, 1fr) !important; }
-    .prog-exercise { font-size: 0.6rem; }
-    .prog-day-name { font-size: 0.8rem; }
+    /* ── Programs modal ── */
+    .prog-modal { border-radius: 20px 20px 0 0 !important; }
+    .prog-exercise { font-size: 0.62rem; }
+    .prog-day-name { font-size: 0.85rem; }
 
-    /* Week history modal */
+    /* ── Duration buttons in timer ── */
     .lt-duration-btns { flex-wrap: wrap; }
+
+    /* ── Type pills ── */
+    .type-pill { font-size: 0.7rem; padding: 0.7rem 0.3rem; }
   }
 
   /* ── TABLET (601–900px) ───────────────────────────────────────── */
