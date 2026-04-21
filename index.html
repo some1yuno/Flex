@@ -3457,6 +3457,15 @@ Give a SHORT, specific starting recommendation in 3 sentences. Include a suggest
       })
     });
     const data = await response.json();
+    if (!response.ok) {
+      const msg = data.error?.message || 'API error';
+      if (msg.includes('credit') || msg.includes('balance')) {
+        box.innerHTML = `<span style="color:rgba(255,255,255,0.6);font-family:'DM Mono',monospace;font-size:0.7rem">Add credits at console.anthropic.com to enable AI recommendations.</span>`;
+      } else {
+        box.innerHTML = `<span style="color:rgba(255,255,255,0.5);font-family:'DM Mono',monospace;font-size:0.7rem">Error: ${msg}</span>`;
+      }
+      return;
+    }
     const text = data.content?.map(c => c.text || '').join('') || 'Unable to get recommendation.';
     box.innerHTML = `<span style="color:#fff;font-size:0.85rem;line-height:1.6">${text}</span>`;
   } catch (err) {
