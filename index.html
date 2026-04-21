@@ -4669,7 +4669,6 @@ function renderWeekHistoryPage() {
 function renderExHistoryPage(query) {
   const el = document.getElementById('exHistoryPageResults');
   if (!el) return;
-  // Reuse historySearch render but point to page element
   const all = JSON.parse(localStorage.getItem('grind_history') || '{}');
   const names = Object.keys(all).filter(n => !query || n.toLowerCase().includes(query.toLowerCase())).sort();
   if (!names.length) {
@@ -4698,17 +4697,6 @@ function renderExHistoryPage(query) {
         </div>
       </div>`;
   }).join('');
-}
-
-// Override renderHistorySearch to also update page when on mobile
-const _origRenderHistorySearch = renderHistorySearch;
-function renderHistorySearch(query) {
-  if (window.innerWidth <= 600 && _activePage === 'ex-history') {
-    renderExHistoryPage(query);
-  } else {
-    const el = document.getElementById('historySearchResults');
-    if (el) _origRenderHistorySearch.call(this, query);
-  }
 }
 
 // ── Library Page ─────────────────────────────────────────────────
@@ -4866,7 +4854,7 @@ function buildWeekHistoryCard(weekKey, allHistory) {
     </div>
     <input id="exHistoryPageSearch" type="text" placeholder="Search exercises…"
       style="width:100%;background:var(--bg);border:1.5px solid var(--border);color:var(--text);padding:0.65rem 1rem;font-family:'DM Sans',sans-serif;font-size:0.9rem;border-radius:8px;outline:none"
-      oninput="renderHistorySearch(this.value)"
+      oninput="renderExHistoryPage(this.value)"
       onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" />
   </div>
   <div class="page-body" id="exHistoryPageResults"></div>
