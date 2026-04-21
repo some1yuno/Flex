@@ -714,7 +714,7 @@
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.75);
-    z-index: 200;
+    z-index: 8000;
     align-items: center;
     justify-content: center;
     backdrop-filter: blur(5px);
@@ -1270,6 +1270,11 @@
       padding: 0.75rem 1rem;
     }
     .stat:nth-child(2), .stat:nth-child(4) { border-right: none; }
+    /* Hide the nav-buttons stat cell on mobile — replaced by bottom nav */
+    .stats-bar > .stat:last-child { display: none !important; }
+    .stats-bar { grid-template-columns: 1fr 1fr; }
+    .stat:nth-child(3) { grid-column: 1; }
+    .stat:nth-child(4) { grid-column: 2; }
     .stat:last-child {
       grid-column: span 2;
       border-bottom: none;
@@ -1425,15 +1430,16 @@
     }
 
     /* ── Modals: full-screen slide up ── */
-    .modal-bg { align-items: flex-end; backdrop-filter: blur(6px); }
+    .modal-bg { align-items: flex-end; backdrop-filter: blur(6px); z-index: 8000 !important; }
 
     .modal {
       width: 100% !important;
       max-width: 100% !important;
       border-radius: 20px 20px 0 0 !important;
       border-top: 3px solid var(--accent) !important;
-      max-height: 92vh;
+      max-height: 85vh;
       animation: slideUp 0.25s ease !important;
+      padding-bottom: env(safe-area-inset-bottom, 8px);
     }
 
     @keyframes slideUp {
@@ -1728,7 +1734,7 @@
 </div>
 
 <!-- SYNC MODAL -->
-<div class="modal-bg" id="syncModalBg" style="z-index:400">
+<div class="modal-bg" id="syncModalBg" style="z-index:8100">
   <div class="modal" style="padding:0;overflow:hidden;width:min(480px,96vw)">
     <div style="display:flex;justify-content:center;padding:0.6rem 0 0;background:var(--surface)">
       <div style="width:36px;height:4px;background:var(--border-strong);border-radius:2px"></div>
@@ -1809,7 +1815,7 @@
 </div>
 
 <!-- EXERCISE LIBRARY MODAL -->
-<div class="modal-bg" id="exerciseLibraryBg" style="z-index:360">
+<div class="modal-bg" id="exerciseLibraryBg" style="z-index:8050">
   <div class="modal" style="padding:0;overflow:hidden;width:min(640px,96vw)">
     <div style="display:flex;justify-content:center;padding:0.6rem 0 0;background:var(--surface)">
       <div style="width:36px;height:4px;background:var(--border-strong);border-radius:2px"></div>
@@ -1834,7 +1840,7 @@
 </div>
 
 <!-- EXERCISE HISTORY SEARCH MODAL -->
-<div class="modal-bg" id="historySearchBg" style="z-index:350">
+<div class="modal-bg" id="historySearchBg" style="z-index:8040">
   <div class="modal" style="padding:0;overflow:hidden;width:min(560px,96vw)">
     <div style="display:flex;justify-content:center;padding:0.6rem 0 0;background:var(--surface)">
       <div style="width:36px;height:4px;background:var(--border-strong);border-radius:2px"></div>
@@ -1854,7 +1860,7 @@
 </div>
 
 <!-- WEEK HISTORY MODAL -->
-<div class="modal-bg" id="weekHistoryBg" style="z-index:300">
+<div class="modal-bg" id="weekHistoryBg" style="z-index:8030">
   <div class="modal" style="width:min(780px,96vw);max-height:90vh;overflow-y:auto;padding:0;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.5)">
     <div style="padding:1.5rem 2rem 1rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:5;border-radius:12px 12px 0 0;display:flex;align-items:center">
       <div>
@@ -1875,7 +1881,7 @@
     <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:#8a7a8e;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.35rem">+ Add custom exercise</div>
     <div style="display:flex;gap:0.4rem">
       <input id="customSwapInput" type="text" placeholder="Exercise name…" style="flex:1;background:#0d0a12;border:1.5px solid #2e2040;border-radius:6px;padding:0.3rem 0.5rem;font-family:'DM Sans',sans-serif;font-size:0.75rem;color:#f0ebff;outline:none" />
-      <button onclick="addCustomSwapExercise()" style="background:#301934;color:#fff;border:none;border-radius:6px;padding:0.3rem 0.65rem;font-family:'DM Mono',monospace;font-size:0.7rem;cursor:pointer;white-space:nowrap">Add</button>
+      <button onclick="addCustomSwapExercise()" style="background:var(--accent);color:#0d0a12;border:none;border-radius:6px;padding:0.3rem 0.65rem;font-family:'DM Mono',monospace;font-size:0.7rem;cursor:pointer;white-space:nowrap;font-weight:700">Add</button>
     </div>
   </div>
 </div>
@@ -1961,8 +1967,8 @@
       <!-- TIMER BAR -->
       <div class="log-timer-bar" id="logTimerBar">
         <div class="lt-session-block">
-          <div class="lt-label">Session</div>
-          <div class="lt-time" id="ltSessionTime">0:00</div>
+          <div class="lt-label" id="ltSessionLabel">Session</div>
+          <div class="lt-time" id="ltSessionTime">–</div>
         </div>
         <div class="lt-divider"></div>
         <div class="lt-rest-block">
@@ -2113,142 +2119,10 @@ function openWeekHistory() {
     return;
   }
 
-  content.innerHTML = weeks.map(weekKey => {
-    const week = allHistory[weekKey];
-    const monDate = new Date(weekKey + 'T12:00:00');
-    const sunDate = new Date(monDate);
-    sunDate.setDate(monDate.getDate() + 6);
-    const weekLabel = `${monDate.toLocaleDateString('en-US',{month:'short',day:'numeric'})} — ${sunDate.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}`;
-    const isCurrentWeek = weekKey === getMondayStr();
-
-    const totalPlanned  = week.schedule.reduce((a, d) => a + d.workouts.length, 0);
-    const totalDone     = week.schedule.reduce((a, d) => a + d.workouts.filter(w => w.done).length, 0);
-    const trainingDays  = week.schedule.filter(d => d.workouts.some(w => w.done)).length;
-    const completionPct = totalPlanned > 0 ? Math.round((totalDone / totalPlanned) * 100) : 0;
-
-    let allSets = [], exerciseLogs = [];
-    week.schedule.forEach((day, di) => {
-      day.workouts.forEach(w => {
-        const logs = getHistory(w.name);
-        const log = logs.find(l => { const d = new Date(l.date+'T12:00:00'); return d >= monDate && d <= sunDate; });
-        if (log && log.sets.length) {
-          exerciseLogs.push({ name: w.name, day: FULL_DAYS[di], date: log.date, sets: log.sets, done: w.done });
-          log.sets.forEach(s => { if (s.weight > 0) allSets.push({ name: w.name, ...s }); });
-        }
-      });
-    });
-
-    const totalVolume = allSets.reduce((a, s) => a + (s.weight||0) * (s.reps||0), 0);
-    const totalSets   = allSets.length;
-    const bestLift    = allSets.length ? allSets.reduce((b, s) => (s.weight||0) > (b.weight||0) ? s : b, allSets[0]) : null;
-
-    let mostImproved = null;
-    const nextWeekKey = weeks[weeks.indexOf(weekKey) + 1];
-    if (nextWeekKey) {
-      const prevMonDate = new Date(nextWeekKey + 'T12:00:00');
-      const prevSunDate = new Date(prevMonDate); prevSunDate.setDate(prevMonDate.getDate() + 6);
-      let bestGain = 0;
-      exerciseLogs.forEach(el => {
-        const prevLog = getHistory(el.name).find(l => { const d = new Date(l.date+'T12:00:00'); return d >= prevMonDate && d <= prevSunDate; });
-        if (prevLog && prevLog.sets.length) {
-          const curMax = Math.max(...el.sets.map(s => s.weight||0));
-          const prevMax = Math.max(...prevLog.sets.map(s => s.weight||0));
-          const gain = curMax - prevMax;
-          if (gain > bestGain) { bestGain = gain; mostImproved = { name: el.name, gain, curMax, prevMax }; }
-        }
-      });
-    }
-
-    const statCards = [
-      { val: trainingDays, label: 'Days Trained', icon: '💪' },
-      { val: `${totalDone}/${totalPlanned}`, label: 'Workouts Done', icon: '✓' },
-      { val: `${completionPct}%`, label: 'Completion', icon: '🎯' },
-      { val: totalSets, label: 'Sets Logged', icon: '📋' },
-      { val: totalVolume > 0 ? totalVolume.toLocaleString() + ' lbs' : '—', label: 'Total Volume', icon: '⚡' },
-    ].map(s => `
-      <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0.75rem 1rem;flex:1;min-width:90px;text-align:center">
-        <div style="font-size:1.1rem;margin-bottom:0.2rem">${s.icon}</div>
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--accent);line-height:1">${s.val}</div>
-        <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px">${s.label}</div>
-      </div>`).join('');
-
-    const highlightsHTML = (bestLift || mostImproved) ? `
-      <div style="margin-bottom:1rem">
-        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.5rem">🏆 Highlights</div>
-        <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-          ${bestLift ? `<div style="background:var(--accent);color:#fff;border-radius:8px;padding:0.6rem 1rem;flex:1;min-width:160px">
-            <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">Best Lift</div>
-            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:1px">${bestLift.weight} lbs × ${bestLift.reps} reps</div>
-            <div style="font-size:0.72rem;color:rgba(255,255,255,0.75);margin-top:2px">${bestLift.name}</div>
-          </div>` : ''}
-          ${mostImproved ? `<div style="background:#5c3d63;color:#fff;border-radius:8px;padding:0.6rem 1rem;flex:1;min-width:160px">
-            <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">Most Improved</div>
-            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:1px">+${mostImproved.gain} lbs</div>
-            <div style="font-size:0.72rem;color:rgba(255,255,255,0.75);margin-top:2px">${mostImproved.name} (${mostImproved.prevMax} → ${mostImproved.curMax} lbs)</div>
-          </div>` : ''}
-        </div>
-      </div>` : '';
-
-    const logsHTML = exerciseLogs.length ? `
-      <div>
-        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.5rem">📊 Logged Exercises</div>
-        ${exerciseLogs.map(el => `
-          <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0.75rem 1rem;margin-bottom:0.5rem">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;gap:0.5rem;flex-wrap:wrap">
-              <div>
-                <div style="font-weight:600;font-size:0.85rem;color:var(--text)">${el.name}</div>
-                <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted)">${el.day} · ${new Date(el.date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})}</div>
-              </div>
-              <button onclick="editHistoryLog('${el.name.replace(/'/g,"\\'")}','${el.date}')" style="font-family:'DM Mono',monospace;font-size:0.58rem;padding:4px 12px;background:var(--accent-light);border:1.5px solid var(--border-strong);color:var(--accent);border-radius:6px;cursor:pointer;white-space:nowrap">✏️ Edit Log</button>
-            </div>
-            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:0.35rem">
-              ${el.sets.map((s, i) => `
-                <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:0.4rem 0.6rem">
-                  <div style="font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px">Set ${i+1}</div>
-                  <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--accent);line-height:1.2">${s.weight||'—'}<span style="font-size:0.65rem"> lbs</span></div>
-                  <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--text)">${s.reps||'—'} reps${s.note ? ' · '+s.note : ''}</div>
-                </div>`).join('')}
-            </div>
-          </div>`).join('')}
-      </div>` : `<div style="font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--muted);text-align:center;padding:1rem;border:1px dashed var(--border);border-radius:8px">No sets logged this week</div>`;
-
-    const unlogged = week.schedule.flatMap((d, di) =>
-      d.workouts.filter(w => w.done && !exerciseLogs.find(el => el.name === w.name))
-        .map(w => ({ name: w.name, day: FULL_DAYS[di] }))
-    );
-    const unloggedHTML = unlogged.length ? `
-      <div style="margin-top:0.75rem">
-        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.4rem">✓ Completed — no sets logged</div>
-        <div style="display:flex;flex-wrap:wrap;gap:0.35rem">
-          ${unlogged.map(u => `<span style="font-family:'DM Mono',monospace;font-size:0.62rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:3px 10px;color:var(--muted)">${u.name} · ${u.day}</span>`).join('')}
-        </div>
-      </div>` : '';
-
-    return `
-      <div style="margin-bottom:1.5rem;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.3)">
-        <div style="padding:1rem 1.25rem;background:var(--accent);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem">
-          <div>
-            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;color:#fff">${weekLabel}</div>
-            ${isCurrentWeek ? '<div style="font-family:\'DM Mono\',monospace;font-size:0.55rem;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:1px;margin-top:2px">Current Week</div>' : ''}
-          </div>
-          <div style="flex:1;max-width:140px;min-width:80px">
-            <div style="height:5px;background:rgba(255,255,255,0.2);border-radius:3px;overflow:hidden">
-              <div style="height:100%;width:${completionPct}%;background:#fff;border-radius:3px"></div>
-            </div>
-            <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:rgba(255,255,255,0.6);margin-top:3px;text-align:right">${completionPct}% complete</div>
-          </div>
-        </div>
-        <div style="padding:1rem 1.25rem">
-          <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem">${statCards}</div>
-          ${highlightsHTML}
-          ${logsHTML}
-          ${unloggedHTML}
-        </div>
-      </div>`;
-  }).join('');
-
+  content.innerHTML = weeks.map(weekKey => buildWeekHistoryCard(weekKey, allHistory)).join('');
   document.getElementById('weekHistoryBg').classList.add('open');
 }
+
 
 function closeWeekHistory() {
   document.getElementById('weekHistoryBg').classList.remove('open');
@@ -2268,8 +2142,8 @@ function editHistoryLog(exerciseName, date) {
     ? { di: foundDi, wi: foundWi }
     : { di: 0, wi: 0 };
 
-  window._editingHistoryDate = date;
-  window._editingHistoryName = exerciseName;
+  _editingHistoryDate = date;
+  _editingHistoryName = exerciseName;
 
   const history = getHistory(exerciseName);
   const entry = history.find(h => h.date === date);
@@ -2967,6 +2841,17 @@ document.getElementById('historySearchBg').addEventListener('click', function(e)
 });
 
 // ── 1RM Calculator (Epley formula) ───────────────────────────────
+// ── Markdown parser (for AI recommendations) ─────────────────────
+function parseMarkdown(text) {
+  return text
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/^#{1,3} (.+)$/gm, '<strong style="font-size:0.9rem;letter-spacing:0.3px">$1</strong>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/\n\n/g, '<br><br>')
+    .replace(/\n/g, '<br>');
+}
+
 function calc1RM(weight, reps) {
   if (!weight || !reps || reps <= 0) return 0;
   if (reps === 1) return weight;
@@ -3776,7 +3661,9 @@ function saveHistory(name, history) {
   localStorage.setItem('grind_history', JSON.stringify(all));
 }
 
-let logTarget = null; // { di, wi }
+let logTarget          = null; // { di, wi }
+let _editingHistoryDate = null;
+let _editingHistoryName = null;
 
 function openLogModal(di, wi) {
   const w = schedule[di].workouts[wi];
@@ -3840,13 +3727,19 @@ function openLogModal(di, wi) {
   const todayEntry = getHistory(w.name).find(h => h.date === todayStr);
   document.getElementById('sessionNotes').value = todayEntry?.note || '';
 
-  // Show session time in modal if session is running
-  const ltEl = document.getElementById('ltSessionTime');
-  if (ltEl && sessionInterval) {
-    const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
-    ltEl.textContent = fmtTime(elapsed);
-  } else if (ltEl) {
-    ltEl.textContent = sessionInterval ? '—' : 'No session';
+  // Show/hide timer bar based on session state
+  const timerBar = document.getElementById('logTimerBar');
+  if (timerBar) timerBar.style.display = sessionInterval ? '' : 'none';
+
+  // Update session timer display
+  const ltEl    = document.getElementById('ltSessionTime');
+  const ltLabel = document.getElementById('ltSessionLabel');
+  if (sessionInterval) {
+    if (ltEl) ltEl.textContent = fmtTime(Math.floor((Date.now() - sessionStartTime) / 1000));
+    if (ltLabel) ltLabel.textContent = 'Session';
+  } else {
+    if (ltEl) ltEl.textContent = '–';
+    if (ltLabel) ltLabel.textContent = 'No Session';
   }
   resetRestTimer();
 
@@ -3919,7 +3812,7 @@ Give a SHORT, specific starting recommendation in 3 sentences. Include a suggest
       return;
     }
     const text = data.content?.map(c => c.text || '').join('') || 'Unable to get recommendation.';
-    box.innerHTML = `<span style="color:#fff;font-size:0.85rem;line-height:1.6">${text}</span>`;
+    box.innerHTML = `<span style="color:#fff;font-size:0.85rem;line-height:1.6">${parseMarkdown(text)}</span>`;
   } catch (err) {
     box.innerHTML = `<span style="color:rgba(255,255,255,0.5);font-family:'DM Mono',monospace;font-size:0.72rem">Could not load recommendation. Check your connection.</span>`;
   }
@@ -3968,17 +3861,17 @@ function saveLog() {
   const sessionNote = document.getElementById('sessionNotes').value.trim();
 
   // Check if we're editing a historical log
-  if (window._editingHistoryDate && window._editingHistoryName) {
-    const exerciseName = window._editingHistoryName;
-    const targetDate   = window._editingHistoryDate;
+  if (_editingHistoryDate && _editingHistoryName) {
+    const exerciseName = _editingHistoryName;
+    const targetDate   = _editingHistoryDate;
     const history = getHistory(exerciseName);
     const idx = history.findIndex(h => h.date === targetDate);
     const entry = { date: targetDate, sets, note: sessionNote };
     if (idx >= 0) history[idx] = entry;
     else history.push(entry);
     saveHistory(exerciseName, history);
-    window._editingHistoryDate = null;
-    window._editingHistoryName = null;
+    _editingHistoryDate = null;
+    _editingHistoryName = null;
     closeLogModal();
     showToast('✅ Log updated!');
     setTimeout(() => openWeekHistory(), 300);
@@ -4004,8 +3897,8 @@ function closeLogModal() {
   document.getElementById('aiRecommendWrap').style.display = 'block';
   document.getElementById('lastSessionWrap').style.display = 'none';
   document.getElementById('sessionNotes').value = '';
-  window._editingHistoryDate = null;
-  window._editingHistoryName = null;
+  _editingHistoryDate = null;
+  _editingHistoryName = null;
   logTarget = null;
   // Keep session timer running in floating widget, but pause rest
   if (restRunning) {
@@ -4495,8 +4388,6 @@ if (sessionStorage.getItem('flex_unlocked') === '1') {
   setTimeout(() => document.getElementById('lockInput').focus(), 100);
 }
 // ─────────────────────────────────────────────────────────────────
-
-loadCustomExercises();
 function openSyncModal() {
   // Populate export info
   const schedule    = JSON.parse(localStorage.getItem('grind_schedule') || '[]');
@@ -4556,35 +4447,33 @@ function importData(input) {
     try {
       const data = JSON.parse(e.target.result);
 
-      // Validate it looks like a FLEX backup
       if (!data.version || !data.grind_schedule) {
         throw new Error('Not a valid FLEX backup file');
       }
 
-      // Restore all keys
       if (data.grind_schedule)        localStorage.setItem('grind_schedule',        data.grind_schedule);
       if (data.grind_history)         localStorage.setItem('grind_history',         data.grind_history);
       if (data.flex_week_history)     localStorage.setItem('flex_week_history',     data.flex_week_history);
       if (data.flex_custom_exercises) localStorage.setItem('flex_custom_exercises', data.flex_custom_exercises);
       if (data.flex_last_randomized)  localStorage.setItem('flex_last_randomized',  data.flex_last_randomized);
 
-      // Reload schedule into memory
+      // Reload data into memory and re-render
       schedule = JSON.parse(data.grind_schedule);
+      loadCustomExercises();
+      render();
 
       const statusEl = document.getElementById('importStatus');
       statusEl.style.display = 'block';
-      statusEl.style.cssText += ';background:#e6f4ea;border:1px solid #b8dfc3;color:#1e6b3a';
+      Object.assign(statusEl.style, { background:'#1a2e1a', border:'1px solid #2d5c2d', color:'#47ff7a' });
       statusEl.textContent = '✅ Data restored successfully! Your workouts are back.';
 
-      loadCustomExercises();
-      save();
       showToast('✅ Data imported successfully!');
       setTimeout(() => closeSyncModal(), 1500);
 
     } catch (err) {
       const statusEl = document.getElementById('importStatus');
       statusEl.style.display = 'block';
-      statusEl.style.cssText += ';background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);color:#ff6b6b';
+      Object.assign(statusEl.style, { background:'rgba(255,107,107,0.1)', border:'1px solid rgba(255,107,107,0.3)', color:'#ff6b6b' });
       statusEl.textContent = '❌ Invalid backup file. Please use a file exported from FLEX.';
     }
   };
@@ -4871,7 +4760,7 @@ function buildWeekHistoryCard(weekKey, allHistory) {
       style="width:100%;background:var(--bg);border:1.5px solid var(--border);color:var(--text);padding:0.65rem 1rem;font-family:'DM Sans',sans-serif;font-size:0.9rem;border-radius:8px;outline:none"
       oninput="renderLibraryPage()"
       onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" />
-    <div id="libPageMuscleFilters" style="display:flex;gap:0.35rem;flex-wrap:wrap;overflow-x:auto;padding-bottom:2px;scrollbar-width:none"></div>
+    <div id="libPageMuscleFilters" style="display:flex;gap:0.35rem;overflow-x:auto;padding-bottom:2px;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none"></div>
   </div>
   <div class="page-body" id="libPageContent"></div>
 </div>
