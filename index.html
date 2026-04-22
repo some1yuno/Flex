@@ -1752,7 +1752,94 @@
     /* Floating timer sits above nav */
     .floating-timer { bottom: 72px; }
   }
-  /* ── Swipe to delete (mobile only) ──────────────────────────── */
+  /* ── Session Bar (mobile) ────────────────────────────────────── */
+  @media (max-width: 600px) {
+    .session-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1rem;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      gap: 0.75rem;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .session-bar-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .session-bar-label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 2px;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .session-bar-sub {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+    }
+
+    /* Active state — timer shown instead of subtext */
+    .session-bar.active {
+      background: linear-gradient(135deg, rgba(196,184,232,0.08) 0%, var(--surface) 100%);
+      border-bottom-color: rgba(196,184,232,0.2);
+    }
+
+    .session-bar.active .session-bar-label {
+      color: var(--accent-vivid);
+    }
+
+    .session-bar.active .session-bar-sub {
+      color: var(--accent);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+    }
+
+    .session-bar-btn {
+      flex-shrink: 0;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 2px;
+      padding: 0.65rem 1.25rem;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--accent);
+      color: #0d0a12;
+      box-shadow: 0 0 18px rgba(196,184,232,0.25);
+    }
+
+    .session-bar-btn:active {
+      transform: scale(0.97);
+    }
+
+    .session-bar-btn.ending {
+      background: rgba(255,107,107,0.15);
+      color: #ff6b6b;
+      border: 1.5px solid rgba(255,107,107,0.4);
+      box-shadow: 0 0 18px rgba(255,107,107,0.15);
+    }
+
+    /* Hide the old tiny header session button on mobile */
+    #sessionBtn { display: none !important; }
+  }
+
+  /* On desktop, keep header button, hide session bar */
+  @media (min-width: 601px) {
+    .session-bar { display: none !important; }
+  }
   @media (max-width: 600px) {
     .swipe-wrapper {
       position: relative;
@@ -2082,6 +2169,16 @@
 <!-- MOBILE DAY VIEW -->
 <div id="mobileDayView" style="display:none">
   <div class="day-tabs" id="dayTabs"></div>
+
+  <!-- SESSION BAR -->
+  <div id="sessionBar" class="session-bar">
+    <div class="session-bar-info">
+      <div class="session-bar-label" id="sessionBarLabel">Today's Session</div>
+      <div class="session-bar-sub" id="sessionBarSub">Not started</div>
+    </div>
+    <button class="session-bar-btn" id="sessionBarBtn" onclick="toggleSession()">▶ Start Session</button>
+  </div>
+
   <div class="mobile-day-panel" id="mobileDayPanel"></div>
 </div>
 
@@ -4996,22 +5093,63 @@ function fmtTime(secs) {
 }
 
 function updateSessionBtn() {
+  // ── Old header button (desktop) ──────────────────────────────
   const btn = document.getElementById('sessionBtn');
-  if (!btn) return;
+  if (btn) {
+    if (sessionInterval) {
+      btn.textContent = '⏹ End Session';
+      btn.style.background = 'rgba(255,107,107,0.15)';
+      btn.style.borderColor = 'rgba(255,107,107,0.5)';
+      btn.style.color = '#ff6b6b';
+      btn.onmouseover = () => { btn.style.background = 'rgba(255,107,107,0.25)'; };
+      btn.onmouseout  = () => { btn.style.background = 'rgba(255,107,107,0.15)'; };
+    } else {
+      btn.textContent = '▶ Start Session';
+      btn.style.background = 'rgba(196,184,232,0.15)';
+      btn.style.borderColor = 'rgba(196,184,232,0.4)';
+      btn.style.color = 'var(--accent)';
+      btn.onmouseover = () => { btn.style.background = 'rgba(196,184,232,0.25)'; };
+      btn.onmouseout  = () => { btn.style.background = 'rgba(196,184,232,0.15)'; };
+    }
+  }
+
+  // ── New session bar (mobile) ──────────────────────────────────
+  const bar    = document.getElementById('sessionBar');
+  const barBtn = document.getElementById('sessionBarBtn');
+  const barLbl = document.getElementById('sessionBarLabel');
+  const barSub = document.getElementById('sessionBarSub');
+  if (!bar) return;
+
   if (sessionInterval) {
-    btn.textContent = '⏹ End Session';
-    btn.style.background = 'rgba(255,107,107,0.15)';
-    btn.style.borderColor = 'rgba(255,107,107,0.5)';
-    btn.style.color = '#ff6b6b';
-    btn.onmouseover = () => { btn.style.background = 'rgba(255,107,107,0.25)'; };
-    btn.onmouseout  = () => { btn.style.background = 'rgba(255,107,107,0.15)'; };
+    bar.classList.add('active');
+    barLbl.textContent = 'Session Active';
+    barBtn.textContent = '⏹ End Session';
+    barBtn.classList.add('ending');
+    // Start ticking the live elapsed time
+    if (!bar._ticker) {
+      bar._ticker = setInterval(() => {
+        if (barSub && sessionInterval) {
+          const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
+          barSub.textContent = '⏱ ' + fmtTime(elapsed);
+        }
+      }, 1000);
+      // Show immediately
+      if (barSub && sessionStartTime) {
+        const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
+        barSub.textContent = '⏱ ' + fmtTime(elapsed);
+      }
+    }
   } else {
-    btn.textContent = '▶ Start Session';
-    btn.style.background = 'rgba(196,184,232,0.15)';
-    btn.style.borderColor = 'rgba(196,184,232,0.4)';
-    btn.style.color = 'var(--accent)';
-    btn.onmouseover = () => { btn.style.background = 'rgba(196,184,232,0.25)'; };
-    btn.onmouseout  = () => { btn.style.background = 'rgba(196,184,232,0.15)'; };
+    bar.classList.remove('active');
+    barLbl.textContent = "Today's Session";
+    barSub.textContent = 'Not started';
+    barBtn.textContent = '▶ Start Session';
+    barBtn.classList.remove('ending');
+    // Stop ticking
+    if (bar._ticker) {
+      clearInterval(bar._ticker);
+      bar._ticker = null;
+    }
   }
 }
 
@@ -5326,6 +5464,7 @@ document.getElementById('syncModalBg').addEventListener('click', function(e) {
 loadCustomExercises();
 checkAndRandomizeForNewWeek();
 render();
+updateSessionBtn();
 
 // Re-render on resize (desktop ↔ mobile)
 let resizeTimer;
