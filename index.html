@@ -264,9 +264,13 @@
   }
 
   .workout-card.done {
-    opacity: 0.38;
+    background: var(--surface);
+    border-color: var(--border);
     border-left-color: var(--border) !important;
   }
+  .workout-card.done .wc-zone-top  { opacity: 0.45; }
+  .workout-card.done .wc-zone-divider { opacity: 0.3; }
+  .workout-card.done .wc-zone-bottom { opacity: 0.5; }
   .workout-card.done .wc-name { text-decoration: line-through; color: var(--muted); }
 
   /* Two-zone layout */
@@ -1766,7 +1770,10 @@
       padding-right: 1.25rem;
       border-radius: 10px;
       pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s;
     }
+    .swipe-delete-bg.visible { opacity: 1; }
     .swipe-delete-icon {
       display: flex;
       flex-direction: column;
@@ -2906,7 +2913,8 @@ function attachSwipeToDelete(card, wrapper, deleteBg, di, wi) {
 
     card.style.transform = `translateX(${currentX}px)`;
 
-    // Fade in delete icon proportionally
+    // Show bg and fade in icon proportionally
+    deleteBg.classList.add('visible');
     const icon = deleteBg.querySelector('.swipe-delete-icon');
     icon.style.opacity = Math.min(1, travel / THRESHOLD);
   }, { passive: false });
@@ -2934,6 +2942,7 @@ function attachSwipeToDelete(card, wrapper, deleteBg, di, wi) {
       const snapBack = () => {
         card.style.transition = 'transform 0.25s ease';
         card.style.transform = 'translateX(0)';
+        deleteBg.classList.remove('visible');
         deleteBg.style.pointerEvents = 'none';
         deleteBg.onclick = null;
         deleteBg.querySelector('.swipe-delete-icon').style.opacity = 0;
@@ -2943,6 +2952,7 @@ function attachSwipeToDelete(card, wrapper, deleteBg, di, wi) {
     } else {
       // Snapped back
       card.style.transform = 'translateX(0)';
+      deleteBg.classList.remove('visible');
       deleteBg.querySelector('.swipe-delete-icon').style.opacity = 0;
     }
     dragging = false;
@@ -3022,6 +3032,7 @@ function showSwipeDeleteConfirm(card, wrapper, di, wi) {
 // ─────────────────────────────────────────────────────────────────
 
 function mobileNavDay(dir) {
+  const mon = getMonday();
   const today = new Date().getDay();
   const todayCol = today === 0 ? 6 : today - 1;
   mobileActiveDay = Math.max(0, Math.min(6, (mobileActiveDay || 0) + dir));
@@ -4266,26 +4277,54 @@ function openLogModal(di, wi) {
     `<span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px">${muscle ? muscle + ' · ' : ''}${now.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' })}</span>`
     + (w.notes ? `<div style="display:inline-flex;align-items:center;gap:5px;margin-top:6px;font-family:'DM Mono',monospace;font-size:0.78rem;font-weight:700;color:var(--accent);background:var(--accent-light);border:2px solid var(--accent);border-radius:6px;padding:4px 10px;letter-spacing:0.5px">🎯 ${w.notes}</div>` : '');
 
-  // Populate set rows — seed with last session's sets if available
+  // Populate set rows — use today's logged sets if they exist, otherwise seed from last session
   const history = getHistory(w.name);
-  const last = history.length ? history[history.length - 1] : null;
-  const seedSets = last ? last.sets : [{}];
+  const todayStr = new Date().toISOString().split('T')[0];
+  const todayEntry = history.find(h => h.date === todayStr);
+  const last = history.filter(h => h.date !== todayStr).slice(-1)[0] || null;
+  const seedEntry = todayEntry || last;
+  const seedSets  = seedEntry ? seedEntry.sets : [{}];
 
   document.getElementById('setRows').innerHTML = '';
-  seedSets.forEach(() => addSetRow());
+  clearWarmupRows();
+  clearDropRows();
+  seedSets.forEach(s => addSetRow(s.superset));
 
-  // Fill in last session weights/reps as placeholder hints
-  if (last) {
-    const rows = document.querySelectorAll('#setRows .set-row');
-    last.sets.forEach((s, i) => {
-      if (rows[i]) {
-        rows[i].querySelector('.inp-weight').placeholder = s.weight || '';
-        rows[i].querySelector('.inp-reps').placeholder = s.reps || '';
-      }
+  const rows = document.querySelectorAll('#setRows .set-row');
+  seedSets.forEach((s, i) => {
+    if (!rows[i]) return;
+    if (todayEntry) {
+      // Fill actual values from today's log
+      rows[i].querySelector('.inp-weight').value = s.weight || '';
+      rows[i].querySelector('.inp-reps').value   = s.reps   || '';
+    } else {
+      // Use last session as placeholder hints only
+      rows[i].querySelector('.inp-weight').placeholder = s.weight || '';
+      rows[i].querySelector('.inp-reps').placeholder   = s.reps   || '';
+    }
+  });
+
+  // Pre-fill warmup and drops from today's entry if they exist
+  if (todayEntry?.warmup?.length) {
+    todayEntry.warmup.forEach(() => addWarmupRow());
+    const wRows = document.querySelectorAll('#warmupRows .warmup-row');
+    todayEntry.warmup.forEach((s, i) => {
+      if (!wRows[i]) return;
+      wRows[i].querySelector('.inp-weight').value = s.weight || '';
+      wRows[i].querySelector('.inp-reps').value   = s.reps   || '';
+    });
+  }
+  if (todayEntry?.drops?.length) {
+    todayEntry.drops.forEach(() => addDropRow());
+    const dRows = document.querySelectorAll('#dropRows .drop-row');
+    todayEntry.drops.forEach((s, i) => {
+      if (!dRows[i]) return;
+      dRows[i].querySelector('.inp-weight').value = s.weight || '';
+      dRows[i].querySelector('.inp-reps').value   = s.reps   || '';
     });
   }
 
-  // Show last session preview
+  // Show last session preview (prior session, not today)
   const lastWrap = document.getElementById('lastSessionWrap');
   if (last) {
     lastWrap.style.display = 'block';
@@ -4300,7 +4339,7 @@ function openLogModal(di, wi) {
             border:1px solid ${(s.weight||0) === maxWeight ? 'var(--accent)' : 'var(--border)'};
             color:${(s.weight||0) === maxWeight ? 'var(--accent)' : 'var(--text)'};
             border-radius:8px;">
-            Set ${i+1}: ${s.weight ? s.weight+'lbs' : '—'} × ${s.reps || '—'}${s.note ? ' · '+s.note : ''}
+            Set ${i+1}: ${s.weight ? s.weight+'lbs' : '—'} × ${s.reps || '—'}
           </span>`).join('')}
       </div>
     `;
@@ -4312,8 +4351,6 @@ function openLogModal(di, wi) {
 
   // Start/continue session timer, reset rest timer display
   // Pre-fill session notes from today's existing entry if any
-  const todayStr = new Date().toISOString().split('T')[0];
-  const todayEntry = getHistory(w.name).find(h => h.date === todayStr);
   document.getElementById('sessionNotes').value = todayEntry?.note || '';
 
   // Show/hide timer bar based on session state
@@ -4558,7 +4595,18 @@ function saveLog() {
     if (weight > 0 || reps > 0) drops.push({ weight, reps });
   });
 
-  if (!sets.length) { alert('Add at least one set with weight or reps!'); return; }
+  const todayDateStr = new Date().toISOString().split('T')[0];
+  const existingTodayLog = logTarget && !_editingHistoryDate
+    ? getHistory(schedule[logTarget.di].workouts[logTarget.wi].name).find(h => h.date === todayDateStr)
+    : null;
+
+  if (!sets.length && !existingTodayLog) {
+    showToast('⚠️ Add at least one set before saving');
+    return;
+  }
+
+  // If no new sets entered but today's log exists, keep the existing sets
+  const finalSets = sets.length ? sets : (existingTodayLog?.sets || []);
 
   const sessionNote = document.getElementById('sessionNotes').value.trim();
 
@@ -4585,7 +4633,7 @@ function saveLog() {
   const history = getHistory(w.name);
   const today = new Date().toISOString().split('T')[0];
   const existing = history.findIndex(h => h.date === today);
-  const entry = { date: today, sets, note: sessionNote, ...(warmup.length && { warmup }), ...(drops.length && { drops }) };
+  const entry = { date: today, sets: finalSets, note: sessionNote, ...(warmup.length && { warmup }), ...(drops.length && { drops }) };
   if (existing >= 0) history[existing] = entry;
   else history.push(entry);
   saveHistory(w.name, history);
