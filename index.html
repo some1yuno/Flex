@@ -2677,7 +2677,6 @@ function renderMobileDay(di, mon, todayCol) {
       <div style="text-align:center;padding:2.5rem 1rem 1rem">
         <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:2px;color:var(--border-strong);margin-bottom:0.5rem">No Workouts</div>
         <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:1.25rem">Tap below to add exercises or load a program</div>
-        <button onclick="openAdd(${di})" style="font-family:'DM Mono',monospace;font-size:0.7rem;padding:0.75rem 1.5rem;border-radius:8px;border:1.5px solid var(--border-strong);background:var(--accent-light);color:var(--accent);cursor:pointer;text-transform:uppercase;letter-spacing:1px">+ Add Exercise</button>
       </div>`;
   }
 
@@ -3018,6 +3017,8 @@ function showSwipeDeleteConfirm(card, wrapper, di, wi) {
   sheet.querySelector('#swipeDeleteCancelBtn').addEventListener('click', () => {
     card.style.transition = 'transform 0.3s ease';
     card.style.transform = 'translateX(0)';
+    const deleteBg = wrapper.querySelector('.swipe-delete-bg');
+    if (deleteBg) deleteBg.classList.remove('visible');
     const icon = wrapper.querySelector('.swipe-delete-icon');
     if (icon) icon.style.opacity = 0;
     sheet.remove();
@@ -3029,6 +3030,8 @@ function showSwipeDeleteConfirm(card, wrapper, di, wi) {
       if (!sheet.contains(e.target)) {
         card.style.transition = 'transform 0.3s ease';
         card.style.transform = 'translateX(0)';
+        const deleteBg = wrapper.querySelector('.swipe-delete-bg');
+        if (deleteBg) deleteBg.classList.remove('visible');
         const icon = wrapper.querySelector('.swipe-delete-icon');
         if (icon) icon.style.opacity = 0;
         sheet.remove();
@@ -3565,6 +3568,7 @@ function openAdd(di) {
   document.getElementById('inpNotes').value = '';
   document.getElementById('deleteBtn').style.display = 'none';
   selectType('strength');
+  resetCustomMusclePicker();
   document.getElementById('modalBg').classList.add('open');
   setTimeout(() => document.getElementById('inpName').focus(), 300);
 }
