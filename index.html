@@ -2256,13 +2256,27 @@
 <!-- LOG SETS MODAL -->
 <div class="modal-bg" id="logModalBg">
   <div class="modal" style="width:min(560px,96vw);max-height:88vh;overflow-y:auto;padding:0">
-    <div style="padding:1.5rem 1.5rem 1rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:5">
-      <button class="modal-close" onclick="closeLogModal()">✕</button>
-      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.2rem">
-        <h2 id="logModalTitle" style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:2px;color:var(--accent)"></h2>
-        <button onclick="openProgress()" id="progressBtn" style="margin-left:auto;font-family:'DM Mono',monospace;font-size:0.6rem;padding:0.3rem 0.7rem;background:none;border:1px solid var(--border);color:var(--muted);border-radius:3px;cursor:pointer;text-transform:uppercase;letter-spacing:1px;transition:all 0.15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">📈 View Progress</button>
+
+    <!-- HEADER -->
+    <div id="logModalHeader" style="position:sticky;top:0;z-index:5;background:var(--surface);border-bottom:1px solid var(--border)">
+      <!-- Coloured muscle accent bar — updated dynamically -->
+      <div id="logModalAccentBar" style="height:3px;width:100%;background:var(--accent);transition:background 0.3s"></div>
+
+      <div style="padding:1rem 1.25rem 0.85rem">
+
+        <!-- Title + action buttons all in one row -->
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.5rem">
+          <h2 id="logModalTitle" style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:2px;color:var(--text);line-height:1;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></h2>
+          <button onclick="openProgress()" id="progressBtn"
+            style="flex-shrink:0;display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:0.62rem;padding:0.45rem 0.9rem;background:var(--accent-light);border:1.5px solid var(--border-strong);color:var(--accent);border-radius:8px;cursor:pointer;text-transform:uppercase;letter-spacing:1px;transition:all 0.15s;white-space:nowrap;margin-top:4px"
+            onmouseover="this.style.background='var(--accent)';this.style.color='#0d0a12';this.style.borderColor='var(--accent)'"
+            onmouseout="this.style.background='var(--accent-light)';this.style.color='var(--accent)';this.style.borderColor='var(--border-strong)'">📈 Progress</button>
+          <button class="modal-close" style="position:static;flex-shrink:0;margin-top:2px" onclick="closeLogModal()">✕</button>
+        </div>
+
+        <!-- Meta row — muscle tag pill + target -->
+        <div id="logModalMeta" style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap"></div>
       </div>
-      <div id="logModalMeta" style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px"></div>
     </div>
 
     <div style="padding:1.25rem 1.5rem">
@@ -2306,54 +2320,67 @@
       </div>
 
       <!-- WARM-UP SETS -->
-      <div id="warmupSection" style="margin-bottom:1rem">
+      <div id="warmupSection" style="margin-bottom:1rem;background:rgba(255,179,71,0.04);border:1px solid rgba(255,179,71,0.15);border-left:3px solid #ffb347;border-radius:8px;padding:0.75rem 0.85rem">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem">
-          <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:#ffb347;text-transform:uppercase;letter-spacing:1.5px">🔥 Warm-up Sets</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:#ffb347;text-transform:uppercase;letter-spacing:1.5px;font-weight:700">🔥 Warm-up Sets</div>
           <button onclick="addWarmupRow()" style="font-family:'DM Mono',monospace;font-size:0.6rem;padding:5px 12px;background:rgba(255,179,71,0.1);border:1px solid rgba(255,179,71,0.35);color:#ffb347;border-radius:6px;cursor:pointer;transition:all 0.15s" onmouseover="this.style.background='rgba(255,179,71,0.2)'" onmouseout="this.style.background='rgba(255,179,71,0.1)'">+ Add Warm-up</button>
         </div>
         <div id="warmupRows"></div>
-        <div id="warmupEmpty" style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--border-strong);padding:0.4rem 0">No warm-up sets — optional</div>
+        <div id="warmupEmpty" style="font-family:'DM Mono',monospace;font-size:0.6rem;color:rgba(255,179,71,0.4);padding:0.3rem 0">No warm-up sets — optional</div>
       </div>
 
-      <!-- SET ROWS HEADER with superset toggle -->
-      <div style="display:grid;grid-template-columns:1.8rem 1fr 1fr 2rem 2rem;gap:0.4rem;align-items:center;margin-bottom:0.5rem">
-        <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--muted);text-transform:uppercase">Set</div>
-        <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--muted);text-transform:uppercase">Weight (lbs)</div>
-        <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--muted);text-transform:uppercase">Reps</div>
-        <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--muted);text-transform:uppercase;text-align:center" title="Superset toggle — tap A/B to pair sets">SS</div>
-        <div></div>
+      <!-- WORKING SETS -->
+      <div style="background:rgba(196,184,232,0.04);border:1px solid rgba(196,184,232,0.15);border-left:3px solid var(--accent);border-radius:8px;padding:0.75rem 0.85rem;margin-bottom:0.5rem">
+        <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;font-weight:700;margin-bottom:0.6rem">💪 Working Sets</div>
+        <div style="display:grid;grid-template-columns:1.8rem 1fr 1fr 2rem 2rem;gap:0.4rem;align-items:center;margin-bottom:0.5rem">
+          <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--muted);text-transform:uppercase">Set</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--muted);text-transform:uppercase">Weight (lbs)</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--muted);text-transform:uppercase">Reps</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--muted);text-transform:uppercase;text-align:center" title="Superset toggle — tap A/B to pair sets">SS</div>
+          <div></div>
+        </div>
+        <div id="setRows"></div>
+        <button onclick="addSetRow()" style="width:100%;padding:0.45rem;background:none;border:1px dashed rgba(196,184,232,0.25);color:var(--muted);font-family:'DM Mono',monospace;font-size:0.65rem;border-radius:6px;cursor:pointer;margin-top:0.4rem;transition:all 0.15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='rgba(196,184,232,0.25)';this.style.color='var(--muted)'">+ Add Set</button>
       </div>
-      <div id="setRows"></div>
-      <button onclick="addSetRow()" style="width:100%;padding:0.45rem;background:none;border:1px dashed var(--border);color:var(--muted);font-family:'DM Mono',monospace;font-size:0.65rem;border-radius:3px;cursor:pointer;margin-top:0.4rem;transition:all 0.15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">+ Add Set</button>
 
       <!-- DROP SETS -->
-      <div id="dropSetSection" style="margin-top:1rem">
+      <div id="dropSetSection" style="background:rgba(244,114,182,0.04);border:1px solid rgba(244,114,182,0.15);border-left:3px solid #f472b6;border-radius:8px;padding:0.75rem 0.85rem;margin-bottom:0.5rem">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem">
           <div>
-            <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:#f472b6;text-transform:uppercase;letter-spacing:1.5px">⬇️ Drop Sets</div>
-            <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--muted);margin-top:2px">Reduce weight immediately after failure</div>
+            <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:#f472b6;text-transform:uppercase;letter-spacing:1.5px;font-weight:700">⬇️ Drop Sets</div>
+            <div style="font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--muted);margin-top:2px">Reduce weight immediately after failure</div>
           </div>
           <button onclick="addDropRow()" style="font-family:'DM Mono',monospace;font-size:0.6rem;padding:5px 12px;background:rgba(244,114,182,0.1);border:1px solid rgba(244,114,182,0.35);color:#f472b6;border-radius:6px;cursor:pointer;transition:all 0.15s" onmouseover="this.style.background='rgba(244,114,182,0.2)'" onmouseout="this.style.background='rgba(244,114,182,0.1)'">+ Add Drop</button>
         </div>
         <div id="dropRows"></div>
-        <div id="dropEmpty" style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--border-strong);padding:0.4rem 0">No drop sets — optional</div>
+        <div id="dropEmpty" style="font-family:'DM Mono',monospace;font-size:0.6rem;color:rgba(244,114,182,0.4);padding:0.3rem 0">No drop sets — optional</div>
       </div>
 
       <!-- LAST SESSION PREVIEW -->
-      <div id="lastSessionWrap" style="margin-top:1.25rem;display:none">
-        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.5rem">Last Session</div>
-        <div id="lastSessionContent" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0.75rem"></div>
+      <div id="lastSessionWrap" style="margin-top:1rem;display:none">
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow:hidden">
+          <div style="display:flex;align-items:center;gap:0.5rem;padding:0.6rem 0.85rem;border-bottom:1px solid var(--border);background:var(--surface)">
+            <span style="font-size:0.9rem">📅</span>
+            <span style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px">Previous Session</span>
+          </div>
+          <div id="lastSessionContent" style="padding:0.75rem 0.85rem"></div>
+        </div>
       </div>
 
       <!-- SESSION NOTES -->
       <div style="margin-top:1rem">
         <label style="font-family:'DM Mono',monospace;font-size:0.6rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);display:block;margin-bottom:0.35rem">Session Notes <span style="color:var(--border-strong)">— optional</span></label>
         <textarea id="sessionNotes" placeholder="e.g. felt strong today, shoulder was tight, went heavier on last set…" rows="2"
-          style="width:100%;background:var(--bg);border:1.5px solid var(--border);color:var(--text);padding:0.6rem 0.8rem;font-family:'DM Sans',sans-serif;font-size:0.85rem;border-radius:8px;outline:none;resize:none;transition:border 0.15s;font-family:'DM Sans',sans-serif"
+          style="width:100%;background:var(--bg);border:1.5px solid var(--border);color:var(--text);padding:0.6rem 0.8rem;font-family:'DM Sans',sans-serif;font-size:0.85rem;border-radius:8px;outline:none;resize:none;transition:border 0.15s"
           onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
       </div>
 
-      <button onclick="saveLog()" class="btn-primary" style="margin-top:1.25rem">SAVE SESSION</button>
+      <!-- SAVE BUTTON -->
+      <button onclick="saveLog()" style="margin-top:1.25rem;width:100%;padding:1rem;background:var(--accent);border:none;border-radius:12px;color:#0d0a12;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:3px;cursor:pointer;transition:all 0.2s;box-shadow:0 0 24px rgba(196,184,232,0.3);display:flex;align-items:center;justify-content:center;gap:0.5rem"
+        onmouseover="this.style.background='var(--accent-vivid)';this.style.boxShadow='0 0 32px rgba(196,184,232,0.45)'"
+        onmouseout="this.style.background='var(--accent)';this.style.boxShadow='0 0 24px rgba(196,184,232,0.3)'">
+        ✓ SAVE SESSION
+      </button>
     </div>
   </div>
 </div>
@@ -2475,8 +2502,14 @@ function editHistoryLog(exerciseName, date) {
   const entry = history.find(h => h.date === date);
 
   document.getElementById('logModalTitle').textContent = exerciseName;
-  document.getElementById('logModalMeta').textContent =
-    `Editing: ${new Date(date+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})}`;
+
+  const muscle = MUSCLE_MAP[exerciseName];
+  const mc = muscle ? (MUSCLE_COLORS[muscle] || { color:'var(--accent)', border:'var(--border-strong)' }) : null;
+  const accentBar = document.getElementById('logModalAccentBar');
+  if (accentBar) accentBar.style.background = mc ? mc.color : '#ffb347';
+  document.getElementById('logModalMeta').innerHTML =
+    (muscle ? `<span style="font-family:'DM Mono',monospace;font-size:0.6rem;padding:3px 10px;border-radius:20px;border:1.5px solid ${mc.border};color:${mc.color};background:${mc.bg||'transparent'};text-transform:uppercase;letter-spacing:0.5px">${muscle}</span>` : '')
+    + `<span style="font-family:'DM Mono',monospace;font-size:0.6rem;padding:3px 10px;border-radius:20px;border:1.5px solid rgba(255,179,71,0.35);color:#ffb347;text-transform:uppercase;letter-spacing:0.5px">✏️ Editing</span>`;
 
   document.getElementById('setRows').innerHTML = '';
   if (entry) {
@@ -4453,10 +4486,17 @@ function openLogModal(di, wi) {
   document.getElementById('logModalTitle').textContent = w.name;
 
   const muscle = MUSCLE_MAP[w.name];
-  const now = new Date();
-  document.getElementById('logModalMeta').innerHTML =
-    `<span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px">${muscle ? muscle + ' · ' : ''}${now.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' })}</span>`
-    + (w.notes ? `<div style="display:inline-flex;align-items:center;gap:5px;margin-top:6px;font-family:'DM Mono',monospace;font-size:0.78rem;font-weight:700;color:var(--accent);background:var(--accent-light);border:2px solid var(--accent);border-radius:6px;padding:4px 10px;letter-spacing:0.5px">🎯 ${w.notes}</div>` : '');
+  const mc = muscle ? (MUSCLE_COLORS[muscle] || { color:'var(--accent)', border:'var(--border-strong)' }) : null;
+
+  // Accent bar — use muscle colour or default accent
+  const accentBar = document.getElementById('logModalAccentBar');
+  if (accentBar) accentBar.style.background = mc ? mc.color : 'var(--accent)';
+
+  // Meta row — muscle pill + target badge only (no date)
+  const metaEl = document.getElementById('logModalMeta');
+  metaEl.innerHTML =
+    (muscle ? `<span style="font-family:'DM Mono',monospace;font-size:0.6rem;padding:3px 10px;border-radius:20px;border:1.5px solid ${mc.border};color:${mc.color};background:${mc.bg||'transparent'};text-transform:uppercase;letter-spacing:0.5px">${muscle}</span>` : '')
+    + (w.notes ? `<span style="display:inline-flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:0.72rem;font-weight:700;color:var(--accent);background:var(--accent-light);border:1.5px solid var(--accent);border-radius:6px;padding:3px 10px;letter-spacing:0.5px">🎯 ${w.notes}</span>` : '');
 
   // Populate set rows — use today's logged sets if they exist, otherwise seed from last session
   const history = getHistory(w.name);
