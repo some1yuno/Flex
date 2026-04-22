@@ -2108,11 +2108,19 @@
       <div style="position:relative;margin-bottom:1.1rem">
         <input id="inpName" type="text" placeholder="Search exercises…" autocomplete="off"
           style="width:100%;background:var(--bg);border:1.5px solid var(--border);color:var(--text);padding:0.75rem 1rem;font-family:'DM Sans',sans-serif;font-size:1rem;border-radius:10px;outline:none;-webkit-appearance:none;appearance:none"
-          oninput="showExerciseSuggestions(this.value)"
+          oninput="showExerciseSuggestions(this.value);checkCustomMuscle(this.value)"
           onfocus="this.style.borderColor='var(--accent)';showExerciseSuggestions(this.value)"
           onblur="this.style.borderColor='var(--border)';setTimeout(hideExerciseSuggestions,150)"
           onkeydown="handleSuggestionKey(event)" />
         <div id="exerciseSuggestions" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--surface);border:1.5px solid var(--accent);border-radius:10px;z-index:9999;max-height:220px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,0.4)"></div>
+      </div>
+
+      <!-- Muscle group picker — shown only when name isn't in the library -->
+      <div id="customMusclePicker" style="display:none;margin-top:-0.5rem;margin-bottom:1.1rem;background:var(--bg);border:1.5px solid var(--accent);border-radius:10px;padding:0.85rem 1rem">
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:0.6rem">
+          ✨ New exercise — what muscle does it work?
+        </div>
+        <div id="customMuscleOptions" style="display:flex;flex-wrap:wrap;gap:0.35rem"></div>
       </div>
 
       <!-- Type: pill selector -->
@@ -3448,6 +3456,7 @@ function pickSuggestion(name) {
   const inp = document.getElementById('inpName');
   inp.value = name;
   hideExerciseSuggestions();
+  resetCustomMusclePicker(); // known exercise — no picker needed
   inp.style.borderColor = 'var(--accent)';
   // Auto-select type based on muscle
   const muscle = MUSCLE_MAP[name] || '';
@@ -3486,7 +3495,62 @@ function handleSuggestionKey(e) {
 }
 // ─────────────────────────────────────────────────────────────────
 
+// ── Custom exercise muscle picker ─────────────────────────────────
+let _selectedCustomMuscle = null;
+
+function checkCustomMuscle(name) {
+  const picker   = document.getElementById('customMusclePicker');
+  const optWrap  = document.getElementById('customMuscleOptions');
+  const trimmed  = (name || '').trim();
+
+  // Hide if empty or already in the library
+  if (!trimmed || MUSCLE_MAP[trimmed]) {
+    picker.style.display = 'none';
+    _selectedCustomMuscle = null;
+    return;
+  }
+
+  // Build muscle pill buttons if not already built
+  if (!optWrap.children.length) {
+    const muscles = [...new Set(Object.values(MUSCLE_MAP))].sort();
+    muscles.forEach(m => {
+      const c   = MUSCLE_COLORS[m] || { color:'var(--muted)', border:'var(--border)' };
+      const btn = document.createElement('button');
+      btn.type  = 'button';
+      btn.textContent = m;
+      btn.dataset.muscle = m;
+      btn.style.cssText = `font-family:'DM Mono',monospace;font-size:0.6rem;padding:4px 10px;border-radius:20px;border:1.5px solid ${c.border};color:${c.color};background:transparent;cursor:pointer;transition:all 0.15s;white-space:nowrap`;
+      btn.addEventListener('click', () => {
+        // Deselect all
+        optWrap.querySelectorAll('button').forEach(b => {
+          const bc = MUSCLE_COLORS[b.dataset.muscle] || { color:'var(--muted)', border:'var(--border)' };
+          b.style.background = 'transparent';
+          b.style.color      = bc.color;
+          b.style.fontWeight = '400';
+        });
+        // Select this one
+        btn.style.background  = c.color;
+        btn.style.color       = '#0d0a12';
+        btn.style.fontWeight  = '700';
+        _selectedCustomMuscle = m;
+      });
+      optWrap.appendChild(btn);
+    });
+  }
+
+  picker.style.display = 'block';
+}
+
+function resetCustomMusclePicker() {
+  const optWrap = document.getElementById('customMuscleOptions');
+  optWrap.innerHTML = '';
+  document.getElementById('customMusclePicker').style.display = 'none';
+  _selectedCustomMuscle = null;
+}
+// ─────────────────────────────────────────────────────────────────
+
 function selectType(val) {
+  document.getElementById('inpType').value = val;
   document.querySelectorAll('.type-pill').forEach(p => {
     p.classList.toggle('active', p.dataset.val === val);
   });
@@ -3521,6 +3585,7 @@ function openEdit(di, wi) {
 function closeModal() {
   document.getElementById('modalBg').classList.remove('open');
   hideExerciseSuggestions();
+  resetCustomMusclePicker();
   editTarget = null;
   currentAddDay = null;
 }
@@ -3528,6 +3593,21 @@ function closeModal() {
 function saveWorkout() {
   const name = document.getElementById('inpName').value.trim();
   if (!name) { document.getElementById('inpName').focus(); return; }
+
+  // If this is a brand-new exercise with a muscle group selected, register it
+  if (!MUSCLE_MAP[name] && _selectedCustomMuscle) {
+    const muscle = _selectedCustomMuscle;
+    MUSCLE_MAP[name] = muscle;
+    if (!EXERCISE_ALTS[muscle]) EXERCISE_ALTS[muscle] = [];
+    if (!EXERCISE_ALTS[muscle].includes(name)) EXERCISE_ALTS[muscle].push(name);
+
+    // Persist to localStorage so it survives page reloads
+    const customs = JSON.parse(localStorage.getItem('flex_custom_exercises') || '{}');
+    if (!customs[muscle]) customs[muscle] = [];
+    if (!customs[muscle].includes(name)) customs[muscle].push(name);
+    localStorage.setItem('flex_custom_exercises', JSON.stringify(customs));
+  }
+
   const workout = {
     name,
     type: document.getElementById('inpType').value,
