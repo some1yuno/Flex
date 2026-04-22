@@ -2569,6 +2569,17 @@ function render() {
     addBtn.innerHTML = '+ Add';
     addBtn.onclick = () => openAdd(di);
     list.appendChild(addBtn);
+
+    // Clear day — only if workouts exist
+    if (day.workouts.length > 0) {
+      const clearBtn = document.createElement('button');
+      clearBtn.style.cssText = 'width:100%;margin-top:0.3rem;padding:0.4rem;background:none;border:1px solid rgba(255,107,107,0.2);border-radius:5px;color:rgba(255,107,107,0.5);font-family:\'DM Mono\',monospace;font-size:0.55rem;text-transform:uppercase;letter-spacing:1px;cursor:pointer;transition:all 0.15s';
+      clearBtn.innerHTML = '🗑️ Clear';
+      clearBtn.onmouseover = () => { clearBtn.style.borderColor='rgba(255,107,107,0.5)'; clearBtn.style.color='#ff6b6b'; clearBtn.style.background='rgba(255,107,107,0.06)'; };
+      clearBtn.onmouseout  = () => { clearBtn.style.borderColor='rgba(255,107,107,0.2)'; clearBtn.style.color='rgba(255,107,107,0.5)'; clearBtn.style.background='none'; };
+      clearBtn.onclick = () => confirmClearDay(di);
+      list.appendChild(clearBtn);
+    }
   });
 
   // stats
@@ -2788,9 +2799,76 @@ function renderMobileDay(di, mon, todayCol) {
   addBtn.onclick = () => openAdd(di);
   listEl.appendChild(addBtn);
 
+  // Clear day — only if workouts exist
+  if (day.workouts.length > 0) {
+    const clearBtn = document.createElement('button');
+    clearBtn.style.cssText = 'width:100%;margin-top:0.35rem;padding:0.6rem;background:none;border:1px solid rgba(255,107,107,0.25);border-radius:8px;color:rgba(255,107,107,0.6);font-family:\'DM Mono\',monospace;font-size:0.62rem;text-transform:uppercase;letter-spacing:1px;cursor:pointer;transition:all 0.15s';
+    clearBtn.innerHTML = '🗑️ Clear Day';
+    clearBtn.onmouseover = () => { clearBtn.style.borderColor='rgba(255,107,107,0.6)'; clearBtn.style.color='#ff6b6b'; clearBtn.style.background='rgba(255,107,107,0.06)'; };
+    clearBtn.onmouseout  = () => { clearBtn.style.borderColor='rgba(255,107,107,0.25)'; clearBtn.style.color='rgba(255,107,107,0.6)'; clearBtn.style.background='none'; };
+    clearBtn.onclick = () => confirmClearDay(di);
+    listEl.appendChild(clearBtn);
+  }
+
   panel.appendChild(listEl);
 }
 
+// ── Clear Day ─────────────────────────────────────────────────────
+function confirmClearDay(di) {
+  const dayName = FULL_DAYS[di];
+  const count   = schedule[di].workouts.length;
+
+  const existing = document.getElementById('clearDaySheet');
+  if (existing) existing.remove();
+
+  const sheet = document.createElement('div');
+  sheet.id = 'clearDaySheet';
+  sheet.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:9999;background:var(--surface);border-top:3px solid rgba(255,107,107,0.6);padding:1.25rem 1.5rem 2rem;animation:slideUp 0.2s ease';
+  sheet.innerHTML = `
+    <div style="display:flex;justify-content:center;margin-bottom:1rem">
+      <div style="width:36px;height:4px;background:var(--border-strong);border-radius:2px"></div>
+    </div>
+    <div style="text-align:center;margin-bottom:1.25rem">
+      <div style="font-size:2rem;margin-bottom:0.4rem">🗑️</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;color:#ff6b6b;margin-bottom:0.25rem">Clear ${dayName}?</div>
+      <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);line-height:1.5">
+        This will remove all <span style="color:var(--text);font-weight:600">${count} workout${count !== 1 ? 's' : ''}</span> from ${dayName}.<br>This cannot be undone.
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:0.5rem">
+      <button id="clearDayConfirmBtn"
+        style="width:100%;padding:0.9rem;background:rgba(255,107,107,0.15);border:1.5px solid rgba(255,107,107,0.4);color:#ff6b6b;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:2px;border-radius:10px;cursor:pointer;transition:all 0.15s"
+        onmouseover="this.style.background='rgba(255,107,107,0.25)'"
+        onmouseout="this.style.background='rgba(255,107,107,0.15)'">
+        YES, CLEAR ${dayName.toUpperCase()}
+      </button>
+      <button id="clearDayCancelBtn"
+        style="width:100%;padding:0.9rem;background:none;border:1.5px solid var(--border-strong);color:var(--muted);font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;border-radius:10px;cursor:pointer">
+        Keep Workouts
+      </button>
+    </div>
+  `;
+
+  document.body.appendChild(sheet);
+
+  sheet.querySelector('#clearDayConfirmBtn').addEventListener('click', () => {
+    schedule[di].workouts = [];
+    save();
+    sheet.remove();
+    showToast(`🗑️ ${dayName} cleared`);
+  });
+
+  sheet.querySelector('#clearDayCancelBtn').addEventListener('click', () => sheet.remove());
+
+  setTimeout(() => {
+    document.addEventListener('click', function outsideClick(e) {
+      if (!sheet.contains(e.target)) {
+        sheet.remove();
+        document.removeEventListener('click', outsideClick);
+      }
+    });
+  }, 100);
+}
 // ── Swipe to delete ───────────────────────────────────────────────
 function attachSwipeToDelete(card, wrapper, deleteBg, di, wi) {
   const THRESHOLD   = 80;  // px to reveal delete zone
