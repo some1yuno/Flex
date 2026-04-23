@@ -1894,6 +1894,222 @@
 </style>
 </head>
 <body>
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+
+<symbol id="ic-schedule" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Dumbbell -->
+  <path d="M5 10h10"/>
+  <path d="M3 7v6M17 7v6"/>
+  <path d="M1.5 8.5v3M18.5 8.5v3"/>
+</symbol>
+
+<symbol id="ic-calendar" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Calendar -->
+  <rect x="2" y="4" width="16" height="14" rx="2"/>
+  <path d="M7 2v4M13 2v4M2 9h16"/>
+</symbol>
+
+<symbol id="ic-chart" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Bar chart (3 ascending bars) -->
+  <rect x="2" y="10" width="4" height="7" rx="0.75"/>
+  <rect x="8" y="6" width="4" height="11" rx="0.75"/>
+  <rect x="14" y="2" width="4" height="15" rx="0.75"/>
+</symbol>
+
+<symbol id="ic-library" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Stacked layers -->
+  <rect x="2" y="14" width="16" height="3.5" rx="0.75"/>
+  <rect x="4" y="8.5" width="12" height="4.5" rx="0.75"/>
+  <rect x="6" y="3" width="10" height="4.5" rx="0.75"/>
+</symbol>
+
+<symbol id="ic-search" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Magnifying glass -->
+  <circle cx="8.5" cy="8.5" r="5.5"/>
+  <path d="M12.5 12.5L17 17"/>
+</symbol>
+
+<symbol id="ic-sync" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Cloud with up arrow -->
+  <path d="M15.5 9.5a5.5 5.5 0 00-10.8-1H4a4 4 0 000 8h12a3 3 0 000-6h-1"/>
+  <path d="M10 13V7M7.5 9.5L10 7l2.5 2.5"/>
+</symbol>
+
+<symbol id="ic-strength" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Dumbbell (same as schedule, compact) -->
+  <path d="M5 10h10"/>
+  <path d="M3 7v6M17 7v6"/>
+  <path d="M1.5 8.5v3M18.5 8.5v3"/>
+</symbol>
+
+<symbol id="ic-cardio" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Running figure -->
+  <circle cx="13.5" cy="3.5" r="1.5"/>
+  <path d="M13 5.5L10.5 11"/>
+  <path d="M10 9l4-1.5"/>
+  <path d="M10.5 11L8 15.5M10.5 11l3.5 4.5"/>
+</symbol>
+
+<symbol id="ic-target" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Concentric circles / target -->
+  <circle cx="10" cy="10" r="8"/>
+  <circle cx="10" cy="10" r="4"/>
+  <circle cx="10" cy="10" r="1.5" fill="currentColor" stroke="none"/>
+</symbol>
+
+<symbol id="ic-trophy" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Trophy -->
+  <path d="M5 2h10v7a5 5 0 01-10 0V2z"/>
+  <path d="M3 3H5v4a3 3 0 01-2 0V3z"/>
+  <path d="M15 3h2v4a3 3 0 01-2 0V3z"/>
+  <path d="M10 14v3M7 17h6"/>
+</symbol>
+
+<symbol id="ic-drag" viewBox="0 0 20 20">
+  <!-- 6-dot grid drag handle -->
+  <circle cx="7" cy="5.5" r="1.3" fill="currentColor"/>
+  <circle cx="13" cy="5.5" r="1.3" fill="currentColor"/>
+  <circle cx="7" cy="10" r="1.3" fill="currentColor"/>
+  <circle cx="13" cy="10" r="1.3" fill="currentColor"/>
+  <circle cx="7" cy="14.5" r="1.3" fill="currentColor"/>
+  <circle cx="13" cy="14.5" r="1.3" fill="currentColor"/>
+</symbol>
+
+<symbol id="ic-fire" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Flame -->
+  <path d="M10 18a5 5 0 005-5c0-4-4-6.5-4-9-1 2-4 4.5-4 7.5a.75.75 0 001.5 0c0-2 1.5-3.5 1.5-5 1.5 1.5 3.5 3 3.5 6.5a5 5 0 01-5 5z"/>
+  <path d="M10 18a2.5 2.5 0 002.5-2.5c0-1.5-2.5-3-2.5-4.5-1 1.5-2.5 3-2.5 4.5A2.5 2.5 0 0010 18z"/>
+</symbol>
+
+<symbol id="ic-drop" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Arrow pointing down (drop sets) -->
+  <path d="M10 3v14"/>
+  <path d="M5.5 12.5L10 17l4.5-4.5"/>
+</symbol>
+
+<symbol id="ic-progress" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Rising line chart -->
+  <path d="M2 15L6 10 10 12 14 7 18 4"/>
+  <path d="M2 15V4"/>
+  <path d="M2 15h16"/>
+</symbol>
+
+<symbol id="ic-sparkle" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- 4-point star sparkle -->
+  <path d="M10 2l1.8 6.2L18 10l-6.2 1.8L10 18l-1.8-6.2L2 10l6.2-1.8L10 2z"/>
+</symbol>
+
+<symbol id="ic-check" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Checkmark -->
+  <path d="M3 10l5 5L17 5"/>
+</symbol>
+
+<symbol id="ic-close" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- X close -->
+  <path d="M4 4l12 12M16 4L4 16"/>
+</symbol>
+
+<symbol id="ic-trash" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Trash can -->
+  <path d="M3 6h14"/>
+  <rect x="5" y="6" width="10" height="12" rx="1.5"/>
+  <path d="M8 6V4.5a1.5 1.5 0 011.5-1.5h1A1.5 1.5 0 0112 4.5V6"/>
+  <path d="M8.5 10v4M11.5 10v4"/>
+</symbol>
+
+<symbol id="ic-edit" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Pencil -->
+  <path d="M13.5 3.5l3 3-10 10H3.5v-3l10-10z"/>
+  <path d="M11.5 5.5l3 3"/>
+</symbol>
+
+<symbol id="ic-bolt" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Lightning bolt / volume -->
+  <path d="M12 2L7 11h5l-4 7 9-9h-5l3-7z"/>
+</symbol>
+
+<symbol id="ic-clipboard" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Clipboard / sets -->
+  <rect x="4" y="4" width="12" height="14" rx="1.5"/>
+  <path d="M8 4V3a2 2 0 014 0v1"/>
+  <path d="M7 9.5h6M7 13h4"/>
+</symbol>
+
+<symbol id="ic-rest" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Crescent moon (rest) -->
+  <path d="M17 12A7 7 0 015.5 3a8 8 0 100 14A7 7 0 0117 12z"/>
+</symbol>
+
+<symbol id="ic-upload" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Upload / export -->
+  <path d="M10 13V3M6.5 6.5L10 3l3.5 3.5"/>
+  <path d="M3 14v2a2 2 0 002 2h10a2 2 0 002-2v-2"/>
+</symbol>
+
+<symbol id="ic-download" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Download / import -->
+  <path d="M10 3v10M6.5 9.5L10 13l3.5-3.5"/>
+  <path d="M3 14v2a2 2 0 002 2h10a2 2 0 002-2v-2"/>
+</symbol>
+
+<symbol id="ic-folder" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Folder -->
+  <path d="M2 7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V7z"/>
+</symbol>
+
+<symbol id="ic-tip" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Light bulb -->
+  <path d="M10 2a6 6 0 00-3 11.2V15h6v-1.8A6 6 0 0010 2z"/>
+  <path d="M7.5 15v.5a2.5 2.5 0 005 0V15"/>
+  <path d="M8.5 15h3"/>
+</symbol>
+
+<symbol id="ic-note" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Document with lines -->
+  <rect x="4" y="2" width="12" height="16" rx="1.5"/>
+  <path d="M7.5 7h5M7.5 11h5M7.5 15h3"/>
+</symbol>
+
+<symbol id="ic-shuffle" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Shuffle arrows -->
+  <path d="M2 6h3l11 8M16 6h2v2"/>
+  <path d="M2 14h3l4-3"/>
+  <path d="M14 12l4 2-4 2"/>
+</symbol>
+
+<symbol id="ic-success" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Circle with check -->
+  <circle cx="10" cy="10" r="8"/>
+  <path d="M6 10l3.5 3.5L14 7"/>
+</symbol>
+
+<symbol id="ic-error" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Circle with X -->
+  <circle cx="10" cy="10" r="8"/>
+  <path d="M7 7l6 6M13 7l-6 6"/>
+</symbol>
+
+<symbol id="ic-warn" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Triangle exclamation -->
+  <path d="M10 2L2 18h16L10 2z"/>
+  <path d="M10 8v5"/>
+  <circle cx="10" cy="15.5" r="0.8" fill="currentColor" stroke="none"/>
+</symbol>
+
+<symbol id="ic-play" viewBox="0 0 20 20">
+  <!-- Filled play triangle -->
+  <path d="M5 3l13 7-13 7V3z" fill="currentColor"/>
+</symbol>
+
+<symbol id="ic-stop" viewBox="0 0 20 20">
+  <!-- Filled stop square -->
+  <rect x="4" y="4" width="12" height="12" rx="2" fill="currentColor"/>
+</symbol>
+
+</defs>
+</svg>
+
 
 <!-- PASSWORD LOCK SCREEN -->
 <div id="lockScreen" style="position:fixed;inset:0;background:linear-gradient(180deg,#1a0f2e 0%,#0d0a12 100%);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;overflow:hidden">
@@ -1919,7 +2135,7 @@
 
 <!-- FLOATING TIMER -->
 <div class="floating-timer" id="floatingTimer">
-  <button class="ft-close" onclick="stopSession()" title="End session">✕</button>
+  <button class="ft-close" onclick="stopSession()" title="End session"><svg width="14px" height="14px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-close"/></svg></button>
   <div class="ft-session">Session</div>
   <div class="ft-session-time" id="ftSessionTime">0:00</div>
   <div class="ft-rest-wrap" id="ftRestWrap">
@@ -1934,8 +2150,8 @@
     <div class="tagline">Weekly Workout Planner</div>
   </div>
   <!-- Session button -->
-  <button id="sessionBtn" onclick="toggleSession()" class="header-session-btn" style="position:absolute;left:1.25rem;top:50%;transform:translateY(-50%);background:rgba(196,184,232,0.15);border:1.5px solid rgba(196,184,232,0.4);color:var(--accent);font-family:'DM Mono',monospace;font-size:0.62rem;padding:0.4rem 0.85rem;border-radius:20px;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s" onmouseover="this.style.background='rgba(196,184,232,0.25)'" onmouseout="if(!sessionInterval)this.style.background='rgba(196,184,232,0.15)'">▶ Start Session</button>
-  <button onclick="openSyncModal()" class="header-sync-btn" style="position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.6);font-family:'DM Mono',monospace;font-size:0.62rem;padding:0.4rem 0.85rem;border-radius:20px;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all 0.15s" onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'">☁️ Sync</button>
+  <button id="sessionBtn" onclick="toggleSession()" class="header-session-btn" style="position:absolute;left:1.25rem;top:50%;transform:translateY(-50%);background:rgba(196,184,232,0.15);border:1.5px solid rgba(196,184,232,0.4);color:var(--accent);font-family:'DM Mono',monospace;font-size:0.62rem;padding:0.4rem 0.85rem;border-radius:20px;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s" onmouseover="this.style.background='rgba(196,184,232,0.25)'" onmouseout="if(!sessionInterval)this.style.background='rgba(196,184,232,0.15)'"><svg width="14px" height="14px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-play"/></svg> Start Session</button>
+  <button onclick="openSyncModal()" class="header-sync-btn" style="position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.6);font-family:'DM Mono',monospace;font-size:0.62rem;padding:0.4rem 0.85rem;border-radius:20px;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all 0.15s" onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'"><svg width="14px" height="14px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-sync"/></svg> Sync</button>
 </header>
 
 <div class="progress-bar-wrap">
@@ -1959,7 +2175,7 @@
 <div class="prog-modal-bg" id="progModalBg">
   <div class="prog-modal">
     <div class="prog-modal-header">
-      <button class="modal-close" style="position:absolute;top:1rem;right:1rem" onclick="closeProgModal()">✕</button>
+      <button class="modal-close" style="position:absolute;top:1rem;right:1rem" onclick="closeProgModal()"><svg width="14px" height="14px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-close"/></svg></button>
       <h2 id="progModalTitle"></h2>
       <p id="progModalDesc"></p>
     </div>
@@ -2001,13 +2217,13 @@
     <div class="stat-label">Total Minutes</div>
   </div>
   <div class="stat">
-    <div class="stat-val" id="statStreak">0🔥</div>
+    <div class="stat-val" id="statStreak">0 <svg width="16px" height="16px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-fire"/></svg></div>
     <div class="stat-label">Day Streak</div>
   </div>
   <div class="stat" style="display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap" class="stats-bar-nav-btns">
-    <button onclick="openWeekHistory()" class="stats-bar-nav-btns" style="font-family:'DM Mono',monospace;font-size:0.48rem;text-transform:uppercase;letter-spacing:0.5px;padding:6px 10px;background:none;border:1.5px solid var(--border-strong);border-radius:8px;color:var(--muted);cursor:pointer;transition:all 0.15s;display:flex;flex-direction:column;align-items:center;gap:3px" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)';this.style.background='var(--accent-light)'" onmouseout="this.style.borderColor='var(--border-strong)';this.style.color='var(--muted)';this.style.background='none'"><span style="font-size:1rem;line-height:1">📅</span>History</button>
-    <button onclick="openHistorySearch()" class="stats-bar-nav-btns" style="font-family:'DM Mono',monospace;font-size:0.48rem;text-transform:uppercase;letter-spacing:0.5px;padding:6px 10px;background:none;border:1.5px solid var(--border-strong);border-radius:8px;color:var(--muted);cursor:pointer;transition:all 0.15s;display:flex;flex-direction:column;align-items:center;gap:3px" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)';this.style.background='var(--accent-light)'" onmouseout="this.style.borderColor='var(--border-strong)';this.style.color='var(--muted)';this.style.background='none'"><span style="font-size:1rem;line-height:1">🔍</span>Exercise</button>
-    <button onclick="openExerciseLibrary()" class="stats-bar-nav-btns" style="font-family:'DM Mono',monospace;font-size:0.48rem;text-transform:uppercase;letter-spacing:0.5px;padding:6px 10px;background:none;border:1.5px solid var(--border-strong);border-radius:8px;color:var(--muted);cursor:pointer;transition:all 0.15s;display:flex;flex-direction:column;align-items:center;gap:3px" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)';this.style.background='var(--accent-light)'" onmouseout="this.style.borderColor='var(--border-strong)';this.style.color='var(--muted)';this.style.background='none'"><span style="font-size:1rem;line-height:1">📚</span>Library</button>
+    <button onclick="openWeekHistory()" class="stats-bar-nav-btns" style="font-family:'DM Mono',monospace;font-size:0.48rem;text-transform:uppercase;letter-spacing:0.5px;padding:6px 10px;background:none;border:1.5px solid var(--border-strong);border-radius:8px;color:var(--muted);cursor:pointer;transition:all 0.15s;display:flex;flex-direction:column;align-items:center;gap:3px" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)';this.style.background='var(--accent-light)'" onmouseout="this.style.borderColor='var(--border-strong)';this.style.color='var(--muted)';this.style.background='none'"><svg width="18px" height="18px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-calendar"/></svg>History</button>
+    <button onclick="openHistorySearch()" class="stats-bar-nav-btns" style="font-family:'DM Mono',monospace;font-size:0.48rem;text-transform:uppercase;letter-spacing:0.5px;padding:6px 10px;background:none;border:1.5px solid var(--border-strong);border-radius:8px;color:var(--muted);cursor:pointer;transition:all 0.15s;display:flex;flex-direction:column;align-items:center;gap:3px" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)';this.style.background='var(--accent-light)'" onmouseout="this.style.borderColor='var(--border-strong)';this.style.color='var(--muted)';this.style.background='none'"><svg width="18px" height="18px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-search"/></svg>Exercise</button>
+    <button onclick="openExerciseLibrary()" class="stats-bar-nav-btns" style="font-family:'DM Mono',monospace;font-size:0.48rem;text-transform:uppercase;letter-spacing:0.5px;padding:6px 10px;background:none;border:1.5px solid var(--border-strong);border-radius:8px;color:var(--muted);cursor:pointer;transition:all 0.15s;display:flex;flex-direction:column;align-items:center;gap:3px" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)';this.style.background='var(--accent-light)'" onmouseout="this.style.borderColor='var(--border-strong)';this.style.color='var(--muted)';this.style.background='none'"><svg width="18px" height="18px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-library"/></svg>Library</button>
   </div>
 </div>
 
@@ -2019,10 +2235,10 @@
     </div>
     <div style="padding:1rem 1.5rem 0.75rem;display:flex;align-items:center;justify-content:space-between;background:var(--surface);border-bottom:1px solid var(--border)">
       <div>
-        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:2px;color:var(--accent)">☁️ Sync & Backup</h2>
+        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:2px;color:var(--accent)"><svg width="22px" height="22px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-sync"/></svg> Sync & Backup</h2>
         <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:3px">Transfer your data between devices</div>
       </div>
-      <button class="modal-close" style="position:static" onclick="closeSyncModal()">✕</button>
+      <button class="modal-close" style="position:static" onclick="closeSyncModal()"><svg width="14px" height="14px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-close"/></svg></button>
     </div>
 
     <div style="padding:1.25rem 1.5rem">
@@ -2030,30 +2246,30 @@
       <!-- EXPORT -->
       <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;margin-bottom:0.75rem">
         <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
-          <div style="font-size:1.5rem">📤</div>
+          <div style="font-size:1.5rem;line-height:1"><svg width="28px" height="28px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-upload"/></svg></div>
           <div>
             <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:1.5px;color:var(--accent)">Export Data</div>
             <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Download a backup of all your data</div>
           </div>
         </div>
         <div id="syncExportInfo" style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-bottom:0.75rem;padding:0.5rem 0.75rem;background:var(--surface);border-radius:6px;border:1px solid var(--border)"></div>
-        <button onclick="exportData()" class="btn-primary" style="font-size:0.9rem;padding:0.7rem;border-radius:8px">⬇️ Download Backup File</button>
+        <button onclick="exportData()" class="btn-primary" style="font-size:0.9rem;padding:0.7rem;border-radius:8px"><svg width="14px" height="14px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-download"/></svg> Download Backup File</button>
       </div>
 
       <!-- IMPORT -->
       <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;margin-bottom:0.75rem">
         <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
-          <div style="font-size:1.5rem">📥</div>
+          <div style="font-size:1.5rem;line-height:1"><svg width="28px" height="28px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-download"/></svg></div>
           <div>
             <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:1.5px;color:var(--accent)">Import Data</div>
             <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Restore from a backup file</div>
           </div>
         </div>
         <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:#c0392b;background:rgba(255,107,107,0.08);border:1px solid rgba(255,107,107,0.2);border-radius:6px;padding:0.5rem 0.75rem;margin-bottom:0.75rem">
-          ⚠️ This will replace all current data on this device
+          <svg width="14px" height="14px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-warn"/></svg> This will replace all current data on this device
         </div>
         <label style="display:block;width:100%">
-          <div class="btn-primary" style="font-size:0.9rem;padding:0.7rem;border-radius:8px;text-align:center;cursor:pointer">📂 Choose Backup File</div>
+          <div class="btn-primary" style="font-size:0.9rem;padding:0.7rem;border-radius:8px;text-align:center;cursor:pointer"><svg width="14px" height="14px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-folder"/></svg> Choose Backup File</div>
           <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="importData(this)" />
         </label>
         <div id="importStatus" style="display:none;margin-top:0.6rem;font-family:'DM Mono',monospace;font-size:0.65rem;padding:0.5rem 0.75rem;border-radius:6px"></div>
@@ -2061,7 +2277,7 @@
 
       <!-- HOW TO SYNC tip -->
       <div style="background:var(--accent-light);border:1px solid var(--border-strong);border-radius:10px;padding:0.85rem 1.1rem">
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:0.95rem;letter-spacing:1.5px;color:var(--accent);margin-bottom:0.4rem">💡 How to sync between devices</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:0.95rem;letter-spacing:1.5px;color:var(--accent);margin-bottom:0.4rem"><svg width="16px" height="16px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-tip"/></svg> How to sync between devices</div>
         <ol style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted);line-height:1.8;padding-left:1.1rem">
           <li>On your current device, tap <strong style="color:var(--accent)">Download Backup File</strong></li>
           <li>Send the file to your other device (AirDrop, email, Google Drive etc.)</li>
@@ -2081,7 +2297,7 @@
       <div style="width:36px;height:4px;background:var(--border-strong);border-radius:2px"></div>
     </div>
     <div style="padding:1.25rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);text-align:center">
-      <div style="font-size:2.5rem;margin-bottom:0.5rem">💪</div>
+      <div style="margin-bottom:0.5rem;color:var(--accent)"><svg width="48px" height="48px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-strength"/></svg></div>
       <h2 style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:3px;color:var(--accent)">Session Complete</h2>
       <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Great work — here's your summary</div>
     </div>
@@ -2100,10 +2316,10 @@
     </div>
     <div style="padding:1rem 1.5rem 0.75rem;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
       <div>
-        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:2px;color:var(--accent)">📚 Exercise Library</h2>
+        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:2px;color:var(--accent)"><svg width="22px" height="22px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-library"/></svg> Exercise Library</h2>
         <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px">All Planet Fitness exercises · tap to add to schedule</div>
       </div>
-      <button class="modal-close" style="position:static" onclick="closeExerciseLibrary()">✕</button>
+      <button class="modal-close" style="position:static" onclick="closeExerciseLibrary()"><svg width="14px" height="14px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-close"/></svg></button>
     </div>
     <!-- Search + filter -->
     <div style="padding:0.75rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:5">
@@ -2124,8 +2340,8 @@
       <div style="width:36px;height:4px;background:var(--border-strong);border-radius:2px"></div>
     </div>
     <div style="padding:1rem 1.5rem 0.75rem;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:2px;color:var(--accent)">🔍 Exercise History</h2>
-      <button class="modal-close" style="position:static" onclick="closeHistorySearch()">✕</button>
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:2px;color:var(--accent)"><svg width="22px" height="22px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-search"/></svg> Exercise History</h2>
+      <button class="modal-close" style="position:static" onclick="closeHistorySearch()"><svg width="14px" height="14px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-close"/></svg></button>
     </div>
     <div style="padding:1rem 1.5rem;border-bottom:1px solid var(--border)">
       <input id="historySearchInput" type="text" placeholder="Search exercises…"
@@ -2145,7 +2361,7 @@
         <h2 style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:3px;color:var(--accent)">Week History</h2>
         <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:3px">Your past weeks — planned, completed & logged</div>
       </div>
-      <button class="modal-close" style="position:static;margin-left:auto" onclick="closeWeekHistory()">✕</button>
+      <button class="modal-close" style="position:static;margin-left:auto" onclick="closeWeekHistory()"><svg width="14px" height="14px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-close"/></svg></button>
     </div>
     <div id="weekHistoryContent" style="padding:1.5rem 2rem"></div>
   </div>
@@ -2176,7 +2392,7 @@
       <div class="session-bar-label" id="sessionBarLabel">Today's Session</div>
       <div class="session-bar-sub" id="sessionBarSub">Not started</div>
     </div>
-    <button class="session-bar-btn" id="sessionBarBtn" onclick="toggleSession()">▶ Start Session</button>
+    <button class="session-bar-btn" id="sessionBarBtn" onclick="toggleSession()"><svg width="14px" height="14px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-play"/></svg> Start Session</button>
   </div>
 
   <div class="mobile-day-panel" id="mobileDayPanel"></div>
@@ -2194,7 +2410,7 @@
     <!-- Header -->
     <div style="padding:1rem 1.5rem 0.75rem;display:flex;align-items:center;justify-content:space-between;background:var(--surface);border-bottom:1px solid var(--border)">
       <h2 id="modalTitle" style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:2px;color:var(--accent)">Add Workout</h2>
-      <button class="modal-close" style="position:static" onclick="closeModal()">✕</button>
+      <button class="modal-close" style="position:static" onclick="closeModal()"><svg width="14px" height="14px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-close"/></svg></button>
     </div>
 
     <!-- Body -->
@@ -2215,7 +2431,7 @@
       <!-- Muscle group picker — shown only when name isn't in the library -->
       <div id="customMusclePicker" style="display:none;margin-top:-0.5rem;margin-bottom:1.1rem;background:var(--bg);border:1.5px solid var(--accent);border-radius:10px;padding:0.85rem 1rem">
         <div style="font-family:'DM Mono',monospace;font-size:0.6rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:0.6rem">
-          ✨ New exercise — what muscle does it work?
+          <svg width="13px" height="13px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-sparkle"/></svg> New exercise — what muscle does it work?
         </div>
         <div id="customMuscleOptions" style="display:flex;flex-wrap:wrap;gap:0.35rem"></div>
       </div>
@@ -2223,8 +2439,8 @@
       <!-- Type: pill selector -->
       <label style="font-family:'DM Mono',monospace;font-size:0.62rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);display:block;margin-bottom:0.4rem">Type</label>
       <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:0.4rem;margin-bottom:1.1rem" id="typeSelector">
-        <button type="button" class="type-pill active" data-val="strength" onclick="selectType('strength')">💪 Strength</button>
-        <button type="button" class="type-pill" data-val="cardio"   onclick="selectType('cardio')">🏃 Cardio</button>
+        <button type="button" class="type-pill active" data-val="strength" onclick="selectType('strength')"><svg width="14px" height="14px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-strength"/></svg> Strength</button>
+        <button type="button" class="type-pill" data-val="cardio"   onclick="selectType('cardio')"><svg width="14px" height="14px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-cardio"/></svg> Cardio</button>
       </div>
       <!-- Hidden select kept for JS compatibility -->
       <select id="inpType" style="display:none">
@@ -2270,8 +2486,8 @@
           <button onclick="openProgress()" id="progressBtn"
             style="flex-shrink:0;display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:0.62rem;padding:0.45rem 0.9rem;background:var(--accent-light);border:1.5px solid var(--border-strong);color:var(--accent);border-radius:8px;cursor:pointer;text-transform:uppercase;letter-spacing:1px;transition:all 0.15s;white-space:nowrap;margin-top:4px"
             onmouseover="this.style.background='var(--accent)';this.style.color='#0d0a12';this.style.borderColor='var(--accent)'"
-            onmouseout="this.style.background='var(--accent-light)';this.style.color='var(--accent)';this.style.borderColor='var(--border-strong)'">📈 Progress</button>
-          <button class="modal-close" style="position:static;flex-shrink:0;margin-top:2px" onclick="closeLogModal()">✕</button>
+            onmouseout="this.style.background='var(--accent-light)';this.style.color='var(--accent)';this.style.borderColor='var(--border-strong)'"><svg width="14px" height="14px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-progress"/></svg> Progress</button>
+          <button class="modal-close" style="position:static;flex-shrink:0;margin-top:2px" onclick="closeLogModal()"><svg width="14px" height="14px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-close"/></svg></button>
         </div>
 
         <!-- Meta row — muscle tag pill + target -->
@@ -2294,7 +2510,7 @@
               <div class="lt-rest-time" id="ltRestTime">—</div>
             </div>
             <div class="lt-ctrl-btns">
-              <button class="lt-btn start" id="ltStartBtn" onclick="startRestTimer()">▶ Start</button>
+              <button class="lt-btn start" id="ltStartBtn" onclick="startRestTimer()"><svg width="12px" height="12px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-play"/></svg> Start</button>
               <button class="lt-btn" onclick="resetRestTimer()">↺ Reset</button>
             </div>
           </div>
@@ -2313,7 +2529,7 @@
 
       <!-- AI RECOMMENDATION -->
       <div id="aiRecommendWrap" style="margin-bottom:1.25rem;background:var(--accent);border-radius:10px;padding:1rem 1.1rem;position:relative;overflow:hidden">
-        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.4rem">✨ AI Recommendation</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.4rem"><svg width="13px" height="13px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-sparkle"/></svg> AI Recommendation</div>
         <div id="aiRecommendText" style="font-family:'DM Sans',sans-serif;font-size:0.85rem;color:#fff;line-height:1.5">
           <span style="color:rgba(255,255,255,0.5);font-family:'DM Mono',monospace;font-size:0.72rem">Loading recommendation…</span>
         </div>
@@ -2322,7 +2538,7 @@
       <!-- WARM-UP SETS -->
       <div id="warmupSection" style="margin-bottom:1rem;background:rgba(255,179,71,0.04);border:1px solid rgba(255,179,71,0.15);border-left:3px solid #ffb347;border-radius:8px;padding:0.75rem 0.85rem">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem">
-          <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:#ffb347;text-transform:uppercase;letter-spacing:1.5px;font-weight:700">🔥 Warm-up Sets</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:#ffb347;text-transform:uppercase;letter-spacing:1.5px;font-weight:700"><svg width="14px" height="14px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-fire"/></svg> Warm-up Sets</div>
           <button onclick="addWarmupRow()" style="font-family:'DM Mono',monospace;font-size:0.6rem;padding:5px 12px;background:rgba(255,179,71,0.1);border:1px solid rgba(255,179,71,0.35);color:#ffb347;border-radius:6px;cursor:pointer;transition:all 0.15s" onmouseover="this.style.background='rgba(255,179,71,0.2)'" onmouseout="this.style.background='rgba(255,179,71,0.1)'">+ Add Warm-up</button>
         </div>
         <div id="warmupRows"></div>
@@ -2331,7 +2547,7 @@
 
       <!-- WORKING SETS -->
       <div style="background:rgba(196,184,232,0.04);border:1px solid rgba(196,184,232,0.15);border-left:3px solid var(--accent);border-radius:8px;padding:0.75rem 0.85rem;margin-bottom:0.5rem">
-        <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;font-weight:700;margin-bottom:0.6rem">💪 Working Sets</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;font-weight:700;margin-bottom:0.6rem"><svg width="14px" height="14px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-strength"/></svg> Working Sets</div>
         <div style="display:grid;grid-template-columns:1.8rem 1fr 1fr 2rem 2rem;gap:0.4rem;align-items:center;margin-bottom:0.5rem">
           <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--muted);text-transform:uppercase">Set</div>
           <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--muted);text-transform:uppercase">Weight (lbs)</div>
@@ -2347,7 +2563,7 @@
       <div id="dropSetSection" style="background:rgba(244,114,182,0.04);border:1px solid rgba(244,114,182,0.15);border-left:3px solid #f472b6;border-radius:8px;padding:0.75rem 0.85rem;margin-bottom:0.5rem">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem">
           <div>
-            <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:#f472b6;text-transform:uppercase;letter-spacing:1.5px;font-weight:700">⬇️ Drop Sets</div>
+            <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:#f472b6;text-transform:uppercase;letter-spacing:1.5px;font-weight:700"><svg width="14px" height="14px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-drop"/></svg> Drop Sets</div>
             <div style="font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--muted);margin-top:2px">Reduce weight immediately after failure</div>
           </div>
           <button onclick="addDropRow()" style="font-family:'DM Mono',monospace;font-size:0.6rem;padding:5px 12px;background:rgba(244,114,182,0.1);border:1px solid rgba(244,114,182,0.35);color:#f472b6;border-radius:6px;cursor:pointer;transition:all 0.15s" onmouseover="this.style.background='rgba(244,114,182,0.2)'" onmouseout="this.style.background='rgba(244,114,182,0.1)'">+ Add Drop</button>
@@ -2360,7 +2576,7 @@
       <div id="lastSessionWrap" style="margin-top:1rem;display:none">
         <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow:hidden">
           <div style="display:flex;align-items:center;gap:0.5rem;padding:0.6rem 0.85rem;border-bottom:1px solid var(--border);background:var(--surface)">
-            <span style="font-size:0.9rem">📅</span>
+            <svg width="16px" height="16px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-calendar"/></svg>
             <span style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px">Previous Session</span>
           </div>
           <div id="lastSessionContent" style="padding:0.75rem 0.85rem"></div>
@@ -2379,7 +2595,7 @@
       <button onclick="saveLog()" style="margin-top:1.25rem;width:100%;padding:1rem;background:var(--accent);border:none;border-radius:12px;color:#0d0a12;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:3px;cursor:pointer;transition:all 0.2s;box-shadow:0 0 24px rgba(196,184,232,0.3);display:flex;align-items:center;justify-content:center;gap:0.5rem"
         onmouseover="this.style.background='var(--accent-vivid)';this.style.boxShadow='0 0 32px rgba(196,184,232,0.45)'"
         onmouseout="this.style.background='var(--accent)';this.style.boxShadow='0 0 24px rgba(196,184,232,0.3)'">
-        ✓ SAVE SESSION
+        <svg width="16px" height="16px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-check"/></svg> SAVE SESSION
       </button>
     </div>
   </div>
@@ -2393,7 +2609,7 @@
         <h2 id="progressTitle" style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:2px;color:var(--accent)"></h2>
         <div id="progressSubtitle" style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px"></div>
       </div>
-      <button class="modal-close" style="position:static;margin-left:auto" onclick="closeProgressModal()">✕</button>
+      <button class="modal-close" style="position:static;margin-left:auto" onclick="closeProgressModal()"><svg width="14px" height="14px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-close"/></svg></button>
     </div>
     <div style="padding:1.25rem 1.5rem" id="progressContent"></div>
   </div>
@@ -2424,6 +2640,13 @@ function getMonday() {
   mon.setDate(now.getDate() + diff);
   return mon;
 }
+
+// ── SVG Icon helper ──────────────────────────────────────────────
+function icon(id, size) {
+  var s = size ? (typeof size === 'number' ? size + 'px' : size) : '1em';
+  return '<svg width="' + s + '" height="' + s + '" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#' + id + '"/></svg>';
+}
+// ─────────────────────────────────────────────────────────────────
 
 function save() {
   // Save snapshot of current week before persisting
@@ -2464,7 +2687,7 @@ function openWeekHistory() {
   if (!weeks.length) {
     content.innerHTML = `
       <div style="text-align:center;padding:3rem">
-        <div style="font-size:2.5rem;margin-bottom:1rem">📅</div>
+        <div style="margin-bottom:1rem;color:var(--accent)"><svg width="48px" height="48px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-calendar"/></svg></div>
         <div style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;color:var(--accent);margin-bottom:0.5rem">No History Yet</div>
         <div style="font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Start logging your workouts and your history will appear here automatically.</div>
       </div>`;
@@ -2509,7 +2732,7 @@ function editHistoryLog(exerciseName, date) {
   if (accentBar) accentBar.style.background = mc ? mc.color : '#ffb347';
   document.getElementById('logModalMeta').innerHTML =
     (muscle ? `<span style="font-family:'DM Mono',monospace;font-size:0.6rem;padding:3px 10px;border-radius:20px;border:1.5px solid ${mc.border};color:${mc.color};background:${mc.bg||'transparent'};text-transform:uppercase;letter-spacing:0.5px">${muscle}</span>` : '')
-    + `<span style="font-family:'DM Mono',monospace;font-size:0.6rem;padding:3px 10px;border-radius:20px;border:1.5px solid rgba(255,179,71,0.35);color:#ffb347;text-transform:uppercase;letter-spacing:0.5px">✏️ Editing</span>`;
+    + `<span style="font-family:'DM Mono',monospace;font-size:0.6rem;padding:3px 10px;border-radius:20px;border:1.5px solid rgba(255,179,71,0.35);color:#ffb347;text-transform:uppercase;letter-spacing:0.5px"><svg width="12px" height="12px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-edit"/></svg> Editing</span>`;
 
   document.getElementById('setRows').innerHTML = '';
   if (entry) {
@@ -2561,7 +2784,7 @@ function render() {
           <div class="day-name">${FULL_DAYS[di]}</div>
           <div class="day-date">${dateStr}</div>
         </div>
-        <button onclick="toggleRestDay(${di})" style="font-family:'DM Mono',monospace;font-size:0.52rem;padding:2px 7px;border-radius:10px;border:1px solid var(--border-strong);background:${day.isRest ? 'var(--accent)' : 'var(--bg)'};color:${day.isRest ? '#fff' : 'var(--muted)'};cursor:pointer;transition:all 0.15s;white-space:nowrap">${day.isRest ? '💤 Rest' : '+ Rest'}</button>
+        <button onclick="toggleRestDay(${di})" style="font-family:'DM Mono',monospace;font-size:0.52rem;padding:2px 7px;border-radius:10px;border:1px solid var(--border-strong);background:${day.isRest ? 'var(--accent)' : 'var(--bg)'};color:${day.isRest ? '#fff' : 'var(--muted)'};cursor:pointer;transition:all 0.15s;white-space:nowrap">${day.isRest ? icon('ic-rest',12)+' Rest' : '+ Rest'}</button>
       </div>
       <div class="workout-list" id="list-${di}"></div>
     `;
@@ -2570,7 +2793,7 @@ function render() {
     const list = col.querySelector(`#list-${di}`);
 
     if (day.isRest) {
-      list.innerHTML = `<div class="rest-banner">Rest Day<br>Recovery 💤</div>`;
+      list.innerHTML = `<div class="rest-banner">Rest Day<br>Recovery <svg width="14px" height="14px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-rest"/></svg></div>`;
     }
 
     day.workouts.forEach((w, wi) => {
@@ -2591,7 +2814,7 @@ function render() {
       const borderCol = typeColors[w.type] || '#4a3260';
       card.style.borderLeftColor = borderCol;
       card.innerHTML = `
-        <div class="drag-handle" title="Drag to reorder">⠿</div>
+        <div class="drag-handle" title="Drag to reorder">${icon('ic-drag',16)}</div>
         <!-- Zone 1: Info -->
         <div class="wc-zone-top">
           <div class="wc-zone-top-inner">
@@ -2600,7 +2823,7 @@ function render() {
               ${getMuscleTag(w.name)}
               ${w.mins ? `<span class="wc-tag" style="background:var(--bg);border:1px solid var(--border);color:var(--muted);margin-top:0">${w.mins}m</span>` : ''}
             </div>
-            ${w.notes ? `<div class="wc-target" style="margin-top:6px">🎯 ${w.notes}</div>` : ''}
+            ${w.notes ? `<div class="wc-target" style="margin-top:6px">${icon('ic-target',12)} ${w.notes}</div>` : ''}
           </div>
           <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
             <span class="wc-tag tag-${w.type}" style="margin-top:0">${w.type}</span>
@@ -2612,9 +2835,9 @@ function render() {
         <!-- Zone 2: Actions -->
         <div class="wc-zone-bottom">
           ${w.sets || w.reps ? `<span style="font-family:'DM Mono',monospace;font-size:0.65rem;font-weight:700;color:var(--accent);letter-spacing:0.5px">${w.sets ? w.sets+'×' : ''}${w.reps || ''}</span>` : ''}
-          ${bestSet ? `<span class="wc-tag" style="background:var(--accent-light);border:1px solid var(--borderStrong);color:var(--accent);margin-top:0">🏆 ${bestSet.weight}×${bestSet.reps}</span>` : ''}
+          ${bestSet ? `<span class="wc-tag" style="background:var(--accent-light);border:1px solid var(--borderStrong);color:var(--accent);margin-top:0">${icon('ic-trophy',12)} ${bestSet.weight}×${bestSet.reps}</span>` : ''}
           <div style="flex:1"></div>
-          <button class="wc-check">${w.done ? '✓ Done' : 'Done'}</button>
+          <button class="wc-check">${w.done ? icon('ic-check',12)+' Done' : 'Done'}</button>
           <div class="wc-zone-sep"></div>
           <div class="swap-wrap">
             <button class="swap-btn swap-trigger" data-di="${di}" data-wi="${wi}" style="justify-content:center">⇄ Swap</button>
@@ -2719,7 +2942,7 @@ function render() {
     if (day.workouts.length > 0) {
       const clearBtn = document.createElement('button');
       clearBtn.style.cssText = 'width:100%;margin-top:0.3rem;padding:0.4rem;background:none;border:1px solid rgba(255,107,107,0.2);border-radius:5px;color:rgba(255,107,107,0.5);font-family:\'DM Mono\',monospace;font-size:0.55rem;text-transform:uppercase;letter-spacing:1px;cursor:pointer;transition:all 0.15s';
-      clearBtn.innerHTML = '🗑️ Clear';
+      clearBtn.innerHTML = icon('ic-trash',12)+'  Clear';
       clearBtn.onmouseover = () => { clearBtn.style.borderColor='rgba(255,107,107,0.5)'; clearBtn.style.color='#ff6b6b'; clearBtn.style.background='rgba(255,107,107,0.06)'; };
       clearBtn.onmouseout  = () => { clearBtn.style.borderColor='rgba(255,107,107,0.2)'; clearBtn.style.color='rgba(255,107,107,0.5)'; clearBtn.style.background='none'; };
       clearBtn.onclick = () => confirmClearDay(di);
@@ -2733,7 +2956,7 @@ function render() {
   document.getElementById('statMins').textContent = totalMins;
 
   // Cross-week streak: count consecutive calendar days with at least 1 logged set
-  document.getElementById('statStreak').textContent = calcStreak() + (calcStreak() > 0 ? '🔥' : '');
+  var _sk = calcStreak(); document.getElementById('statStreak').innerHTML = _sk + ((_sk > 0) ? ' ' + icon('ic-fire',16) : '');
 
   const pct = totalWorkouts > 0 ? Math.round((doneCnt / totalWorkouts) * 100) : 0;
   document.getElementById('progressBar').style.width = pct + '%';
@@ -2798,7 +3021,7 @@ function renderMobileDay(di, mon, todayCol) {
   panel.innerHTML = headerHTML;
 
   if (day.isRest && !day.workouts.length) {
-    panel.innerHTML += `<div class="rest-banner" style="margin:0;padding:2rem;font-size:0.8rem">Rest Day<br><span style="font-size:1.5rem">💤</span></div>`;
+    panel.innerHTML += `<div class="rest-banner" style="margin:0;padding:2rem;font-size:0.8rem">Rest Day<br><span style="font-size:1.5rem"><svg width="14px" height="14px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-rest"/></svg></span></div>`;
   }
 
   // Empty state when no workouts and not a rest day
@@ -2822,7 +3045,7 @@ function renderMobileDay(di, mon, todayCol) {
 
     const deleteBg = document.createElement('div');
     deleteBg.className = 'swipe-delete-bg';
-    deleteBg.innerHTML = `<div class="swipe-delete-icon"><span class="del-emoji">🗑️</span><span class="del-label">Remove</span></div>`;
+    deleteBg.innerHTML = `<div class="swipe-delete-icon"><svg width="24px" height="24px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-trash"/></svg><span class="del-label">Remove</span></div>`;
     wrapper.appendChild(deleteBg);
 
     const card = document.createElement('div');
@@ -2838,7 +3061,7 @@ function renderMobileDay(di, mon, todayCol) {
     const borderCol = typeColors[w.type] || '#4a3260';
     card.style.borderLeftColor = borderCol;
     card.innerHTML = `
-      <div class="drag-handle" title="Hold to reorder">⠿</div>
+      <div class="drag-handle" title="Hold to reorder">${icon('ic-drag',16)}</div>
       <div class="wc-zone-top">
         <div class="wc-zone-top-inner">
           <div class="wc-name">${w.name}</div>
@@ -2846,7 +3069,7 @@ function renderMobileDay(di, mon, todayCol) {
             ${getMuscleTag(w.name)}
             ${w.mins ? `<span class="wc-tag" style="background:var(--bg);border:1px solid var(--border);color:var(--muted);margin-top:0">${w.mins}m</span>` : ''}
           </div>
-          ${w.notes ? `<div class="wc-target" style="margin-top:6px">🎯 ${w.notes}</div>` : ''}
+          ${w.notes ? `<div class="wc-target" style="margin-top:6px">${icon('ic-target',12)} ${w.notes}</div>` : ''}
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
           <span class="wc-tag tag-${w.type}" style="margin-top:0">${w.type}</span>
@@ -2856,9 +3079,9 @@ function renderMobileDay(di, mon, todayCol) {
       <div class="wc-zone-divider"></div>
       <div class="wc-zone-bottom">
         ${w.sets || w.reps ? `<span style="font-family:'DM Mono',monospace;font-size:0.65rem;font-weight:700;color:var(--accent);letter-spacing:0.5px">${w.sets ? w.sets+'×' : ''}${w.reps || ''}</span>` : ''}
-        ${bestSet ? `<span class="wc-tag" style="background:var(--accent-light);border:1px solid var(--accent);color:var(--accent);margin-top:0">🏆 ${bestSet.weight}×${bestSet.reps}</span>` : ''}
+        ${bestSet ? `<span class="wc-tag" style="background:var(--accent-light);border:1px solid var(--accent);color:var(--accent);margin-top:0">${icon('ic-trophy',12)} ${bestSet.weight}×${bestSet.reps}</span>` : ''}
         <div style="flex:1"></div>
-        <button class="wc-check">${w.done ? '✓ Done' : 'Done'}</button>
+        <button class="wc-check">${w.done ? icon('ic-check',12)+' Done' : 'Done'}</button>
         <div class="wc-zone-sep"></div>
         <div class="swap-wrap">
           <button class="swap-btn swap-trigger" data-di="${di}" data-wi="${wi}" style="justify-content:center">⇄ Swap</button>
@@ -2947,7 +3170,7 @@ function renderMobileDay(di, mon, todayCol) {
   if (day.workouts.length > 0) {
     const clearBtn = document.createElement('button');
     clearBtn.style.cssText = 'width:100%;margin-top:0.35rem;padding:0.6rem;background:none;border:1px solid rgba(255,107,107,0.25);border-radius:8px;color:rgba(255,107,107,0.6);font-family:\'DM Mono\',monospace;font-size:0.62rem;text-transform:uppercase;letter-spacing:1px;cursor:pointer;transition:all 0.15s';
-    clearBtn.innerHTML = '🗑️ Clear Day';
+    clearBtn.innerHTML = icon('ic-trash',14)+'  Clear Day';
     clearBtn.onmouseover = () => { clearBtn.style.borderColor='rgba(255,107,107,0.6)'; clearBtn.style.color='#ff6b6b'; clearBtn.style.background='rgba(255,107,107,0.06)'; };
     clearBtn.onmouseout  = () => { clearBtn.style.borderColor='rgba(255,107,107,0.25)'; clearBtn.style.color='rgba(255,107,107,0.6)'; clearBtn.style.background='none'; };
     clearBtn.onclick = () => confirmClearDay(di);
@@ -2973,7 +3196,7 @@ function confirmClearDay(di) {
       <div style="width:36px;height:4px;background:var(--border-strong);border-radius:2px"></div>
     </div>
     <div style="text-align:center;margin-bottom:1.25rem">
-      <div style="font-size:2rem;margin-bottom:0.4rem">🗑️</div>
+      <div style="margin-bottom:0.4rem;color:#ff6b6b"><svg width="40px" height="40px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-trash"/></svg></div>
       <div style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;color:#ff6b6b;margin-bottom:0.25rem">Clear ${dayName}?</div>
       <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);line-height:1.5">
         This will remove all <span style="color:var(--text);font-weight:600">${count} workout${count !== 1 ? 's' : ''}</span> from ${dayName}.<br>This cannot be undone.
@@ -2999,7 +3222,7 @@ function confirmClearDay(di) {
     schedule[di].workouts = [];
     save();
     sheet.remove();
-    showToast(`🗑️ ${dayName} cleared`);
+    showToast(`${dayName} cleared`);
   });
 
   sheet.querySelector('#clearDayCancelBtn').addEventListener('click', () => sheet.remove());
@@ -3116,7 +3339,7 @@ function showSwipeDeleteConfirm(card, wrapper, di, wi) {
       <div style="width:36px;height:4px;background:var(--border-strong);border-radius:2px"></div>
     </div>
     <div style="text-align:center;margin-bottom:1.25rem">
-      <div style="font-size:2rem;margin-bottom:0.4rem">🗑️</div>
+      <div style="margin-bottom:0.4rem;color:#ff6b6b"><svg width="40px" height="40px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-trash"/></svg></div>
       <div style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;color:#ff6b6b;margin-bottom:0.25rem">Remove Workout?</div>
       <div style="font-family:'DM Sans',sans-serif;font-size:0.9rem;color:var(--text);font-weight:600">${exerciseName}</div>
       <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted);margin-top:0.25rem">This will remove it from ${FULL_DAYS[di]}'s schedule</div>
@@ -3140,7 +3363,7 @@ function showSwipeDeleteConfirm(card, wrapper, di, wi) {
     schedule[di].workouts.splice(wi, 1);
     save();
     sheet.remove();
-    showToast(`🗑️ ${exerciseName} removed`);
+    showToast(`${exerciseName} removed`);
   });
 
   // Cancel — snap card back
@@ -3339,7 +3562,7 @@ function renderLibrary() {
                 <div style="display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--border);border-left:3px solid ${c.color};border-radius:6px;padding:0.55rem 0.75rem;gap:0.5rem">
                   <div style="flex:1;min-width:0">
                     <div style="font-size:0.82rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${name}</div>
-                    ${hasHistory ? `<div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--muted);margin-top:1px">📊 logged before</div>` : ''}
+                    ${hasHistory ? `<div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--muted);margin-top:1px">${icon('ic-chart',12)} logged before</div>` : ''}
                   </div>
                   <button onclick="libAddToDay('${name.replace(/'/g,"\\'")}')"
                     style="font-family:'DM Mono',monospace;font-size:0.58rem;padding:4px 10px;background:var(--accent-light);border:1.5px solid var(--border-strong);color:var(--accent);border-radius:6px;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all 0.15s"
@@ -3479,9 +3702,9 @@ function renderHistorySearch(query) {
           ${muscle ? `<span class="wc-tag" style="background:var(--accent-light);border:1px solid var(--border-strong);color:var(--accent)">${muscle}</span>` : ''}
         </div>
         <div style="display:flex;gap:1rem;flex-wrap:wrap">
-          <span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted)">📊 ${sessions} session${sessions>1?'s':''}</span>
-          <span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--accent);font-weight:600">🏆 PR: ${pr > 0 ? pr+'lbs' : '—'}</span>
-          ${orm > 0 ? `<span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--accent-mid)">💪 Est. 1RM: ${orm}lbs</span>` : ''}
+          <span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted)">${icon('ic-chart',12)} ${sessions} session${sessions>1?'s':''}</span>
+          <span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--accent);font-weight:600">${icon('ic-trophy',12)} PR: ${pr > 0 ? pr+'lbs' : '—'}</span>
+          ${orm > 0 ? `<span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--accent-mid)">${icon('ic-strength',12)} Est. 1RM: ${orm}lbs</span>` : ''}
           <span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted)">Last: ${lastDate}</span>
         </div>
       </div>`;
@@ -4375,7 +4598,7 @@ function previewProgram(key) {
     col.className = 'prog-day-col';
     col.innerHTML = `<div class="prog-day-name">${FULL_DAYS[di].slice(0,3)}</div>`;
     if (day.isRest) {
-      col.innerHTML += `<div class="prog-rest-label">Rest 💤</div>`;
+      col.innerHTML += `<div class="prog-rest-label">Rest <svg width="14px" height="14px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-rest"/></svg></div>`;
     } else {
       col.innerHTML += `<div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.4rem">${day.label}</div>`;
       day.workouts.forEach(w => {
@@ -4394,7 +4617,7 @@ function previewProgram(key) {
     card.style.cssText = 'background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:0.75rem 1rem;margin-bottom:0.5rem';
 
     const headerColor = day.isRest ? 'rgba(255,255,255,0.3)' : '#fff';
-    const label = day.isRest ? 'Rest 💤' : day.label;
+    const label = day.isRest ? 'Rest <svg width="14px" height="14px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-rest"/></svg>' : day.label;
     card.innerHTML = `
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:${day.isRest ? '0' : '0.5rem'}">
         <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:1.5px;color:${headerColor}">${FULL_DAYS[di]}</div>
@@ -4496,7 +4719,7 @@ function openLogModal(di, wi) {
   const metaEl = document.getElementById('logModalMeta');
   metaEl.innerHTML =
     (muscle ? `<span style="font-family:'DM Mono',monospace;font-size:0.6rem;padding:3px 10px;border-radius:20px;border:1.5px solid ${mc.border};color:${mc.color};background:${mc.bg||'transparent'};text-transform:uppercase;letter-spacing:0.5px">${muscle}</span>` : '')
-    + (w.notes ? `<span style="display:inline-flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:0.72rem;font-weight:700;color:var(--accent);background:var(--accent-light);border:1.5px solid var(--accent);border-radius:6px;padding:3px 10px;letter-spacing:0.5px">🎯 ${w.notes}</span>` : '');
+    + (w.notes ? `<span style="display:inline-flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:0.72rem;font-weight:700;color:var(--accent);background:var(--accent-light);border:1.5px solid var(--accent);border-radius:6px;padding:3px 10px;letter-spacing:0.5px">${icon('ic-target',12)} ${w.notes}</span>` : '');
 
   // Populate set rows — use today's logged sets if they exist, otherwise seed from last session
   const history = getHistory(w.name);
@@ -4681,7 +4904,7 @@ function addSetRow(ssState) {
     <input class="set-input inp-reps"   type="number" inputmode="numeric" placeholder="reps" min="0" step="1" />
     <button class="ss-toggle" title="Toggle superset" onclick="toggleSuperset(this)"
       style="font-family:'Bebas Neue',sans-serif;font-size:0.75rem;border-radius:4px;border:1.5px solid ${ssColor};background:${ssBg};color:${ssColor};cursor:pointer;padding:3px 0;text-align:center;transition:all 0.15s;height:28px">${ssLabel}</button>
-    <button class="set-remove" onclick="removeSetRow(this)" title="Remove">✕</button>
+    <button class="set-remove" onclick="removeSetRow(this)" title="Remove"><svg width="14px" height="14px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-close"/></svg></button>
   `;
   rows.appendChild(row);
   renumberSets();
@@ -4714,7 +4937,7 @@ function addWarmupRow() {
       style="background:rgba(255,179,71,0.05);border-color:rgba(255,179,71,0.2)" />
     <input class="set-input inp-reps" type="number" inputmode="numeric" placeholder="reps" min="0" step="1"
       style="background:rgba(255,179,71,0.05);border-color:rgba(255,179,71,0.2)" />
-    <button class="set-remove" onclick="removeWarmupRow(this)" title="Remove">✕</button>
+    <button class="set-remove" onclick="removeWarmupRow(this)" title="Remove"><svg width="14px" height="14px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-close"/></svg></button>
   `;
   rows.appendChild(row);
   if (empty) empty.style.display = 'none';
@@ -4752,7 +4975,7 @@ function addDropRow() {
       style="background:rgba(244,114,182,0.05);border-color:rgba(244,114,182,0.2)" />
     <input class="set-input inp-reps" type="number" inputmode="numeric" placeholder="reps" min="0" step="1"
       style="background:rgba(244,114,182,0.05);border-color:rgba(244,114,182,0.2)" />
-    <button class="set-remove" onclick="removeDropRow(this)" title="Remove">✕</button>
+    <button class="set-remove" onclick="removeDropRow(this)" title="Remove"><svg width="14px" height="14px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-close"/></svg></button>
   `;
   rows.appendChild(row);
   if (empty) empty.style.display = 'none';
@@ -4822,7 +5045,7 @@ function saveLog() {
     : null;
 
   if (!sets.length && !existingTodayLog) {
-    showToast('⚠️ Add at least one set before saving');
+    showToast('Add at least one set before saving');
     return;
   }
 
@@ -4844,7 +5067,7 @@ function saveLog() {
     _editingHistoryDate = null;
     _editingHistoryName = null;
     closeLogModal();
-    showToast('✅ Log updated!');
+    showToast('Log updated');
     setTimeout(() => openWeekHistory(), 300);
     return;
   }
@@ -4879,7 +5102,7 @@ function closeLogModal() {
     restInterval = null;
     restRunning = false;
     const btn = document.getElementById('ltStartBtn');
-    if (btn) { btn.textContent = '▶ Start'; }
+    if (btn) { btn.innerHTML = icon('ic-play',12)+'  Start'; }
   }
 }
 
@@ -4999,17 +5222,17 @@ function showProgressModal(name) {
       <div class="progress-session">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.3rem;margin-bottom:0.4rem">
           <div class="progress-session-date">${dateStr}${isPR ? ' <span style="font-family:\'Bebas Neue\',sans-serif;font-size:0.65rem;background:var(--accent);color:#fff;padding:1px 5px;border-radius:2px;letter-spacing:1px;margin-left:6px">PR</span>' : ''}</div>
-          ${orm > 0 ? `<span style="font-family:'DM Mono',monospace;font-size:0.6rem;background:var(--accent-light);border:1px solid var(--border-strong);color:var(--accent);padding:2px 8px;border-radius:6px">💪 Est. 1RM: ${orm}lbs</span>` : ''}
+          ${orm > 0 ? `<span style="font-family:'DM Mono',monospace;font-size:0.6rem;background:var(--accent-light);border:1px solid var(--border-strong);color:var(--accent);padding:2px 8px;border-radius:6px">${icon('ic-strength',12)} Est. 1RM: ${orm}lbs</span>` : ''}
         </div>
         <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted);margin-bottom:0.5rem">${h.sets.length} sets · Vol: ${vol.toLocaleString()} lbs</div>
-        ${h.note ? `<div style="font-family:'DM Sans',sans-serif;font-size:0.75rem;color:var(--text);background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:0.35rem 0.6rem;margin-bottom:0.5rem;font-style:italic">📝 ${h.note}</div>` : ''}
+        ${h.note ? `<div style="font-family:'DM Sans',sans-serif;font-size:0.75rem;color:var(--text);background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:0.35rem 0.6rem;margin-bottom:0.5rem;font-style:italic">${icon('ic-note',12)} ${h.note}</div>` : ''}
         <div class="progress-session-sets">
           ${h.sets.map((s, si) => `
             <span class="progress-set-chip${(s.weight||0) === maxW && maxW > 0 ? ' best' : ''}">
               ${s.superset ? `<span style="font-size:0.6rem;padding:1px 4px;border-radius:3px;background:${s.superset==='A'?'rgba(124,58,237,0.2)':'rgba(37,99,235,0.2)'};color:${s.superset==='A'?'#a78bfa':'#60a5fa'};margin-right:3px">SS${s.superset}</span>` : ''}Set ${si+1}: ${s.weight ? s.weight+'lbs' : '—'} × ${s.reps || '—'}
             </span>`).join('')}
-          ${h.warmup && h.warmup.length ? `<div style="margin-top:0.35rem;font-family:'DM Mono',monospace;font-size:0.58rem;color:#ffb347">🔥 Warm-up: ${h.warmup.map(s=>`${s.weight}lbs×${s.reps}`).join(', ')}</div>` : ''}
-          ${h.drops && h.drops.length ? `<div style="margin-top:0.25rem;font-family:'DM Mono',monospace;font-size:0.58rem;color:#f472b6">⬇️ Drop sets: ${h.drops.map((s,i)=>`D${i+1}: ${s.weight}lbs×${s.reps}`).join(' → ')}</div>` : ''}
+          ${h.warmup && h.warmup.length ? `<div style="margin-top:0.35rem;font-family:'DM Mono',monospace;font-size:0.58rem;color:#ffb347">${icon('ic-fire',12)} Warm-up: ${h.warmup.map(s=>`${s.weight}lbs×${s.reps}`).join(', ')}</div>` : ''}
+          ${h.drops && h.drops.length ? `<div style="margin-top:0.25rem;font-family:'DM Mono',monospace;font-size:0.58rem;color:#f472b6">${icon('ic-drop',12)} Drop sets: ${h.drops.map((s,i)=>`D${i+1}: ${s.weight}lbs×${s.reps}`).join(' → ')}</div>` : ''}
         </div>
       </div>`;
   }).join('');
@@ -5093,7 +5316,7 @@ function checkAndRandomizeForNewWeek() {
   if (today === 1 && lastRandomized !== currentMonday && hasWorkouts) {
     const changed = randomizeWeek();
     localStorage.setItem('flex_last_randomized', currentMonday);
-    if (changed) showToast('🔀 New week — exercises shuffled!');
+    if (changed) showToast('New week — exercises shuffled!');
   }
 }
 
@@ -5137,14 +5360,14 @@ function updateSessionBtn() {
   const btn = document.getElementById('sessionBtn');
   if (btn) {
     if (sessionInterval) {
-      btn.textContent = '⏹ End Session';
+      btn.innerHTML = icon('ic-stop',12) + ' End Session';
       btn.style.background = 'rgba(255,107,107,0.15)';
       btn.style.borderColor = 'rgba(255,107,107,0.5)';
       btn.style.color = '#ff6b6b';
       btn.onmouseover = () => { btn.style.background = 'rgba(255,107,107,0.25)'; };
       btn.onmouseout  = () => { btn.style.background = 'rgba(255,107,107,0.15)'; };
     } else {
-      btn.textContent = '▶ Start Session';
+      btn.innerHTML = icon('ic-play',12) + ' Start Session';
       btn.style.background = 'rgba(196,184,232,0.15)';
       btn.style.borderColor = 'rgba(196,184,232,0.4)';
       btn.style.color = 'var(--accent)';
@@ -5163,7 +5386,7 @@ function updateSessionBtn() {
   if (sessionInterval) {
     bar.classList.add('active');
     barLbl.textContent = 'Session Active';
-    barBtn.textContent = '⏹ End Session';
+    barBtn.innerHTML = icon('ic-stop',14) + ' End Session';
     barBtn.classList.add('ending');
     // Start ticking the live elapsed time
     if (!bar._ticker) {
@@ -5183,7 +5406,7 @@ function updateSessionBtn() {
     bar.classList.remove('active');
     barLbl.textContent = "Today's Session";
     barSub.textContent = 'Not started';
-    barBtn.textContent = '▶ Start Session';
+    barBtn.innerHTML = icon('ic-play',14) + ' Start Session';
     barBtn.classList.remove('ending');
     // Stop ticking
     if (bar._ticker) {
@@ -5221,7 +5444,7 @@ function toggleSession() {
     }, 1000);
     document.getElementById('floatingTimer').classList.add('active');
     updateSessionBtn();
-    showToast('Session started — let\'s go! 💪');
+    showToast('Session started — let\'s go!');
   }
 }
 
@@ -5232,7 +5455,7 @@ function startSession() {
 }
 
 function stopSession() {
-  // Called from floating timer ✕ — same as end session
+  // Called from floating timer close btn — same as end session
   if (sessionInterval) toggleSession();
 }
 
@@ -5294,7 +5517,7 @@ function setRestDuration(secs) {
   });
   updateRestDisplay();
   const btn = document.getElementById('ltStartBtn');
-  if (btn) { btn.textContent = '▶ Start'; btn.classList.add('start'); }
+  if (btn) { btn.innerHTML = icon('ic-play',12)+'  Start'; btn.classList.add('start'); }
 }
 
 function startRestTimer() {
@@ -5304,7 +5527,7 @@ function startRestTimer() {
     restInterval = null;
     restRunning  = false;
     const btn = document.getElementById('ltStartBtn');
-    if (btn) { btn.textContent = '▶ Resume'; btn.classList.add('start'); }
+    if (btn) { btn.innerHTML = icon('ic-play',12)+'  Resume'; btn.classList.add('start'); }
     return;
   }
   if (restRemaining <= 0) restRemaining = restDuration;
@@ -5325,7 +5548,7 @@ function startRestTimer() {
       restRunning  = false;
       pingRestDone();
       const b = document.getElementById('ltStartBtn');
-      if (b) { b.textContent = '▶ Start'; b.classList.add('start'); }
+      if (b) { b.innerHTML = icon('ic-play',12)+'  Start'; b.classList.add('start'); }
       const ftR = document.getElementById('ftRestWrap');
       if (ftR) ftR.classList.remove('active');
     }
@@ -5339,7 +5562,7 @@ function resetRestTimer() {
   restRemaining = restDuration;
   updateRestDisplay();
   const btn = document.getElementById('ltStartBtn');
-  if (btn) { btn.textContent = '▶ Start'; btn.classList.add('start'); }
+  if (btn) { btn.innerHTML = icon('ic-play',12)+'  Start'; btn.classList.add('start'); }
   const ftRest = document.getElementById('ftRestWrap');
   if (ftRest) ftRest.classList.remove('active');
 }
@@ -5360,7 +5583,7 @@ function updateRestDisplay() {
 
 function pingRestDone() {
   // Visual flash
-  showToast('✅ Rest done — time to lift!');
+  showToast('Rest done — time to lift!');
   // Audio beep using Web Audio API
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -5417,10 +5640,10 @@ function openSyncModal() {
   const totalSessions  = Object.values(history).reduce((a, logs) => a + logs.length, 0);
 
   document.getElementById('syncExportInfo').innerHTML = `
-    <span style="color:var(--text)">📋 ${totalWorkouts} workouts scheduled</span> &nbsp;·&nbsp;
-    <span style="color:var(--text)">💪 ${totalExercises} exercises tracked</span> &nbsp;·&nbsp;
-    <span style="color:var(--text)">📅 ${totalWeeks} weeks saved</span> &nbsp;·&nbsp;
-    <span style="color:var(--text)">📊 ${totalSessions} sessions logged</span>
+    <span style="color:var(--text)">${icon('ic-clipboard',14)} ${totalWorkouts} workouts scheduled</span> &nbsp;·&nbsp;
+    <span style="color:var(--text)">${icon('ic-strength',14)} ${totalExercises} exercises tracked</span> &nbsp;·&nbsp;
+    <span style="color:var(--text)">${icon('ic-calendar',14)} ${totalWeeks} weeks saved</span> &nbsp;·&nbsp;
+    <span style="color:var(--text)">${icon('ic-chart',14)} ${totalSessions} sessions logged</span>
   `;
 
   document.getElementById('importStatus').style.display = 'none';
@@ -5451,7 +5674,7 @@ function exportData() {
   a.download = `flex-backup-${date}.json`;
   a.click();
   URL.revokeObjectURL(url);
-  showToast('✅ Backup downloaded!');
+  showToast('Backup downloaded');
 }
 
 function importData(input) {
@@ -5481,16 +5704,16 @@ function importData(input) {
       const statusEl = document.getElementById('importStatus');
       statusEl.style.display = 'block';
       Object.assign(statusEl.style, { background:'#1a2e1a', border:'1px solid #2d5c2d', color:'#47ff7a' });
-      statusEl.textContent = '✅ Data restored successfully! Your workouts are back.';
+      statusEl.textContent = 'Data restored successfully! Your workouts are back.';
 
-      showToast('✅ Data imported successfully!');
+      showToast('Data imported');
       setTimeout(() => closeSyncModal(), 1500);
 
     } catch (err) {
       const statusEl = document.getElementById('importStatus');
       statusEl.style.display = 'block';
       Object.assign(statusEl.style, { background:'rgba(255,107,107,0.1)', border:'1px solid rgba(255,107,107,0.3)', color:'#ff6b6b' });
-      statusEl.textContent = '❌ Invalid backup file. Please use a file exported from FLEX.';
+      statusEl.textContent = 'Invalid backup file. Please use a file exported from FLEX.';
     }
   };
   reader.readAsText(file);
@@ -5564,7 +5787,7 @@ function renderWeekHistoryPage() {
   const weeks = Object.keys(allHistory).sort((a, b) => b.localeCompare(a));
   const content = document.getElementById('weekHistoryPageContent');
   if (!weeks.length) {
-    content.innerHTML = `<div style="text-align:center;padding:3rem"><div style="font-size:2.5rem;margin-bottom:1rem">📅</div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;color:var(--accent);margin-bottom:0.5rem">No History Yet</div><div style="font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Start logging and your history will appear here.</div></div>`;
+    content.innerHTML = `<div style="text-align:center;padding:3rem"><div style="margin-bottom:1rem;color:var(--accent)"><svg width="48px" height="48px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-calendar"/></svg></div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;color:var(--accent);margin-bottom:0.5rem">No History Yet</div><div style="font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Start logging and your history will appear here.</div></div>`;
     return;
   }
   // Reuse the same HTML generator from openWeekHistory
@@ -5596,9 +5819,9 @@ function renderExHistoryPage(query) {
           ${muscle ? `<span style="font-family:'DM Mono',monospace;font-size:0.55rem;padding:2px 8px;border-radius:4px;background:var(--accent-light);border:1px solid var(--border-strong);color:var(--accent)">${muscle}</span>` : ''}
         </div>
         <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
-          <span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted)">📊 ${logs.length} session${logs.length>1?'s':''}</span>
-          <span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--accent);font-weight:600">🏆 PR: ${pr > 0 ? pr+'lbs' : '—'}</span>
-          ${orm > 0 ? `<span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--accent-mid)">💪 1RM: ${orm}lbs</span>` : ''}
+          <span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted)">${icon('ic-chart',12)} ${logs.length} session${logs.length>1?'s':''}</span>
+          <span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--accent);font-weight:600">${icon('ic-trophy',12)} PR: ${pr > 0 ? pr+'lbs' : '—'}</span>
+          ${orm > 0 ? `<span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--accent-mid)">${icon('ic-strength',12)} 1RM: ${orm}lbs</span>` : ''}
           <span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted)">Last: ${lastDate}</span>
         </div>
       </div>`;
@@ -5656,7 +5879,7 @@ function renderLibraryPage() {
                 <div style="display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--border);border-left:3px solid ${c.color};border-radius:6px;padding:0.6rem 0.75rem;gap:0.5rem">
                   <div style="flex:1;min-width:0">
                     <div style="font-size:0.85rem;font-weight:600;color:var(--text)">${name}</div>
-                    ${hasHistory ? `<div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--muted);margin-top:1px">📊 logged before</div>` : ''}
+                    ${hasHistory ? `<div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--muted);margin-top:1px">${icon('ic-chart',12)} logged before</div>` : ''}
                   </div>
                   <button onclick="libAddToDay('${name.replace(/'/g,"\\'")}')"
                     style="font-family:'DM Mono',monospace;font-size:0.62rem;padding:6px 12px;background:var(--accent);color:#0d0a12;border:none;border-radius:6px;cursor:pointer;white-space:nowrap;flex-shrink:0;font-weight:700">+ Add</button>
@@ -5697,16 +5920,16 @@ function buildWeekHistoryCard(weekKey, allHistory) {
   const bestLift    = allSets.length ? allSets.reduce((b,s) => (s.weight||0)>(b.weight||0)?s:b, allSets[0]) : null;
 
   const statCards = [
-    {val:trainingDays,label:'Days Trained',icon:'💪'},
-    {val:`${totalDone}/${totalPlanned}`,label:'Done',icon:'✓'},
-    {val:`${completionPct}%`,label:'Completion',icon:'🎯'},
-    {val:totalSets,label:'Sets',icon:'📋'},
-    {val:totalVolume>0?totalVolume.toLocaleString()+'lbs':'—',label:'Volume',icon:'⚡'},
+    {val:trainingDays,label:'Days Trained',icon:icon('ic-strength',16)},
+    {val:`${totalDone}/${totalPlanned}`,label:'Done',icon:icon('ic-check',16)},
+    {val:`${completionPct}%`,label:'Completion',icon:icon('ic-target',16)},
+    {val:totalSets,label:'Sets',icon:icon('ic-clipboard',16)},
+    {val:totalVolume>0?totalVolume.toLocaleString()+'lbs':'—',label:'Volume',icon:icon('ic-bolt',16)},
   ].map(s=>`<div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0.6rem 0.75rem;flex:1;min-width:80px;text-align:center"><div style="font-size:1rem;margin-bottom:0.15rem">${s.icon}</div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--accent);line-height:1">${s.val}</div><div style="font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px">${s.label}</div></div>`).join('');
 
-  const highlightsHTML = bestLift ? `<div style="margin-bottom:0.75rem"><div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.4rem">🏆 Best Lift</div><div style="background:var(--accent);color:#0d0a12;border-radius:8px;padding:0.65rem 1rem"><div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:1px">${bestLift.weight}lbs × ${bestLift.reps} reps</div><div style="font-size:0.72rem;opacity:0.7;margin-top:2px">${bestLift.name}</div></div></div>` : '';
+  const highlightsHTML = bestLift ? `<div style="margin-bottom:0.75rem"><div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.4rem">${icon('ic-trophy',12)} Best Lift</div><div style="background:var(--accent);color:#0d0a12;border-radius:8px;padding:0.65rem 1rem"><div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:1px">${bestLift.weight}lbs × ${bestLift.reps} reps</div><div style="font-size:0.72rem;opacity:0.7;margin-top:2px">${bestLift.name}</div></div></div>` : '';
 
-  const logsHTML = exerciseLogs.length ? `<div><div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.5rem">📊 Logged Exercises</div>${exerciseLogs.map(el=>`<div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0.7rem 0.9rem;margin-bottom:0.4rem"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.4rem;gap:0.4rem;flex-wrap:wrap"><div><div style="font-weight:600;font-size:0.85rem;color:var(--text)">${el.name}</div><div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted)">${el.day} · ${new Date(el.date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})}</div></div><button onclick="editHistoryLog('${el.name.replace(/'/g,"\\'")}','${el.date}')" style="font-family:'DM Mono',monospace;font-size:0.58rem;padding:4px 10px;background:var(--accent-light);border:1.5px solid var(--border-strong);color:var(--accent);border-radius:6px;cursor:pointer">✏️ Edit</button></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:0.3rem">${el.sets.map((s,i)=>`<div style="background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:0.35rem 0.5rem"><div style="font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--muted);text-transform:uppercase">Set ${i+1}</div><div style="font-family:'Bebas Neue',sans-serif;font-size:1rem;color:var(--accent);line-height:1.2">${s.weight||'—'}<span style="font-size:0.6rem">lbs</span></div><div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--text)">${s.reps||'—'} reps</div></div>`).join('')}</div>${el.warmup&&el.warmup.length?`<div style="margin-top:0.35rem;font-family:'DM Mono',monospace;font-size:0.58rem;color:#ffb347">🔥 ${el.warmup.map(s=>`${s.weight}lbs×${s.reps}`).join(', ')}</div>`:''}${el.drops&&el.drops.length?`<div style="margin-top:0.2rem;font-family:'DM Mono',monospace;font-size:0.58rem;color:#f472b6">⬇️ ${el.drops.map((s,i)=>`D${i+1}: ${s.weight}lbs×${s.reps}`).join(' → ')}</div>`:''}</div>`).join('')}</div>` : `<div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);text-align:center;padding:0.75rem;border:1px dashed var(--border);border-radius:8px">No sets logged this week</div>`;
+  const logsHTML = exerciseLogs.length ? `<div><div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.5rem">${icon('ic-chart',14)} Logged Exercises</div>${exerciseLogs.map(el=>`<div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0.7rem 0.9rem;margin-bottom:0.4rem"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.4rem;gap:0.4rem;flex-wrap:wrap"><div><div style="font-weight:600;font-size:0.85rem;color:var(--text)">${el.name}</div><div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted)">${el.day} · ${new Date(el.date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})}</div></div><button onclick="editHistoryLog('${el.name.replace(/'/g,"\\'")}','${el.date}')" style="font-family:'DM Mono',monospace;font-size:0.58rem;padding:4px 10px;background:var(--accent-light);border:1.5px solid var(--border-strong);color:var(--accent);border-radius:6px;cursor:pointer">${icon('ic-edit',12)} Edit</button></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:0.3rem">${el.sets.map((s,i)=>`<div style="background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:0.35rem 0.5rem"><div style="font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--muted);text-transform:uppercase">Set ${i+1}</div><div style="font-family:'Bebas Neue',sans-serif;font-size:1rem;color:var(--accent);line-height:1.2">${s.weight||'—'}<span style="font-size:0.6rem">lbs</span></div><div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--text)">${s.reps||'—'} reps</div></div>`).join('')}</div>${el.warmup&&el.warmup.length?`<div style="margin-top:0.35rem;font-family:'DM Mono',monospace;font-size:0.58rem;color:#ffb347">${icon('ic-fire',12)} ${el.warmup.map(s=>`${s.weight}lbs×${s.reps}`).join(', ')}</div>`:''}${el.drops&&el.drops.length?`<div style="margin-top:0.2rem;font-family:'DM Mono',monospace;font-size:0.58rem;color:#f472b6">${icon('ic-drop',12)} ${el.drops.map((s,i)=>`D${i+1}: ${s.weight}lbs×${s.reps}`).join(' → ')}</div>`:''}</div>`).join('')}</div>` : `<div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);text-align:center;padding:0.75rem;border:1px dashed var(--border);border-radius:8px">No sets logged this week</div>`;
 
   return `<div style="margin-bottom:1.25rem;border:1px solid var(--border);border-radius:12px;overflow:hidden">
     <div style="padding:0.85rem 1.1rem;background:var(--accent);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.4rem">
@@ -5725,19 +5948,19 @@ function buildWeekHistoryCard(weekKey, allHistory) {
 <!-- ── BOTTOM NAV ─────────────────────────────────────────────── -->
 <nav class="bottom-nav" id="bottomNav">
   <button class="bottom-nav-btn active" id="nav-schedule" onclick="switchPage('schedule')">
-    <span class="nav-icon">🏋️</span>
+    <span class="nav-icon"><svg width="22px" height="22px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-schedule"/></svg></span>
     <span class="nav-label">Schedule</span>
   </button>
   <button class="bottom-nav-btn" id="nav-week-history" onclick="switchPage('week-history')">
-    <span class="nav-icon">📅</span>
+    <span class="nav-icon"><svg width="22px" height="22px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-calendar"/></svg></span>
     <span class="nav-label">History</span>
   </button>
   <button class="bottom-nav-btn" id="nav-ex-history" onclick="switchPage('ex-history')">
-    <span class="nav-icon">📊</span>
+    <span class="nav-icon"><svg width="22px" height="22px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-chart"/></svg></span>
     <span class="nav-label">My Lifts</span>
   </button>
   <button class="bottom-nav-btn" id="nav-library" onclick="switchPage('library')">
-    <span class="nav-icon">📚</span>
+    <span class="nav-icon"><svg width="22px" height="22px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-library"/></svg></span>
     <span class="nav-label">Library</span>
   </button>
 </nav>
@@ -5745,7 +5968,7 @@ function buildWeekHistoryCard(weekKey, allHistory) {
 <!-- ── WEEK HISTORY PAGE ─────────────────────────────────────── -->
 <div class="app-page" id="page-week-history">
   <div class="page-header">
-    <div class="page-title">📅 Week History</div>
+    <div class="page-title"><svg width="20px" height="20px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-calendar"/></svg> Week History</div>
     <div class="page-subtitle">Your past weeks — planned, completed & logged</div>
   </div>
   <div class="page-body" id="weekHistoryPageContent"></div>
@@ -5755,7 +5978,7 @@ function buildWeekHistoryCard(weekKey, allHistory) {
 <div class="app-page" id="page-ex-history">
   <div class="page-header" style="display:flex;flex-direction:column;gap:0.6rem">
     <div>
-      <div class="page-title">📊 My Lifts</div>
+      <div class="page-title"><svg width="20px" height="20px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-chart"/></svg> My Lifts</div>
       <div class="page-subtitle">Search your logged exercise history</div>
     </div>
     <input id="exHistoryPageSearch" type="text" placeholder="Search exercises…"
@@ -5770,7 +5993,7 @@ function buildWeekHistoryCard(weekKey, allHistory) {
 <div class="app-page" id="page-library">
   <div class="page-header" style="display:flex;flex-direction:column;gap:0.6rem">
     <div>
-      <div class="page-title">📚 Exercise Library</div>
+      <div class="page-title"><svg width="20px" height="20px" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.12em;flex-shrink:0"><use href="#ic-library"/></svg> Exercise Library</div>
       <div class="page-subtitle">All exercises · tap to add to schedule</div>
     </div>
     <input id="libPageSearch" type="text" placeholder="Search exercises…"
