@@ -5270,6 +5270,182 @@ function renderLibraryPage() {
 
 
 // ─────────────────────────────────────────────────────────────────
+
+
+/* ============================================================
+   FLEX — Bug Fix Patch (All 8 Fixes)
+   Applied automatically — do not edit below this line
+   ============================================================ */
+
+(function applyFlexFixes() {
+
+  /* FIX 3 — Library filter chip scroll fade */
+  (function fix3_chipFade() {
+    const s = document.createElement('style');
+    s.id = 'fix-chip-fade';
+    s.textContent = [
+      '.page-header > div:has(.lib-filter-btn){',
+        '-webkit-mask-image:linear-gradient(to right,black 85%,transparent 100%);',
+        'mask-image:linear-gradient(to right,black 85%,transparent 100%);',
+        'scrollbar-width:none}',
+      '.page-header > div:has(.lib-filter-btn)::-webkit-scrollbar{display:none}',
+      '.programs-bar{',
+        '-webkit-mask-image:linear-gradient(to right,black 88%,transparent 100%);',
+        'mask-image:linear-gradient(to right,black 88%,transparent 100%)}'
+    ].join('');
+    document.head.appendChild(s);
+  })();
+
+  /* FIX 7 — CLEAR WEEK custom modal */
+  (function fix7_clearWeekModal() {
+    const _orig = window.clearWeek;
+    window.clearWeek = function () {
+      const old = document.getElementById('cwm-overlay'); if (old) old.remove();
+      const ov = document.createElement('div');
+      ov.id = 'cwm-overlay';
+      ov.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.72)';
+      ov.innerHTML = '<div style="background:#1a1a2e;border-radius:16px 16px 0 0;padding:32px 24px;width:100%;max-width:500px;text-align:center;font-family:inherit">'
+        + '<div style="font-size:2rem;margin-bottom:12px">\u{1F5D1}\uFE0F</div>'
+        + '<h2 style="color:#e879f9;font-size:1.25rem;margin:0 0 8px;letter-spacing:.05em">CLEAR ENTIRE WEEK?</h2>'
+        + '<p style="color:#aaa;font-size:.85rem;margin:0 0 24px;line-height:1.5">This will remove <strong style="color:#fff">all workouts</strong> from the current week.<br>This cannot be undone.</p>'
+        + '<button id="cwm-yes" style="width:100%;padding:14px;background:#e11d48;border:none;border-radius:10px;color:#fff;font-size:1rem;font-weight:700;cursor:pointer;margin-bottom:10px">YES, CLEAR WEEK</button>'
+        + '<button id="cwm-no" style="width:100%;padding:12px;background:transparent;border:1px solid #444;border-radius:10px;color:#aaa;font-size:.9rem;cursor:pointer">Keep Workouts</button>'
+        + '</div>';
+      document.body.appendChild(ov);
+      document.getElementById('cwm-yes').onclick = function(){ov.remove();const _c=window.confirm;window.confirm=function(){return true;};_orig();window.confirm=_c;};
+      document.getElementById('cwm-no').onclick = function(){ov.remove();};
+      ov.addEventListener('click',function(e){if(e.target===ov)ov.remove();});
+    };
+  })();
+
+  /* FIX 1 + FIX 5 — Edit button label & ADD WORKOUT auto-focus */
+  (function fix1_fix5() {
+    const _origEdit = window.openEdit;
+    window.openEdit = function(di,wi){
+      _origEdit(di,wi);
+      setTimeout(function(){
+        const m=document.getElementById('modalBg');
+        if(!m||!editTarget)return;
+        const b=Array.from(m.querySelectorAll('button')).find(function(x){return x.textContent.trim().toUpperCase().includes('ADD TO SCHEDULE');});
+        if(b)b.innerHTML='\uD83D\uDCBE Save Changes';
+      },80);
+    };
+    const _origAdd = window.openAdd;
+    window.openAdd = function(di){
+      _origAdd(di);
+      setTimeout(function(){
+        const m=document.getElementById('modalBg');if(!m)return;
+        const b=Array.from(m.querySelectorAll('button')).find(function(x){return x.textContent.includes('Save Changes');});
+        if(b)b.innerHTML='ADD TO SCHEDULE';
+        const inp=m.querySelector('input[type="text"],input[placeholder]');
+        if(inp&&!inp.value){inp.focus();inp.select();}
+      },100);
+    };
+  })();
+
+  /* FIX 4 — Toast after Library add */
+  (function fix4_toast(){
+    const _orig=window.saveWorkout;
+    window.saveWorkout=function(){
+      const isAdd=!editTarget;
+      const el=document.getElementById('inpName');
+      const name=el?el.value.trim():'';
+      const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+      const day=(typeof currentAddDay==='number')?days[currentAddDay]:'';
+      _orig();
+      if(isAdd&&name&&day&&typeof showToast==='function')showToast(name+' added to '+day+'!');
+    };
+  })();
+
+  /* FIX 2 — TOTAL MINUTES stat */
+  (function fix2_totalMins(){
+    const _orig=window.showSessionSummary;
+    window.showSessionSummary=function(elapsedSecs){
+      _orig(elapsedSecs);
+      try{
+        const mins=Math.max(1,Math.round(elapsedSecs/60));
+        const sched=JSON.parse(localStorage.getItem('grind_schedule')||'[]');
+        const dow=new Date().getDay();
+        const di=dow===0?6:dow-1;
+        const today=Array.isArray(sched)?sched[di]:sched[String(di)];
+        if(!today||!today.workouts)return;
+        const targets=today.workouts.filter(function(w){return w.done&&(!w.mins||w.mins===0);});
+        if(targets.length){
+          const each=Math.max(1,Math.round(mins/targets.length));
+          targets.forEach(function(w){w.mins=each;});
+          localStorage.setItem('grind_schedule',JSON.stringify(sched));
+          if(typeof render==='function')render();
+        }
+      }catch(e){console.warn('[Flex Fix 2]',e);}
+    };
+  })();
+
+  /* FIX 6 — Split preview day labels */
+  (function fix6_previewLabels(){
+    const FD=['MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY','SUNDAY'];
+    function patch(){
+      let si=0;
+      document.querySelectorAll('.start-day-btn').forEach(function(b){if(b.classList.contains('active'))si=parseInt(b.dataset.day||'0',10);});
+      const m=document.getElementById('progModalBg')||document.querySelector('.prog-modal-bg');
+      if(!m)return;
+      Array.from(m.querySelectorAll('*')).filter(function(el){return FD.includes((el.innerText||'').trim().toUpperCase())&&el.children.length===0;}).forEach(function(el,i){el.textContent=FD[(si+i)%7];});
+    }
+    const _orig=window.previewProgram;
+    window.previewProgram=function(k){
+      _orig(k);
+      setTimeout(function(){
+        patch();
+        document.querySelectorAll('.start-day-btn').forEach(function(b){if(!b.dataset.dlf){b.dataset.dlf='1';b.addEventListener('click',function(){setTimeout(patch,60);});}});
+      },150);
+    };
+  })();
+
+  /* FIX 8 — Desktop drag-to-reorder */
+  (function fix8_drag(){
+    let ls=null;
+    function capRef(){
+      if(ls)return;
+      const _os=JSON.stringify;
+      JSON.stringify=function(v){
+        if(Array.isArray(v)&&v.length===7&&v[0]&&v[0].workouts!==undefined){ls=v;JSON.stringify=_os;}
+        return _os.apply(this,arguments);
+      };
+      if(typeof save==='function')save();
+      JSON.stringify=_os;
+    }
+    window.swapWorkouts=function(di,si,di2){
+      if(!ls||si===di2)return;
+      const w=ls[di]&&ls[di].workouts;if(!w)return;
+      const m=w.splice(si,1)[0];w.splice(di2,0,m);
+      if(typeof save==='function')save();
+    };
+    function attach(){
+      document.querySelectorAll('.workout-card[draggable="true"]').forEach(function(c){
+        if(c.dataset.dR)return;c.dataset.dR='1';
+        c.addEventListener('dragstart',function(e){window._ds=this;this.classList.add('dnd-d');e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',this.dataset.di+','+this.dataset.wi);});
+        c.addEventListener('dragend',function(){this.classList.remove('dnd-d');document.querySelectorAll('.workout-card').forEach(function(x){x.classList.remove('dnd-o');});window._ds=null;});
+        c.addEventListener('dragover',function(e){e.preventDefault();if(!window._ds||window._ds===this)return;document.querySelectorAll('.workout-card').forEach(function(x){x.classList.remove('dnd-o');});this.classList.add('dnd-o');});
+        c.addEventListener('dragleave',function(){this.classList.remove('dnd-o');});
+        c.addEventListener('drop',function(e){
+          e.preventDefault();this.classList.remove('dnd-o');
+          if(!window._ds||window._ds===this)return;
+          const sdi=parseInt(window._ds.dataset.di,10),swi=parseInt(window._ds.dataset.wi,10);
+          const ddi=parseInt(this.dataset.di,10),dwi=parseInt(this.dataset.wi,10);
+          if(sdi!==ddi)return;
+          window.swapWorkouts(sdi,swi,dwi);setTimeout(attach,250);
+        });
+      });
+    }
+    const ds=document.createElement('style');
+    ds.textContent='.workout-card[draggable]{cursor:grab}.workout-card.dnd-d{opacity:.4;cursor:grabbing}.workout-card.dnd-o{outline:2px dashed #7c3aed;background:rgba(124,58,237,.14)!important;transform:scale(1.01);transition:transform .1s}';
+    document.head.appendChild(ds);
+    const _or=window.render;
+    window.render=function(){_or.apply(this,arguments);capRef();setTimeout(attach,250);};
+    capRef();attach();
+  })();
+
+})();
+
 </script>
 <!-- ── BOTTOM NAV ─────────────────────────────────────────────── -->
 <nav class="bottom-nav" id="bottomNav">
