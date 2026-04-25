@@ -621,9 +621,10 @@
     z-index: 500;
     min-width: 210px;
     max-width: 270px;
+    max-height: 320px;
+    overflow-y: auto;
     box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 20px rgba(196,184,232,0.05);
     animation: popIn 0.15s ease;
-    overflow: hidden;
   }
   .swap-dropdown.open { display: block; }
 
@@ -636,6 +637,9 @@
     padding: 0.5rem 0.75rem 0.35rem;
     border-bottom: 1px solid var(--border);
     background: var(--accent-light);
+    position: sticky;
+    top: 0;
+    z-index: 1;
   }
 
   .swap-option {
@@ -1664,12 +1668,17 @@
       transition: all 0.15s;
       padding: 0;
       position: relative;
+      color: var(--muted);
     }
 
     .bottom-nav-btn .nav-icon {
       font-size: 1.3rem;
       line-height: 1;
+      color: var(--muted);
+      transition: color 0.15s;
     }
+
+    .bottom-nav-btn.active .nav-icon { color: var(--accent); }
 
     .bottom-nav-btn .nav-label {
       font-family: 'DM Mono', monospace;
@@ -2913,9 +2922,9 @@ function render() {
             // Flip up if not enough space below
             const spaceBelow = window.innerHeight - rect.bottom;
             if (spaceBelow < ddH + 16) {
-              dd.style.top = (rect.top + window.scrollY - ddH - 6) + 'px';
+              dd.style.top = (rect.top - ddH - 6) + 'px';
             } else {
-              dd.style.top = (rect.bottom + window.scrollY + 6) + 'px';
+              dd.style.top = (rect.bottom + 6) + 'px';
             }
             // Prevent going off right edge
             const left = rect.left + ddW > window.innerWidth - 8
@@ -3125,9 +3134,9 @@ function renderMobileDay(di, mon, todayCol) {
             const ddH = dd.offsetHeight;
             const spaceBelow = window.innerHeight - rect.bottom;
             if (spaceBelow < ddH + 16) {
-              dd.style.top = (rect.top + window.scrollY - ddH - 6) + 'px';
+              dd.style.top = (rect.top - ddH - 6) + 'px';
             } else {
-              dd.style.top = (rect.bottom + window.scrollY + 6) + 'px';
+              dd.style.top = (rect.bottom + 6) + 'px';
             }
           });
         } else {
@@ -3139,8 +3148,8 @@ function renderMobileDay(di, mon, todayCol) {
             const ddH = dd.offsetHeight;
             const spaceBelow = window.innerHeight - rect.bottom;
             dd.style.top = spaceBelow < ddH + 16
-              ? (rect.top + window.scrollY - ddH - 6) + 'px'
-              : (rect.bottom + window.scrollY + 6) + 'px';
+              ? (rect.top - ddH - 6) + 'px'
+              : (rect.bottom + 6) + 'px';
             const left = rect.left + ddW > window.innerWidth - 8
               ? window.innerWidth - ddW - 8 : rect.left;
             dd.style.left = Math.max(8, left) + 'px';
