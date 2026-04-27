@@ -5305,7 +5305,7 @@ function renderLibraryPage() {
       ov.id = 'cwm-overlay';
       ov.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,0.72)';
       ov.innerHTML = '<div style="background:#1a1a2e;border-radius:16px 16px 0 0;padding:32px 24px;width:100%;max-width:500px;text-align:center;font-family:inherit">'
-        + '<div style="font-size:2rem;margin-bottom:12px">\uD83D\uDDD1\uFE0F</div>'
+        + '<div style="font-size:2rem;margin-bottom:12px">🗑️</div>'
         + '<h2 style="color:#e879f9;font-size:1.25rem;margin:0 0 8px;letter-spacing:.05em">CLEAR ENTIRE WEEK?</h2>'
         + '<p style="color:#aaa;font-size:.85rem;margin:0 0 24px;line-height:1.5">This will remove <strong style="color:#fff">all workouts</strong> from the current week.<br>This cannot be undone.</p>'
         + '<button id="cwm-yes" style="width:100%;padding:14px;background:#e11d48;border:none;border-radius:10px;color:#fff;font-size:1rem;font-weight:700;cursor:pointer;margin-bottom:10px">YES, CLEAR WEEK</button>'
@@ -5326,7 +5326,7 @@ function renderLibraryPage() {
       setTimeout(function() {
         var m = document.getElementById('modalBg'); if(!m || !editTarget) return;
         var b = Array.from(m.querySelectorAll('button')).find(function(x){ return x.textContent.trim().toUpperCase().includes('ADD TO SCHEDULE'); });
-        if(b) b.innerHTML = '\uD83D\uDCBE Save Changes';
+        if(b) b.innerHTML = '💾 Save Changes';
       }, 80);
     };
     var _origAdd = window.openAdd;
