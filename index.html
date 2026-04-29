@@ -5506,7 +5506,7 @@ async function runAiBuild() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 4000,
         messages: [{ role: 'user', content: prompt }]
       })
@@ -5526,16 +5526,15 @@ async function runAiBuild() {
     const aiProg = JSON.parse(jsonMatch[0]);
     if (!aiProg.days || !Array.isArray(aiProg.days)) throw new Error('Invalid program structure');
 
-    // ── Load into schedule (same logic as loadProgram) ──
+    // ── Load into schedule ──
     const startDayEl = document.querySelector('.start-day-btn.active');
     const startDay = startDayEl ? parseInt(startDayEl.dataset.day || '0', 10) : 0;
 
-    const sched = schedule;
     aiProg.days.forEach((day, i) => {
       const targetDay = (startDay + i) % 7;
-      if (Array.isArray(sched)) {
-        sched[targetDay].workouts = day.workouts || [];
-        sched[targetDay].isRest = day.isRest || false;
+      if (Array.isArray(schedule)) {
+        schedule[targetDay].workouts = day.workouts || [];
+        schedule[targetDay].isRest = day.isRest || false;
       }
     });
 
