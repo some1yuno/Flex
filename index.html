@@ -5444,10 +5444,10 @@ async function runAiBuild() {
     });
 
     // ── Identify which muscle groups need attention ──
-    const schedule = JSON.parse(localStorage.getItem('grind_schedule') || '[]');
+    const storedSchedule = JSON.parse(localStorage.getItem('grind_schedule') || '[]');
     const recentMuscles = new Set();
     const MUSCLE_KEYWORDS = ['chest','quads','hamstrings','glutes','lats','back','shoulders','biceps','triceps','calves','core','rear delts','side delts'];
-    (Array.isArray(schedule) ? schedule : Object.values(schedule)).forEach(day => {
+    (Array.isArray(storedSchedule) ? storedSchedule : Object.values(storedSchedule)).forEach(day => {
       (day.workouts || []).forEach(w => {
         const n = (w.name + ' ' + (w.notes || '')).toLowerCase();
         MUSCLE_KEYWORDS.forEach(m => { if (n.includes(m.split(' ')[0])) recentMuscles.add(m); });
