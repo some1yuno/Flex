@@ -886,6 +886,69 @@
   }
   .btn-cancel:hover { border-color: var(--accent); color: var(--accent); background: rgba(167,139,250,0.06); }
 
+  /* ── AI BUILD BUTTON ─────────────────────────────────────────── */
+  .btn-ai-build {
+    flex: 1; padding: 0.75rem;
+    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #ec4899 100%);
+    color: #fff;
+    border: none; font-family: inherit;
+    font-size: 0.95rem; letter-spacing: 1.5px;
+    cursor: pointer; border-radius: var(--radius-sm);
+    transition: all 0.2s; font-weight: 900;
+    position: relative; overflow: hidden;
+  }
+  .btn-ai-build:hover { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(168,85,247,0.45); filter: brightness(1.1); }
+  .btn-ai-build:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  /* API key prompt overlay */
+  .ai-key-overlay {
+    display: none; position: fixed; inset: 0; z-index: 10000;
+    background: rgba(0,0,0,0.85); backdrop-filter: blur(12px);
+    align-items: center; justify-content: center;
+  }
+  .ai-key-overlay.open { display: flex; }
+  .ai-key-box {
+    background: #0e0b1d; border: 1px solid rgba(168,85,247,0.35);
+    border-top: 2px solid #a855f7; border-radius: var(--radius);
+    padding: 2rem; width: min(480px, 94vw); text-align: center;
+  }
+  .ai-key-box h2 { color: #a855f7; font-size: 1.2rem; letter-spacing: 2px; margin: 0 0 0.5rem; }
+  .ai-key-box p  { color: var(--muted); font-size: 0.82rem; line-height: 1.55; margin: 0 0 1.2rem; }
+  .ai-key-input {
+    width: 100%; padding: 0.75rem 1rem; background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(168,85,247,0.3); border-radius: var(--radius-sm);
+    color: #fff; font-size: 0.9rem; box-sizing: border-box; margin-bottom: 0.8rem;
+    font-family: monospace;
+  }
+  .ai-key-input:focus { outline: none; border-color: #a855f7; }
+  .ai-key-save { width: 100%; padding: 0.75rem; background: #a855f7; border: none;
+    border-radius: var(--radius-sm); color: #fff; font-size: 1rem;
+    font-weight: 700; letter-spacing: 2px; cursor: pointer; margin-bottom: 0.5rem; }
+  .ai-key-save:hover { background: #7c3aed; }
+  .ai-key-cancel { background: transparent; border: none; color: var(--muted);
+    font-size: 0.85rem; cursor: pointer; text-decoration: underline; }
+
+  /* AI Loading animation */
+  .ai-loading-modal {
+    display: none; position: fixed; inset: 0; z-index: 10000;
+    background: rgba(0,0,0,0.88); backdrop-filter: blur(16px);
+    align-items: center; justify-content: center;
+  }
+  .ai-loading-modal.open { display: flex; }
+  .ai-loading-box {
+    text-align: center; padding: 3rem 2rem;
+  }
+  .ai-spinner {
+    width: 56px; height: 56px; margin: 0 auto 1.5rem;
+    border: 3px solid rgba(168,85,247,0.2);
+    border-top-color: #a855f7; border-radius: 50%;
+    animation: aiSpin 0.8s linear infinite;
+  }
+  @keyframes aiSpin { to { transform: rotate(360deg); } }
+  .ai-loading-box h3 { color: #a855f7; font-size: 1.1rem; letter-spacing: 2px; margin: 0 0 0.5rem; }
+  .ai-loading-box p  { color: var(--muted); font-size: 0.85rem; }
+
+
   .start-day-btn {
     font-family: 'DM Mono', monospace; font-size: 0.58rem;
     padding: 0.3rem 0.6rem;
@@ -1450,7 +1513,8 @@
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:0.5rem;justify-content:flex-end">
-        <button class="btn-load" onclick="loadProgram()">ADD TO SCHEDULE</button>
+        <button class="btn-ai-build" id="btnAiBuild" onclick="aiBuildProgram()">&#x2728; BUILD WITH AI</button>
+      <button class="btn-load" onclick="loadProgram()">ADD TO SCHEDULE</button>
         <button class="btn-cancel" onclick="closeProgModal()">Cancel</button>
       </div>
     </div>
@@ -5277,6 +5341,183 @@ function renderLibraryPage() {
    Injected before the closing script tag.
    ============================================================ */
 
+
+/* ── AI PROGRAM BUILDER ──────────────────────────────────────────────────── */
+
+function aiBuildProgram() {
+  const key = localStorage.getItem('flex_ai_key');
+  if (!key) {
+    document.getElementById('aiKeyOverlay').classList.add('open');
+    return;
+  }
+  runAiBuild(key);
+}
+
+function aiSaveKey() {
+  const val = document.getElementById('aiKeyInput').value.trim();
+  if (!val.startsWith('sk-ant')) {
+    alert('Please enter a valid Anthropic API key (starts with sk-ant)');
+    return;
+  }
+  localStorage.setItem('flex_ai_key', val);
+  document.getElementById('aiKeyOverlay').classList.remove('open');
+  runAiBuild(val);
+}
+
+async function runAiBuild(apiKey) {
+  // Close program preview modal and show loading
+  closeProgModal();
+  document.getElementById('aiLoadingModal').classList.add('open');
+
+  try {
+    // ── Gather lift history ──
+    const history = JSON.parse(localStorage.getItem('grind_history') || '{}');
+    const exerciseLines = [];
+    const musclesSeen = new Set();
+
+    Object.entries(history).forEach(([exName, sessions]) => {
+      if (!Array.isArray(sessions) || sessions.length === 0) return;
+      // Get best weight and last session
+      let bestWeight = 0, lastWeight = 0, lastReps = 0, lastDate = '';
+      sessions.forEach(s => {
+        if (!Array.isArray(s.sets)) return;
+        s.sets.forEach(set => {
+          if ((set.weight || 0) > bestWeight) bestWeight = set.weight;
+        });
+      });
+      const lastSession = sessions[sessions.length - 1];
+      if (lastSession?.sets?.length) {
+        const maxSet = lastSession.sets.reduce((a, b) => (b.weight || 0) > (a.weight || 0) ? b : a, lastSession.sets[0]);
+        lastWeight = maxSet.weight || 0;
+        lastReps = maxSet.reps || 0;
+        lastDate = lastSession.date || '';
+      }
+      exerciseLines.push('- ' + exName + ': PR ' + bestWeight + 'lbs, last session ' + lastWeight + 'lbs x' + lastReps + (lastDate ? ' (' + lastDate + ')' : ''));
+    });
+
+    // ── Identify which muscle groups need attention ──
+    const schedule = JSON.parse(localStorage.getItem('grind_schedule') || '[]');
+    const recentMuscles = new Set();
+    const MUSCLE_KEYWORDS = ['chest','quads','hamstrings','glutes','lats','back','shoulders','biceps','triceps','calves','core','rear delts','side delts'];
+    (Array.isArray(schedule) ? schedule : Object.values(schedule)).forEach(day => {
+      (day.workouts || []).forEach(w => {
+        const n = (w.name + ' ' + (w.notes || '')).toLowerCase();
+        MUSCLE_KEYWORDS.forEach(m => { if (n.includes(m.split(' ')[0])) recentMuscles.add(m); });
+      });
+    });
+
+    // ── Determine program structure from pending key ──
+    const progKey = window.pendingProgramKey || 'ppl';
+    const PROG_STRUCTURES = {
+      'ppl':         '6-day Push/Pull/Legs split (Push A, Pull A, Legs A, Push B, Pull B, Legs B, Rest)',
+      'pplul':       '6-day PPL + Upper/Lower hybrid split',
+      'upper-lower': '4-day Upper/Lower split (Upper A, Lower A, Upper B, Lower B, Rest, Rest, Rest)',
+      'push':        '2 Push days this week, fill remaining days with rest',
+      'pull':        '2 Pull days this week, fill remaining days with rest',
+      'legs':        '2 Legs days this week, fill remaining days with rest'
+    };
+    const progDesc = PROG_STRUCTURES[progKey] || PROG_STRUCTURES['ppl'];
+
+    // ── Build prompt ──
+    const prompt = [
+      'You are an expert strength coach. Build a personalised weekly workout program for a Planet Fitness gym member.',
+      '',
+      'PROGRAM TYPE: ' + progDesc,
+      '',
+      'ATHLETE LIFT HISTORY (' + exerciseLines.length + ' exercises tracked):',
+      exerciseLines.join('\n') || 'No history yet — create a beginner-friendly program',
+      '',
+      'AVAILABLE EQUIPMENT: Planet Fitness machines (Matrix, Hammer Strength, Smith Machine), dumbbells, cables, barbells',
+      '',
+      'RULES:',
+      '- Use exercises the athlete has ALREADY logged where possible, with slightly progressive weights',
+      '- Fill any muscle groups NOT recently trained (ensure full body coverage over the week)',
+      '- For each exercise include: 3-4 sets, rep range, and target weight based on their history',
+      '- Rest days must have empty workouts arrays',
+      '- Return ONLY valid JSON, no other text',
+      '',
+      'Return a JSON object with this exact structure:',
+      '{',
+      '  "days": [',
+      '    {',
+      '      "label": "Push A",',
+      '      "isRest": false,',
+      '      "workouts": [',
+      '        { "name": "Matrix Supine Press", "type": "strength", "mins": 0, "notes": "4x6-8 @ 120lbs", "done": false }',
+      '      ]',
+      '    },',
+      '    { "label": "Rest", "isRest": true, "workouts": [] }',
+      '  ]',
+      '}'
+    ].join('\n');
+
+    // ── Call Anthropic API ──
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    if (!resp.ok) {
+      const errText = await resp.text();
+      throw new Error('API error ' + resp.status + ': ' + errText.substring(0, 200));
+    }
+
+    const data = await resp.json();
+    const rawText = data.content.map(c => c.text || '').join('');
+
+    // ── Parse response ──
+    const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('No JSON found in response');
+    const aiProg = JSON.parse(jsonMatch[0]);
+    if (!aiProg.days || !Array.isArray(aiProg.days)) throw new Error('Invalid program structure');
+
+    // ── Load into schedule (same logic as loadProgram) ──
+    const startDayEl = document.querySelector('.start-day-btn.active');
+    const startDay = startDayEl ? parseInt(startDayEl.dataset.day || '0', 10) : 0;
+
+    const sched = schedule;
+    aiProg.days.forEach((day, i) => {
+      const targetDay = (startDay + i) % 7;
+      if (Array.isArray(sched)) {
+        sched[targetDay].workouts = day.workouts || [];
+        sched[targetDay].isRest = day.isRest || false;
+      }
+    });
+
+    save();
+    document.getElementById('aiLoadingModal').classList.remove('open');
+
+    // Show success toast
+    if (typeof showToast === 'function') {
+      showToast('\u2728 AI program loaded! Review your schedule.');
+    }
+
+  } catch (err) {
+    document.getElementById('aiLoadingModal').classList.remove('open');
+    console.error('[AI Build]', err);
+
+    // Handle auth error specifically
+    if (err.message.includes('401') || err.message.includes('authentication')) {
+      localStorage.removeItem('flex_ai_key');
+      alert('Invalid API key. Please try again.');
+      document.getElementById('aiKeyOverlay').classList.add('open');
+    } else {
+      alert('AI build failed: ' + err.message + '\n\nPlease try again.');
+    }
+  }
+}
+
+
 (function applyFlexFixes() {
 
   /* FIX 3 — Library filter chip scroll fade */
@@ -5533,5 +5774,25 @@ function renderLibraryPage() {
   <div class="page-body" id="libPageContent"></div>
 </div>
 
+
+<!-- AI KEY PROMPT OVERLAY -->
+<div class="ai-key-overlay" id="aiKeyOverlay">
+  <div class="ai-key-box">
+    <h2>&#x2728; AI PROGRAM BUILDER</h2>
+    <p>Enter your Anthropic API key to let AI personalise your program based on your lift history.<br>Your key is stored only in this browser and never sent anywhere except Anthropic's API.</p>
+    <input class="ai-key-input" id="aiKeyInput" type="password" placeholder="sk-ant-api03-..." autocomplete="off" />
+    <button class="ai-key-save" onclick="aiSaveKey()">SAVE &amp; BUILD</button>
+    <br><button class="ai-key-cancel" onclick="document.getElementById('aiKeyOverlay').classList.remove('open')">Cancel</button>
+  </div>
+</div>
+
+<!-- AI LOADING MODAL -->
+<div class="ai-loading-modal" id="aiLoadingModal">
+  <div class="ai-loading-box">
+    <div class="ai-spinner"></div>
+    <h3>BUILDING YOUR PROGRAM</h3>
+    <p>Claude is analysing your lift history<br>and creating a personalised plan&hellip;</p>
+  </div>
+</div>
 </body>
 </html>
